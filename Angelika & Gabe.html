@@ -932,6 +932,9 @@ Residence Inn by Marriott Downtown
 </div>
 </section>
 
+<!--
+WEDDING COUNTDOWN SECTION
+-->
 <section class="section editor__section js-editor-section section--element-countdown section--width-full section--padding-top-0 section--padding-bottom-0 section--alignment-center section--column-odd has-all-widths" data-id="176033" data-url="/site/176033.js">
 <div class="section__content">
 <div class="editor__container">
@@ -939,18 +942,44 @@ Residence Inn by Marriott Downtown
 <header class="section__header">
 <h3 class="section__title">
 <div class="s">
-Only 1480 days
+Only <span id="daysUntilWedding">0</span> days
 </div>
 </h3>
 </header>
 <div class="section__text">
-since we tied the knot!
+until we tie the knot!
 </div>
 
 </div>
 </div>
 </div>
 </section>
+
+<script>
+  function updateWeddingCountdown() {
+    // Set the wedding date (year, monthIndex, day)
+    const weddingDate = new Date(2026, 8, 25); // September 25, 2026 (month is 0-based)
+    const today = new Date();
+
+    // Calculate time difference in milliseconds
+    const timeDiff = weddingDate - today;
+
+    // Convert milliseconds to days
+    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+    // Update the countdown element
+    const element = document.getElementById("daysUntilWedding");
+    if (element) {
+      element.textContent = daysLeft > 0 ? daysLeft : 0;
+    }
+  }
+
+  // Run on page load
+  updateWeddingCountdown();
+
+  // Optional: Update daily at midnight
+  setInterval(updateWeddingCountdown, 1000 * 60 * 60 * 24);
+</script>
 
 </div>
 </div>
