@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matt & Leah Wedding</title>
+<style>
+  /* Base reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+    background-color: #f9f6f2;
+  }
+
+  header {
+    background-color: #f5e6d8;
+    padding: 20px 0;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  header h1 {
+    font-family: 'Cursive', sans-serif;
+    font-size: 3rem;
+    color: #a9634b;
+  }
+
+  nav {
+    margin-top: 10px;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: #a9634b;
+    margin: 0 15px;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+
+  nav a:hover {
+    color: #7a4030;
+  }
+
+  section {
+    padding: 80px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #a9634b;
+  }
+
+  .intro, .story, .photos, .rsvp {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+
+  .photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .photo-placeholder {
+    background-color: #ddd;
+    height: 200px;
+    border-radius: 10px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  input, select, textarea, button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+
+  button {
+    background-color: #a9634b;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #7a4030;
+  }
+
+  footer {
+    text-align: center;
+    padding: 30px 20px;
+    background-color: #f5e6d8;
+    color: #a9634b;
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 600px) {
+    header h1 {
+      font-size: 2rem;
+    }
+
+    section {
+      padding: 50px 15px;
+    }
+
+    nav a {
+      display: block;
+      margin: 10px 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Matt & Leah</h1>
+  <nav>
+    <a href="#intro">Home</a>
+    <a href="#story">Our Story</a>
+    <a href="#photos">Photos</a>
+    <a href="#rsvp">RSVP</a>
+  </nav>
+</header>
+
+<section id="intro" class="intro">
+  <h2>Welcome to Our Wedding</h2>
+  <p style="text-align:center; font-size:1.2rem;">
+    Join us as we celebrate our love and start our next chapter together. Scroll down to see our story, photos, and RSVP!
+  </p>
+</section>
+
+<section id="story" class="story">
+  <h2>Our Story</h2>
+  <p>
+    Matt and Leah met on a sunny day in June. Their first date was a coffee shop conversation that lasted hours, 
+    and they’ve been inseparable ever since. From adventures around the world to quiet nights at home, 
+    they’ve built a life full of love and laughter.
+  </p>
+</section>
+
+<section id="photos" class="photos">
+  <h2>Photos</h2>
+  <div class="photos-grid">
+    <div class="photo-placeholder"></div>
+    <div class="photo-placeholder"></div>
+    <div class="photo-placeholder"></div>
+    <div class="photo-placeholder"></div>
+    <div class="photo-placeholder"></div>
+    <div class="photo-placeholder"></div>
+  </div>
+</section>
+
+<section id="rsvp" class="rsvp">
+  <h2>RSVP</h2>
+  <form onsubmit="handleRSVP(event)">
+    <input type="text" placeholder="Your Name" required>
+    <input type="email" placeholder="Your Email" required>
+    <select required>
+      <option value="">Will you attend?</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+    <textarea placeholder="Message (optional)"></textarea>
+    <button type="submit">Submit RSVP</button>
+  </form>
+  <p id="rsvp-message" style="text-align:center; margin-top:15px; color: green; display:none;">
+    Thank you! Your RSVP has been recorded.
+  </p>
+</section>
+
+<footer>
+  <p>© 2025 Matt & Leah</p>
+</footer>
+
+<script>
+  function handleRSVP(e) {
+    e.preventDefault();
+    document.getElementById('rsvp-message').style.display = 'block';
+    e.target.reset();
+  }
+</script>
+
+</body>
+</html>
