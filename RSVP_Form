@@ -1,0 +1,23 @@
+<section id="rsvp" class="section">
+  <h2>RSVP</h2>
+  <form id="rsvp-form">
+    <label for="name">Full Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="attendance">Will you attend?</label>
+    <select id="attendance" name="attendance" required>
+      <option value="">Select</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+
+    <label for="guests">Number of Guests:</label>
+    <input type="number" id="guests" name="guests" min="1" max="10">
+
+    <button type="submit">Submit RSVP</button>
+  </form>
+
+  <div id="confirmation" style="display:none;">
+    Thank you for your response!
+  </div>
+</section>
