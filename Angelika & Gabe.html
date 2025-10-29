@@ -1002,25 +1002,42 @@ until we tie the knot!
 </section>
 
 <!-- RSVP Button Only -->
-<div style="text-align:center; margin:50px 0;">
-  <a href="https://script.google.com/macros/s/AKfycbxWfJlkKTrbzErnT8dv8ec0B6-RYzpLP4wjN7TZ3WTRjbdxAGbd7Jhyfv7ehC3VqX2P/exec" 
-     target="_blank" 
-     style="
-       display:inline-block;
-       background:#ffffff;
-       color:rgb(2, 67, 17);
-       font-size:18px;
-       font-weight:bold;
-       padding:15px 40px;
-       border-radius:12px;
-       text-decoration:none;
-       transition:0.3s;
-     "
-     onmouseover="this.style.background='#c49e2f';"
-     onmouseout="this.style.background='#D4AF37';">
-     RSVP Now
-  </a>
+<div class="rsvp-wrapper">
+  <a class="rsvp-btn"
+     href="https://script.google.com/macros/s/AKfycbxWfJlkKTrbzErnT8dv8ec0B6-RYzpLP4wjN7TZ3WTRjbdxAGbd7Jhyfv7ehC3VqX2P/exec"
+     target="_blank">RSVP Now</a>
 </div>
+
+<style>
+/* --- Wedding palette: dark green background, beige text --- */
+.rsvp-wrapper {
+  text-align:center;
+  margin:50px 0;
+}
+.rsvp-btn {
+  display:inline-block;
+  background:#C0A68C;         /* beige button */
+  color:#2B3A2F;              /* dark green text */
+  font-size:18px;
+  font-weight:600;
+  padding:15px 40px;
+  border-radius:12px;
+  text-decoration:none;
+  transition:background .3s, transform .2s;
+  box-shadow:0 4px 10px rgba(0,0,0,0.25);
+}
+.rsvp-btn:hover {
+  background:#A89174;         /* deeper beige hover */
+  transform:scale(1.05);
+}
+
+/* optional dark background section if you want the same tone behind the button */
+body {
+  background-color:#2B3A2F;
+  color:#C0A68C;
+}
+</style>
+
 
 <footer class="footer">
 <div class="footer__content">
