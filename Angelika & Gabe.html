@@ -70,6 +70,28 @@ body {
   border: 1px solid #b18969;
 }
 
+/* Language Switcher */
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid #b18969;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background 0.3s;
+  text-transform: uppercase;
+}
+
+.lang-switcher:hover {
+  background: rgba(177, 137, 105, 0.1);
+}
+
+.lang-flag {
+  font-size: 18px;
+}
+
 /* Header */
 
 .header__main {
@@ -257,6 +279,15 @@ body {
   border-color: #d6b098;
 }
 
+.v2 .lang-switcher {
+  border-color: #d6b098;
+  color: #d6b098;
+}
+
+.v2 .lang-switcher:hover {
+  background: rgba(214, 176, 152, 0.1);
+}
+
 /* Simplified */
 
 .is-simple .section__heading:before {
@@ -376,32 +407,38 @@ Gabe
 <a class="menu__icon js-menu-icon" href="https://matt-leah.wedsites.com/#"><i class="icon icon--menu"></i>
 </a><ul class="menu__items js-menu-items">
 <li class="menu__item">
-<a class="menu__link js-smooth-scroll" data-id="78054" href="https://matt-leah.wedsites.com/#venue">Venue</a>
+<a class="menu__link js-smooth-scroll" data-id="78054" href="https://matt-leah.wedsites.com/#venue" data-i18n="nav.venue">Venue</a>
 </li>
 
 <li class="menu__item">
-<a class="menu__link js-smooth-scroll" data-id="78057" href="https://matt-leah.wedsites.com/#wedding-party">Wedding Party</a>
+<a class="menu__link js-smooth-scroll" data-id="78057" href="https://matt-leah.wedsites.com/#wedding-party" data-i18n="nav.wedding_party">Wedding Party</a>
 </li>
 
 <li class="menu__item">
-<a class="menu__link js-smooth-scroll" data-id="176034" href="https://matt-leah.wedsites.com/#dress-code">Dress Code</a>
+<a class="menu__link js-smooth-scroll" data-id="176034" href="https://matt-leah.wedsites.com/#dress-code" data-i18n="nav.dress_code">Dress Code</a>
 </li>
 
 <li class="menu__item">
-<a class="menu__link js-smooth-scroll" data-id="78064" href="https://matt-leah.wedsites.com/#schedule">Schedule</a>
+<a class="menu__link js-smooth-scroll" data-id="78064" href="https://matt-leah.wedsites.com/#schedule" data-i18n="nav.schedule">Schedule</a>
 </li>
 
 <li class="menu__item">
-<a class="menu__link js-smooth-scroll" data-id="78069" href="https://matt-leah.wedsites.com/#accommodations">Accommodations</a>
+<a class="menu__link js-smooth-scroll" data-id="78069" href="https://matt-leah.wedsites.com/#accommodations" data-i18n="nav.accommodations">Accommodations</a>
 </li>
 
 <li class="menu__item">
-<a class="menu__link js-smooth-scroll" data-id="78076" href="https://matt-leah.wedsites.com/#registry">Registry</a>
+<a class="menu__link js-smooth-scroll" data-id="78076" href="https://matt-leah.wedsites.com/#registry" data-i18n="nav.registry">Registry</a>
 </li>
-
 
 <li class="menu__item menu__item--rsvp">
-<a class="menu__link menu__link--rsvp js-editor-page-link" data-url="/form" target="_blank" href="https://script.google.com/macros/s/AKfycbxWfJlkKTrbzErnT8dv8ec0B6-RYzpLP4wjN7TZ3WTRjbdxAGbd7Jhyfv7ehC3VqX2P/exec">RSVP</a>
+<a class="menu__link menu__link--rsvp js-editor-page-link" data-url="/form" target="_blank" href="https://script.google.com/macros/s/AKfycbxWfJlkKTrbzErnT8dv8ec0B6-RYzpLP4wjN7TZ3WTRjbdxAGbd7Jhyfv7ehC3VqX2P/exec" data-i18n="nav.rsvp">RSVP</a>
+</li>
+
+<li class="menu__item">
+  <div class="lang-switcher" id="langSwitcher">
+    <span class="lang-flag" id="langFlag">🇺🇸</span>
+    <span id="langText">EN</span>
+  </div>
 </li>
 </ul>
 
@@ -448,12 +485,12 @@ Gabe
 </span>
 </h1>
 <h3 class="header__date">
-<div class="s">
+<div class="s" data-i18n="header.date">
 September 25, 2026
 </div>
 </h3>
 <div class="header__rsvp">
-<a class="header__button button js-editor-page-link" data-url="/form" target="_blank" href="https://matt-leah.wedsites.com/rsvp"><div class="s">
+<a class="header__button button js-editor-page-link" data-url="/form" target="_blank" href="https://matt-leah.wedsites.com/rsvp"><div class="s" data-i18n="header.rsvp_by">
 RSVP by September 1, 2026
 </div>
 </a></div>
@@ -472,7 +509,7 @@ RSVP by September 1, 2026
 <div class="js-section-render">
 <div class="section__text">
 
-<div>Welcome to our wedding website! Find out all the details for our big day below. If you have any questions please don't hesitate to ask us.&nbsp;<div class="section__break"></div>We can't wait to celebrate with all of you!</div>
+<div data-i18n="welcome.text">Welcome to our wedding website! Find out all the details for our big day below. If you have any questions please don't hesitate to ask us.&nbsp;<div class="section__break"></div>We can't wait to celebrate with all of you!</div>
 
 </div>
 
@@ -488,7 +525,7 @@ RSVP by September 1, 2026
 <a name="venue"></a>
 <h2 class="section__heading">
 <span class="s">
-<span class="w">Venue
+<span class="w" data-i18n="venue.heading">Venue
 </span>
 </span>
 </h2>
@@ -504,7 +541,7 @@ RSVP by September 1, 2026
 <div class="js-section-render">
 <div class="section__text">
 
-<div>Welcome to The Grandview! In the historic city of Poughkeepsie, New York, the venue is perched on the water’s edge of the Hudson River featuring breathtaking views of the Mid-Hudson Bridge.</div>
+<div data-i18n="venue.description">Welcome to The Grandview! In the historic city of Poughkeepsie, New York, the venue is perched on the water's edge of the Hudson River featuring breathtaking views of the Mid-Hudson Bridge.</div>
 
 </div>
 
@@ -568,9 +605,7 @@ RSVP by September 1, 2026
 <a name="wedding-party"></a>
 <h2 class="section__heading">
 <span class="s">
-<span class="w">Wedding
-</span>
-<span class="w">Party
+<span class="w" data-i18n="wedding_party.heading">Wedding Party
 </span>
 </span>
 </h2>
@@ -587,11 +622,7 @@ RSVP by September 1, 2026
 <img class="section__avatar section__avatar--150" src="./Angelika & Gabe_WebsiteFiles/DomandAng.jpeg">
 <header class="section__header">
 <h4 class="section__label">
-<span class="w">Maid
-</span>
-<span class="w">of
-</span>
-<span class="w">Honor
+<span class="w" data-i18n="wedding_party.maid_of_honor">Maid of Honor
 </span>
 </h4>
 <h3 class="section__title">
@@ -618,9 +649,7 @@ Dominika Deline
 <img class="section__avatar section__avatar--150" src="./Angelika & Gabe_WebsiteFiles/Hambino.jpeg">
 <header class="section__header">
 <h4 class="section__label">
-<span class="w">Best
-</span>
-<span class="w">Man
+<span class="w" data-i18n="wedding_party.best_man">Best Man
 </span>
 </h4>
 <h3 class="section__title">
@@ -648,9 +677,7 @@ Colin Hamm
 <a name="dress-code"></a>
 <h2 class="section__heading">
 <span class="s">
-<span class="w">Dress
-</span>
-<span class="w">Code
+<span class="w" data-i18n="dress_code.heading">Dress Code
 </span>
 </span>
 </h2>
@@ -666,7 +693,7 @@ Colin Hamm
 <div class="js-section-render">
 <div class="section__text">
 
-<div>Please help us create our vision by wearing <strong>formal attire</strong> (some examples below). Anything from cocktail dress to formal attire fits our vision.&nbsp;</div>
+<div data-i18n="dress_code.description">Please help us create our vision by wearing <strong>formal attire</strong> (some examples below). Anything from cocktail dress to formal attire fits our vision.&nbsp;</div>
 
 </div>
 
@@ -698,7 +725,7 @@ Colin Hamm
 <a name="schedule"></a>
 <h2 class="section__heading">
 <span class="s">
-<span class="w">Schedule
+<span class="w" data-i18n="schedule.heading">Schedule
 </span>
 </span>
 </h2>
@@ -715,17 +742,17 @@ Colin Hamm
 <img class="section__image" src="./Angelika & Gabe_WebsiteFiles/Church.jpg">
 <header class="section__header">
 <h3 class="section__title">
-<div class="s">
+<div class="s" data-i18n="schedule.church.title">
 Church Wedding Service
 </div>
 </h3>
-<p class="section__subtitle">
+<p class="section__subtitle" data-i18n="schedule.church.time">
 Time will be announced on official invites.
 </p>
 </header>
 <div class="section__text">
 
-<div>The wedding is taking place at Church of the Holy Trinity Roman Catholic Church in Poughkeepsie, NY.&nbsp;</div>
+<div data-i18n="schedule.church.description">The wedding is taking place at Church of the Holy Trinity Roman Catholic Church in Poughkeepsie, NY.&nbsp;</div>
 
 </div>
 
@@ -741,7 +768,7 @@ Time will be announced on official invites.
 <img class="section__image" src="./Angelika & Gabe_WebsiteFiles/CocktailHour.jpg">
 <header class="section__header">
 <h3 class="section__title">
-<div class="s">
+<div class="s" data-i18n="schedule.cocktail.title">
 Cocktail Hour
 </div>
 </h3>
@@ -751,7 +778,7 @@ Cocktail Hour
 </header>
 <div class="section__text">
 
-<div>Have a drink (or two) before the party gets started. Enjoy delicious horderves and drinks from the open bar. &nbsp;</div>
+<div data-i18n="schedule.cocktail.description">Have a drink (or two) before the party gets started. Enjoy delicious horderves and drinks from the open bar. &nbsp;</div>
 
 </div>
 
@@ -767,7 +794,7 @@ Cocktail Hour
 <img class="section__image" src="./Angelika & Gabe_WebsiteFiles/Ballroom.jpg">
 <header class="section__header">
 <h3 class="section__title">
-<div class="s">
+<div class="s" data-i18n="schedule.reception.title">
 Reception 
 </div>
 </h3>
@@ -777,7 +804,7 @@ Reception
 </header>
 <div class="section__text">
 
-<div>Let the party begin!</div>
+<div data-i18n="schedule.reception.description">Let the party begin!</div>
 
 </div>
 
@@ -793,14 +820,14 @@ Reception
 <img class="section__image" src="./Angelika & Gabe_WebsiteFiles/DancingAngandGabe.JPG">
 <header class="section__header">
 <h3 class="section__title">
-<div class="s">
+<div class="s" data-i18n="schedule.speeches.title">
 Speeches &amp; First Dance
 </div>
 </h3>
 </header>
 <div class="section__text">
 
-<div>Hear a few tall tales and the dancing begins.&nbsp;</div>
+<div data-i18n="schedule.speeches.description">Hear a few tall tales and the dancing begins.&nbsp;</div>
 
 </div>
 
@@ -816,14 +843,14 @@ Speeches &amp; First Dance
 <img class="section__image" src="./Angelika & Gabe_WebsiteFiles/Dancing.jpg">
 <header class="section__header">
 <h3 class="section__title">
-<div class="s">
+<div class="s" data-i18n="schedule.party.title">
 Party! 
 </div>
 </h3>
 </header>
 <div class="section__text">
 
-<div>Wear your dancing shoes!&nbsp;</div>
+<div data-i18n="schedule.party.description">Wear your dancing shoes!&nbsp;</div>
 
 </div>
 
@@ -839,7 +866,7 @@ Party!
 <a name="accommodations"></a>
 <h2 class="section__heading">
 <span class="s">
-<span class="w">Accommodations
+<span class="w" data-i18n="accommodations.heading">Accommodations
 </span>
 </span>
 </h2>
@@ -855,14 +882,14 @@ Party!
 <div class="js-section-render">
 <header class="section__header">
 <h3 class="section__title">
-<div class="s">
+<div class="s" data-i18n="accommodations.hotel_info">
 Hotel Information TBD
 </div>
 </h3>
 </header>
 <div class="section__text">
 
-<div>Hotel block TBD! We will reserve a block of rooms at a hotel in the near future. Please keep an eye out for updates! <div class="section__break"></div>
+<div data-i18n="accommodations.description">Hotel block TBD! We will reserve a block of rooms at a hotel in the near future. Please keep an eye out for updates! <div class="section__break"></div>
 <a href="https://www.marriott.com/reservation/availability.mi?propertyCode=YYCBL&amp;cc=W14" target="_blank" rel="noreferrer noopener nofollow">CLICK HERE TO BOOK</a>
 </div>
 
@@ -889,52 +916,6 @@ Hotel Information TBD
 </div>
 </section>
 
-<!-- Add Registry Section back in at later date.
-<section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="78076" data-url="/site/78076.js">
-<div class="section__content">
-<div class="editor__container">
-<div class="js-section-render">
-<a name="registry"></a>
-<h2 class="section__heading">
-<span class="s">
-<span class="w">Registry
-</span>
-</span>
-</h2>
-
-</div>
-</div>
-</div>
-</section>
-
-
-<section class="section editor__section js-editor-section section--element-paragraph section--width-full section--padding-top-0 section--padding-bottom-0 section--alignment-center section--column-odd has-all-widths" data-id="78077" data-url="/site/78077.js">
-  <div class="section__content">
-    <div class="editor__container">
-      <div class="js-section-render">
-        <div class="section__text">
-          <div>While we don't have a traditional wedding registry, if you feel so inclined, you can make a cash donation to our honeymoon fund :)</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section editor__section js-editor-section section--element-button section--width-full section--padding-top-0 section--padding-bottom-50 section--alignment-center section--column-odd has-all-widths" data-id="211306" data-url="/site/211306.js">
-  <div class="section__content">
-    <div class="editor__container">
-      <div class="js-section-render">
-        <a class="section__button" target="_blank" rel="noreferrer noopener nofollow" href="https://www.crateandbarrel.ca/gift-registry/matt-urbanowski-and-leah-kitts/r6355744">Contribute to Honeymoon Fund</a>
-      </div>
-    </div>
-  </div>
-</section>
--->
-
-
-<!--
-WEDDING COUNTDOWN SECTION
--->
 <section class="section editor__section js-editor-section section--element-countdown section--width-full section--padding-top-0 section--padding-bottom-0 section--alignment-center section--column-odd has-all-widths" data-id="176033" data-url="/site/176033.js">
 <div class="section__content">
 <div class="editor__container">
@@ -942,11 +923,11 @@ WEDDING COUNTDOWN SECTION
 <header class="section__header">
 <h3 class="section__title">
 <div class="s">
-Only <span id="daysUntilWedding">0</span> days
+<span data-i18n="countdown.only">Only</span> <span id="daysUntilWedding">0</span> <span data-i18n="countdown.days">days</span>
 </div>
 </h3>
 </header>
-<div class="section__text">
+<div class="section__text" data-i18n="countdown.until">
 until we tie the knot!
 </div>
 
@@ -957,27 +938,16 @@ until we tie the knot!
 
 <script>
   function updateWeddingCountdown() {
-    // Set the wedding date (year, monthIndex, day)
-    const weddingDate = new Date(2026, 8, 25); // September 25, 2026 (month is 0-based)
+    const weddingDate = new Date(2026, 8, 25);
     const today = new Date();
-
-    // Calculate time difference in milliseconds
     const timeDiff = weddingDate - today;
-
-    // Convert milliseconds to days
     const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-    // Update the countdown element
     const element = document.getElementById("daysUntilWedding");
     if (element) {
       element.textContent = daysLeft > 0 ? daysLeft : 0;
     }
   }
-
-  // Run on page load
   updateWeddingCountdown();
-
-  // Optional: Update daily at midnight
   setInterval(updateWeddingCountdown, 1000 * 60 * 60 * 24);
 </script>
 
@@ -991,7 +961,7 @@ until we tie the knot!
 <a name="rsvp-form"></a>
 <h2 class="section__heading">
 <span class="s">
-<span class="w">RSVP
+<span class="w" data-i18n="rsvp.heading">RSVP
 </span>
 </span>
 </h2>
@@ -1001,23 +971,21 @@ until we tie the knot!
 </div>
 </section>
 
-<!-- RSVP Button Only -->
 <div class="rsvp-wrapper">
   <a class="rsvp-btn"
      href="https://script.google.com/macros/s/AKfycbxWfJlkKTrbzErnT8dv8ec0B6-RYzpLP4wjN7TZ3WTRjbdxAGbd7Jhyfv7ehC3VqX2P/exec"
-     target="_blank">RSVP Now</a>
+     target="_blank" data-i18n="rsvp.button">RSVP Now</a>
 </div>
 
 <style>
-/* --- Wedding palette: dark green background, beige text --- */
 .rsvp-wrapper {
   text-align:center;
   margin:50px 0;
 }
 .rsvp-btn {
   display:inline-block;
-  background:#C0A68C;         /* beige button */
-  color:#2B3A2F;              /* dark green text */
+  background:#C0A68C;
+  color:#2B3A2F;
   font-size:18px;
   font-weight:600;
   padding:15px 40px;
@@ -1027,23 +995,140 @@ until we tie the knot!
   box-shadow:0 4px 10px rgba(0,0,0,0.25);
 }
 .rsvp-btn:hover {
-  background:#A89174;         /* deeper beige hover */
+  background:#A89174;
   transform:scale(1.05);
-}
-
-/* optional dark background section if you want the same tone behind the button */
-body {
-  background-color:#2B3A2F;
-  color:#C0A68C;
 }
 </style>
 
 
 <footer class="footer">
-<div class="footer__content">
+<div class="footer__content" data-i18n="footer.copyright">
   © JGR - Ritter Digital Works - 2025
 </div>
 </footer>
 
 </div>
 
+<script>
+// Translation dictionary
+const translations = {
+  en: {
+    'nav.venue': 'Venue',
+    'nav.wedding_party': 'Wedding Party',
+    'nav.dress_code': 'Dress Code',
+    'nav.schedule': 'Schedule',
+    'nav.accommodations': 'Accommodations',
+    'nav.registry': 'Registry',
+    'nav.rsvp': 'RSVP',
+    'header.date': 'September 25, 2026',
+    'header.rsvp_by': 'RSVP by September 1, 2026',
+    'welcome.text': 'Welcome to our wedding website! Find out all the details for our big day below. If you have any questions please don\'t hesitate to ask us.<div class="section__break"></div>We can\'t wait to celebrate with all of you!',
+    'venue.heading': 'Venue',
+    'venue.description': 'Welcome to The Grandview! In the historic city of Poughkeepsie, New York, the venue is perched on the water\'s edge of the Hudson River featuring breathtaking views of the Mid-Hudson Bridge.',
+    'wedding_party.heading': 'Wedding Party',
+    'wedding_party.maid_of_honor': 'Maid of Honor',
+    'wedding_party.best_man': 'Best Man',
+    'dress_code.heading': 'Dress Code',
+    'dress_code.description': 'Please help us create our vision by wearing <strong>formal attire</strong> (some examples below). Anything from cocktail dress to formal attire fits our vision.&nbsp;',
+    'schedule.heading': 'Schedule',
+    'schedule.church.title': 'Church Wedding Service',
+    'schedule.church.time': 'Time will be announced on official invites.',
+    'schedule.church.description': 'The wedding is taking place at Church of the Holy Trinity Roman Catholic Church in Poughkeepsie, NY.&nbsp;',
+    'schedule.cocktail.title': 'Cocktail Hour',
+    'schedule.cocktail.description': 'Have a drink (or two) before the party gets started. Enjoy delicious horderves and drinks from the open bar.&nbsp;',
+    'schedule.reception.title': 'Reception',
+    'schedule.reception.description': 'Let the party begin!',
+    'schedule.speeches.title': 'Speeches & First Dance',
+    'schedule.speeches.description': 'Hear a few tall tales and the dancing begins.&nbsp;',
+    'schedule.party.title': 'Party!',
+    'schedule.party.description': 'Wear your dancing shoes!&nbsp;',
+    'accommodations.heading': 'Accommodations',
+    'accommodations.hotel_info': 'Hotel Information TBD',
+    'accommodations.description': 'Hotel block TBD! We will reserve a block of rooms at a hotel in the near future. Please keep an eye out for updates!<div class="section__break"></div><a href="https://www.marriott.com/reservation/availability.mi?propertyCode=YYCBL&cc=W14" target="_blank" rel="noreferrer noopener nofollow">CLICK HERE TO BOOK</a>',
+    'countdown.only': 'Only',
+    'countdown.days': 'days',
+    'countdown.until': 'until we tie the knot!',
+    'rsvp.heading': 'RSVP',
+    'rsvp.button': 'RSVP Now',
+    'footer.copyright': '© JGR - Ritter Digital Works - 2025'
+  },
+  pl: {
+    'nav.venue': 'Miejsce',
+    'nav.wedding_party': 'Druhny i Świadkowie',
+    'nav.dress_code': 'Dress Code',
+    'nav.schedule': 'Harmonogram',
+    'nav.accommodations': 'Noclegi',
+    'nav.registry': 'Lista Prezentów',
+    'nav.rsvp': 'Potwierdzenie',
+    'header.date': '25 września 2026',
+    'header.rsvp_by': 'Potwierdzenie obecności do 1 września 2026',
+    'welcome.text': 'Witamy na naszej stronie ślubnej! Poniżej znajdziecie wszystkie szczegóły dotyczące naszego wielkiego dnia. Jeśli macie jakiekolwiek pytania, nie wahajcie się do nas zwrócić.<div class="section__break"></div>Nie możemy się doczekać, aby świętować z Wami wszystkimi!',
+    'venue.heading': 'Miejsce',
+    'venue.description': 'Witamy w The Grandview! W historycznym mieście Poughkeepsie w stanie Nowy Jork, miejsce znajduje się nad brzegiem rzeki Hudson z zapierającymi dech w piersiach widokami na Mid-Hudson Bridge.',
+    'wedding_party.heading': 'Druhny i Świadkowie',
+    'wedding_party.maid_of_honor': 'Druhna',
+    'wedding_party.best_man': 'Świadek',
+    'dress_code.heading': 'Dress Code',
+    'dress_code.description': 'Pomóżcie nam stworzyć naszą wizję, ubierając się w <strong>strój formalny</strong> (kilka przykładów poniżej). Wszystko od sukienki koktajlowej po strój formalny pasuje do naszej wizji.&nbsp;',
+    'schedule.heading': 'Harmonogram',
+    'schedule.church.title': 'Ceremonia Ślubna w Kościele',
+    'schedule.church.time': 'Godzina zostanie ogłoszona w oficjalnych zaproszeniach.',
+    'schedule.church.description': 'Ślub odbędzie się w kościele Trójcy Świętej Rzymskokatolickiej w Poughkeepsie, NY.&nbsp;',
+    'schedule.cocktail.title': 'Koktajle',
+    'schedule.cocktail.description': 'Wypijcie drinka (lub dwa) przed rozpoczęciem przyjęcia. Delektujcie się pysznymi przekąskami i napojami z otwartego baru.&nbsp;',
+    'schedule.reception.title': 'Przyjęcie',
+    'schedule.reception.description': 'Niech zabawa się rozpocznie!',
+    'schedule.speeches.title': 'Przemówienia i Pierwszy Taniec',
+    'schedule.speeches.description': 'Posłuchajcie kilku opowieści i rozpocznie się taniec.&nbsp;',
+    'schedule.party.title': 'Zabawa!',
+    'schedule.party.description': 'Załóżcie buty do tańca!&nbsp;',
+    'accommodations.heading': 'Noclegi',
+    'accommodations.hotel_info': 'Informacje o hotelu - wkrótce',
+    'accommodations.description': 'Blok hotelowy wkrótce! Zarezerwujemy blok pokoi w hotelu w najbliższej przyszłości. Prosimy o śledzenie aktualizacji!<div class="section__break"></div><a href="https://www.marriott.com/reservation/availability.mi?propertyCode=YYCBL&cc=W14" target="_blank" rel="noreferrer noopener nofollow">KLIKNIJ TUTAJ, ABY ZAREZERWOWAĆ</a>',
+    'countdown.only': 'Tylko',
+    'countdown.days': 'dni',
+    'countdown.until': 'do naszego ślubu!',
+    'rsvp.heading': 'Potwierdzenie Obecności',
+    'rsvp.button': 'Potwierdź Obecność',
+    'footer.copyright': '© JGR - Ritter Digital Works - 2025'
+  }
+};
+
+// Language switcher functionality
+let currentLang = localStorage.getItem('wedding-lang') || 'en';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('wedding-lang', lang);
+  
+  const flag = document.getElementById('langFlag');
+  const text = document.getElementById('langText');
+  
+  if (lang === 'pl') {
+    flag.textContent = '🇵🇱';
+    text.textContent = 'PL';
+  } else {
+    flag.textContent = '🇺🇸';
+    text.textContent = 'EN';
+  }
+  
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    if (translations[lang][key]) {
+      element.innerHTML = translations[lang][key];
+    }
+  });
+  
+  document.documentElement.lang = lang;
+}
+
+setLanguage(currentLang);
+
+document.getElementById('langSwitcher').addEventListener('click', () => {
+  const newLang = currentLang === 'en' ? 'pl' : 'en';
+  setLanguage(newLang);
+});
+</script>
+
+</body>
+</html>
