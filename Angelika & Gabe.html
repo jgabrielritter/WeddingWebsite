@@ -1133,5 +1133,318 @@ document.getElementById('langSwitcher').addEventListener('click', () => {
 });
 </script>
 
+<!-- Add this HTML for the password modal before the closing </body> tag -->
+
+<div id="passwordModal" class="password-modal">
+  <div class="password-modal-content">
+    <span class="password-modal-close">&times;</span>
+    <h2 class="password-modal-title">RSVP Access</h2>
+    <p class="password-modal-text">Please enter the password to access the RSVP form</p>
+    <input type="password" id="passwordInput" class="password-input" placeholder="Enter password">
+    <p id="passwordError" class="password-error"></p>
+    <button id="passwordSubmit" class="password-submit">Submit</button>
+  </div>
+</div>
+
+<style>
+/* Password Modal Styles */
+.password-modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.password-modal-content {
+  background: #ffede3;
+  margin: 10% auto;
+  padding: 40px;
+  border: 2px solid #b18969;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.3s ease;
+  position: relative;
+}
+
+/* Dark mode variation */
+.v2 .password-modal-content {
+  background: #003748;
+  border-color: #d6b098;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.password-modal-close {
+  color: #b18969;
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 35px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: color 0.3s;
+  line-height: 1;
+}
+
+.v2 .password-modal-close {
+  color: #d6b098;
+}
+
+.password-modal-close:hover,
+.password-modal-close:focus {
+  opacity: 0.7;
+}
+
+.password-modal-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 36px;
+  color: #b18969;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 15px 0;
+  font-weight: 400;
+}
+
+.v2 .password-modal-title {
+  color: #d6b098;
+}
+
+.password-modal-text {
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  color: #b18969;
+  margin: 0 0 25px 0;
+  letter-spacing: 0.05em;
+}
+
+.v2 .password-modal-text {
+  color: #d6b098;
+}
+
+.password-input {
+  width: 100%;
+  padding: 15px 20px;
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  border: 2px solid #b18969;
+  border-radius: 8px;
+  background: #fff;
+  color: #b18969;
+  letter-spacing: 0.05em;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.v2 .password-input {
+  background: #001a24;
+  border-color: #d6b098;
+  color: #d6b098;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #b18969;
+  box-shadow: 0 0 0 3px rgba(177, 137, 105, 0.2);
+}
+
+.v2 .password-input:focus {
+  border-color: #d6b098;
+  box-shadow: 0 0 0 3px rgba(214, 176, 152, 0.2);
+}
+
+.password-input::placeholder {
+  color: rgba(177, 137, 105, 0.5);
+}
+
+.v2 .password-input::placeholder {
+  color: rgba(214, 176, 152, 0.5);
+}
+
+.password-error {
+  color: #d9534f;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  margin: 5px 0 15px 0;
+  min-height: 20px;
+  letter-spacing: 0.05em;
+}
+
+.password-submit {
+  background: transparent;
+  color: #b18969;
+  border: 2px solid #b18969;
+  padding: 15px 50px;
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+.v2 .password-submit {
+  color: #d6b098;
+  border-color: #d6b098;
+}
+
+.password-submit:hover {
+  background: #b18969;
+  color: #ffede3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(177, 137, 105, 0.3);
+}
+
+.v2 .password-submit:hover {
+  background: #d6b098;
+  color: #003748;
+}
+
+.password-submit:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .password-modal-content {
+    margin: 20% auto;
+    padding: 30px 20px;
+    width: 85%;
+  }
+  
+  .password-modal-title {
+    font-size: 28px;
+  }
+  
+  .password-modal-text {
+    font-size: 16px;
+  }
+  
+  .password-input,
+  .password-submit {
+    font-size: 16px;
+  }
+}
+</style>
+
+<script>
+// Password protection for RSVP links
+const RSVP_URL = 'https://script.google.com/macros/s/AKfycbxWfJlkKTrbzErnT8dv8ec0B6-RYzpLP4wjN7TZ3WTRjbdxAGbd7Jhyfv7ehC3VqX2P/exec';
+const CORRECT_PASSWORD = 'rubi';
+
+// Get modal elements
+let modal, passwordInput, passwordError, submitBtn, closeBtn;
+
+function initPasswordModal() {
+  modal = document.getElementById('passwordModal');
+  passwordInput = document.getElementById('passwordInput');
+  passwordError = document.getElementById('passwordError');
+  submitBtn = document.getElementById('passwordSubmit');
+  closeBtn = document.querySelector('.password-modal-close');
+  
+  // Close modal when clicking X
+  closeBtn.onclick = function() {
+    closeModal();
+  };
+  
+  // Close modal when clicking outside
+  window.onclick = function(event) {
+    if (event.target === modal) {
+      closeModal();
+    }
+  };
+  
+  // Submit on Enter key
+  passwordInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      checkPassword();
+    }
+  });
+  
+  // Submit button click
+  submitBtn.onclick = checkPassword;
+}
+
+function openModal() {
+  modal.style.display = 'block';
+  passwordInput.value = '';
+  passwordError.textContent = '';
+  // Focus input after a short delay to ensure modal is visible
+  setTimeout(() => passwordInput.focus(), 100);
+}
+
+function closeModal() {
+  modal.style.display = 'none';
+  passwordInput.value = '';
+  passwordError.textContent = '';
+}
+
+function checkPassword() {
+  const enteredPassword = passwordInput.value.trim();
+  
+  if (enteredPassword === '') {
+    passwordError.textContent = 'Please enter a password';
+    return;
+  }
+  
+  if (enteredPassword.toLowerCase() === CORRECT_PASSWORD) {
+    // Password correct - open RSVP form and close modal
+    passwordError.textContent = '';
+    closeModal();
+    window.open(RSVP_URL, '_blank');
+  } else {
+    // Password incorrect
+    passwordError.textContent = 'Incorrect password. Please try again.';
+    passwordInput.value = '';
+    passwordInput.focus();
+  }
+}
+
+function handleRSVPClick(event) {
+  event.preventDefault();
+  openModal();
+  return false;
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initPasswordModal();
+  
+  // Apply password protection to all RSVP links
+  const rsvpLinks = document.querySelectorAll('a[href*="AKfycbxWfJlkKTrbzErnT8dv8ec0B6"]');
+  
+  rsvpLinks.forEach(link => {
+    link.addEventListener('click', handleRSVPClick);
+  });
+});
+</script>
+
 </body>
 </html>
