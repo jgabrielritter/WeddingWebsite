@@ -969,7 +969,335 @@ until we tie the knot!
 }
 </style>
 
+<!-- Photo Gallery Section -->
+<section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<a name="gallery"></a>
+<h2 class="section__heading">
+<span class="s">
+<span class="w" data-i18n="gallery.heading">Photo Gallery</span>
+</span>
+</h2>
+</div>
+</div>
+</div>
+</section>
 
+<section class="section editor__section section--width-full section--padding-top-25 section--padding-bottom-50 section--alignment-center">
+<div class="section__content">
+<div class="editor__container">
+<div class="gallery-grid">
+<div class="gallery-item" onclick="openLightbox(0)">
+<img src="path-to-your-photo-1.jpg" alt="Wedding Photo 1">
+</div>
+<div class="gallery-item" onclick="openLightbox(1)">
+<img src="path-to-your-photo-2.jpg" alt="Wedding Photo 2">
+</div>
+<div class="gallery-item" onclick="openLightbox(2)">
+<img src="path-to-your-photo-3.jpg" alt="Wedding Photo 3">
+</div>
+<div class="gallery-item" onclick="openLightbox(3)">
+<img src="path-to-your-photo-4.jpg" alt="Wedding Photo 4">
+</div>
+<div class="gallery-item" onclick="openLightbox(4)">
+<img src="path-to-your-photo-5.jpg" alt="Wedding Photo 5">
+</div>
+<div class="gallery-item" onclick="openLightbox(5)">
+<img src="path-to-your-photo-6.jpg" alt="Wedding Photo 6">
+</div>
+<div class="gallery-item" onclick="openLightbox(6)">
+<img src="path-to-your-photo-7.jpg" alt="Wedding Photo 7">
+</div>
+<div class="gallery-item" onclick="openLightbox(7)">
+<img src="path-to-your-photo-8.jpg" alt="Wedding Photo 8">
+</div>
+<div class="gallery-item" onclick="openLightbox(8)">
+<img src="path-to-your-photo-9.jpg" alt="Wedding Photo 9">
+</div>
+<div class="gallery-item" onclick="openLightbox(9)">
+<img src="path-to-your-photo-10.jpg" alt="Wedding Photo 10">
+</div>
+<div class="gallery-item" onclick="openLightbox(10)">
+<img src="path-to-your-photo-11.jpg" alt="Wedding Photo 11">
+</div>
+<div class="gallery-item" onclick="openLightbox(11)">
+<img src="path-to-your-photo-12.jpg" alt="Wedding Photo 12">
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Lightbox Modal -->
+<div id="galleryLightbox" class="gallery-lightbox">
+<span class="gallery-lightbox-close">&times;</span>
+<span class="gallery-lightbox-prev">&#10094;</span>
+<span class="gallery-lightbox-next">&#10095;</span>
+<img class="gallery-lightbox-content" id="lightboxImage" src="" alt="Gallery Image">
+<div class="gallery-lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<style>
+/* Gallery Grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 0 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  aspect-ratio: 1;
+  border: 2px solid #b18969;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.v2 .gallery-item {
+  border-color: #d6b098;
+}
+
+.gallery-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(177, 137, 105, 0.3);
+}
+
+.v2 .gallery-item:hover {
+  box-shadow: 0 8px 20px rgba(214, 176, 152, 0.3);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1);
+}
+
+/* Lightbox */
+.gallery-lightbox {
+  display: none;
+  position: fixed;
+  z-index: 10001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.gallery-lightbox-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 85vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.gallery-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: #fff;
+  font-size: 50px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  z-index: 10002;
+  line-height: 1;
+}
+
+.gallery-lightbox-close:hover,
+.gallery-lightbox-close:focus {
+  opacity: 0.7;
+}
+
+.gallery-lightbox-prev,
+.gallery-lightbox-next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;
+  padding: 16px;
+  color: white;
+  font-weight: 300;
+  font-size: 40px;
+  transition: 0.3s ease;
+  user-select: none;
+  z-index: 10002;
+}
+
+.gallery-lightbox-prev {
+  left: 20px;
+}
+
+.gallery-lightbox-next {
+  right: 20px;
+}
+
+.gallery-lightbox-prev:hover,
+.gallery-lightbox-next:hover {
+  background-color: rgba(177, 137, 105, 0.3);
+  border-radius: 4px;
+}
+
+.gallery-lightbox-caption {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: #fff;
+  padding: 10px 20px;
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 0 10px;
+  }
+  
+  .gallery-lightbox-content {
+    max-width: 95%;
+  }
+  
+  .gallery-lightbox-prev,
+  .gallery-lightbox-next {
+    font-size: 30px;
+    padding: 10px;
+  }
+  
+  .gallery-lightbox-prev {
+    left: 10px;
+  }
+  
+  .gallery-lightbox-next {
+    right: 10px;
+  }
+  
+  .gallery-lightbox-close {
+    top: 10px;
+    right: 20px;
+    font-size: 40px;
+  }
+}
+</style>
+
+<script>
+// Gallery images array
+const galleryImages = [
+  'path-to-your-photo-1.jpg',
+  'path-to-your-photo-2.jpg',
+  'path-to-your-photo-3.jpg',
+  'path-to-your-photo-4.jpg',
+  'path-to-your-photo-5.jpg',
+  'path-to-your-photo-6.jpg',
+  'path-to-your-photo-7.jpg',
+  'path-to-your-photo-8.jpg',
+  'path-to-your-photo-9.jpg',
+  'path-to-your-photo-10.jpg',
+  'path-to-your-photo-11.jpg',
+  'path-to-your-photo-12.jpg'
+];
+
+let currentImageIndex = 0;
+
+function openLightbox(index) {
+  currentImageIndex = index;
+  const lightbox = document.getElementById('galleryLightbox');
+  const lightboxImage = document.getElementById('lightboxImage');
+  
+  lightbox.style.display = 'block';
+  lightboxImage.src = galleryImages[index];
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('galleryLightbox');
+  lightbox.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+function changeImage(direction) {
+  currentImageIndex += direction;
+  
+  if (currentImageIndex >= galleryImages.length) {
+    currentImageIndex = 0;
+  } else if (currentImageIndex < 0) {
+    currentImageIndex = galleryImages.length - 1;
+  }
+  
+  const lightboxImage = document.getElementById('lightboxImage');
+  lightboxImage.src = galleryImages[currentImageIndex];
+}
+
+// Initialize lightbox controls when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  const closeBtn = document.querySelector('.gallery-lightbox-close');
+  const prevBtn = document.querySelector('.gallery-lightbox-prev');
+  const nextBtn = document.querySelector('.gallery-lightbox-next');
+  const lightbox = document.getElementById('galleryLightbox');
+  
+  if (closeBtn) closeBtn.onclick = closeLightbox;
+  if (prevBtn) prevBtn.onclick = () => changeImage(-1);
+  if (nextBtn) nextBtn.onclick = () => changeImage(1);
+  
+  // Close on background click
+  if (lightbox) {
+    lightbox.onclick = function(event) {
+      if (event.target === lightbox) {
+        closeLightbox();
+      }
+    };
+  }
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', function(event) {
+    if (lightbox && lightbox.style.display === 'block') {
+      if (event.key === 'Escape') closeLightbox();
+      if (event.key === 'ArrowLeft') changeImage(-1);
+      if (event.key === 'ArrowRight') changeImage(1);
+    }
+  });
+});
+</script>
 
 
 <footer class="footer">
