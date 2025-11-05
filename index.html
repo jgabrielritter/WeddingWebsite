@@ -1,213 +1,1766 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Matt & Leah Wedding</title>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<title>Angelika &amp; Gabe - WedSites</title>
+<meta content="The wedding website of Angelika &amp; Gabe" name="description">
+<meta content="noindex, noimageindex, nofollow" name="robots">
+<meta content="nopin" name="pinterest">
+<meta content="https://cdn.wedsites.com/accounts/3264/header/835/Screen_Shot_2021-01-08_at_7.47.20_pm.png" property="og:image">
+<link rel="stylesheet" href="./Angelika & Gabe_WebsiteFiles/site-3f6b4168e77645ebd06be2d3cb3304b3efa056c74d1b82666a585a37552ae34a.css" media="all" data-turbolinks-track="reload">
+
 <style>
-  /* Base reset */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  /* Collection CSS - Melbourne - Noah */
+  @import url('https://fonts.googleapis.com/css?family=Lato:300,400');
 
-  body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: #333;
-    line-height: 1.6;
-    background-color: #f9f6f2;
-  }
+@font-face {
+  font-family: 'melbourne-icons';
+  src:  url('https://wedsites.s3.amazonaws.com/collections/1/assets/melbourne-icons.eot?9uwhi');
+  src:  url('https://wedsites.s3.amazonaws.com/collections/1/assets/melbourne-icons.eot?9uwhi#iefix') format('embedded-opentype'),
+    url('https://wedsites.s3.amazonaws.com/collections/1/assets/melbourne-icons.woff2?9uwhi') format('woff2'),
+    url('https://wedsites.s3.amazonaws.com/collections/1/assets/melbourne-icons.ttf?9uwhi') format('truetype'),
+    url('https://wedsites.s3.amazonaws.com/collections/1/assets/melbourne-icons.woff?9uwhi') format('woff'),
+    url('https://wedsites.s3.amazonaws.com/collections/1/assets/melbourne-icons.svg?9uwhi#melbourne-icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 
-  header {
-    background-color: #f5e6d8;
-    padding: 20px 0;
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
+body {
+  color: #b18969;
+  background: #ffede3;
+}
 
-  header h1 {
-    font-family: 'Cursive', sans-serif;
-    font-size: 3rem;
-    color: #a9634b;
-  }
+/* Site */
 
-  nav {
-    margin-top: 10px;
-  }
+.site {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  line-height: 1.8;
+  color: #b18969;
+  background: #ffede3;
+}
 
-  nav a {
-    text-decoration: none;
-    color: #a9634b;
-    margin: 0 15px;
-    font-weight: bold;
-    transition: color 0.3s;
-  }
+/* Menu */
 
-  nav a:hover {
-    color: #7a4030;
-  }
+.menu {
+  font-family: 'Lato', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #b18969;
+  background: #ffede3;
+}
 
-  section {
-    padding: 80px 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
+.menu__names {
+  font-size: 25px;
+  font-weight: 300;
+}
 
-  section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #a9634b;
-  }
+.menu__items {
+  color: #b18969;
+  background: #ffede3;
+}
 
-  .intro, .story, .photos, .rsvp {
-    background-color: #fff;
-    border-radius: 15px;
-    padding: 40px;
-    margin-bottom: 40px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  }
+.menu__link {
+  font-size: 15px;
+  font-weight: 400;
+}
 
-  .photos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-  }
+.menu__link--rsvp {
+  border: 1px solid #b18969;
+}
 
-  .photo-placeholder {
-    background-color: #ddd;
-    height: 200px;
-    border-radius: 10px;
-  }
+/* Language Switcher */
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid #b18969;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background 0.3s;
+  text-transform: uppercase;
+}
 
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 400px;
-    margin: 0 auto;
-  }
+.lang-switcher:hover {
+  background: rgba(177, 137, 105, 0.1);
+}
 
-  input, select, textarea, button {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-  }
+.lang-flag {
+  font-size: 18px;
+}
 
-  button {
-    background-color: #a9634b;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+/* Header */
 
-  button:hover {
-    background-color: #7a4030;
-  }
+.header__main {
+  font-family: 'Lato', serif;
+  font-size: 100px;
+  font-weight: 300;
+  font-style: normal;
+  letter-spacing: 0.05em;
+  line-height: 1.25;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+}
 
-  footer {
-    text-align: center;
-    padding: 30px 20px;
-    background-color: #f5e6d8;
-    color: #a9634b;
-  }
+.header__delimiter {
+  font-size: 50%;
+  font-weight: 400;
+  position: relative;
+  margin: 25px auto;
+  max-width: 500px;
+}
 
-  /* Smooth scroll */
-  html {
-    scroll-behavior: smooth;
-  }
+.header__delimiter:before,
+.header__delimiter:after {
+  content: '';
+  display: block;
+  height: 3px;
+  width: 40%;
+  position: absolute;
+  top: 50%;
+  background: #b18969;
+}
 
-  /* Mobile responsiveness */
-  @media (max-width: 600px) {
-    header h1 {
-      font-size: 2rem;
-    }
+.header__delimiter:before {
+  left: 0;
+}
 
-    section {
-      padding: 50px 15px;
-    }
+.header__delimiter:after {
+  right: 0;
+}
 
-    nav a {
-      display: block;
-      margin: 10px 0;
-    }
-  }
+.header__and {
+  position: relative;
+  z-index: 1;
+}
+
+.header__date {
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.header__button {
+  border: 1px solid #b18969;
+}
+
+/* Sections */
+
+.section__heading,
+.section__title,
+.section__label {
+  font-weight: 300;
+  line-height: 1.25;
+  text-transform: uppercase;
+  margin: 20px 0;
+}
+
+.section__label {
+  line-height: 2;
+  margin: 0;
+}
+
+.section__heading {
+  font-size: 60px;
+}
+
+.section__heading:before {
+  display: block;
+  font-size: 100px;
+  font-family: 'melbourne-icons';
+  line-height: 1;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  color: #b18969;
+  content: '\e904';
+  margin-bottom: 50px;
+}
+
+.section__title {
+  font-size: 48px;
+}
+
+.section__label {
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: 0.15em;
+}
+
+.section__box {
+  border: 1px solid #b18969;
+}
+
+.section__button {
+  color: #b18969;
+  background: transparent;
+  border: 1px solid #b18969;
+}
+
+.section__button:hover {
+  color: #b18969;
+}
+
+.section__input {
+  border: 1px solid #b18969;
+}
+
+.section__divider {
+  height: 3px;
+  color: #b18969;
+  background: #b18969;
+}
+
+/* Quote */
+
+.section--element-quote .section__text:before,
+.section--element-quote .section__text:after {
+  background: #b18969;
+}
+
+/* Timeline */
+
+.section--element-timeline {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.section--element-timeline:before {
+  background: #b18969;
+}
+
+.section--element-timeline:after {
+  border-color: #b18969;
+  background: #ffede3;
+}
+
+/* Place */
+
+.section--element-place .section__content {
+  color: #b18969;
+}
+
+/* Variations */
+
+.v2,
+.v2 .menu,
+.v2 .menu__items,
+.v2 .site,
+.v2 .header__and,
+.v2 .section__button,
+.v2 .section__button:hover,
+.v2 .section--element-place .section__content {
+  color: #d6b098;
+}
+
+.v2 .menu__link--rsvp {
+  border-color: #d6b098;
+}
+
+.v2 .section--element-quote .section__text:before,
+.v2 .section--element-quote .section__text:after {
+  background-color: #d6b098;
+}
+
+.v2,
+.v2 .menu,
+.v2 .menu__items,
+.v2 .site,
+.v2 .section--element-timeline:after {
+  background: #003748;
+}
+
+.v2 .section__input {
+  border-color: #d6b098;
+}
+
+.v2 .lang-switcher {
+  border-color: #d6b098;
+  color: #d6b098;
+}
+
+.v2 .lang-switcher:hover {
+  background: rgba(214, 176, 152, 0.1);
+}
+
+/* Simplified */
+
+.is-simple .section__heading:before {
+  display: none;
+}
+
+/* Header overlay */
+
+.header--overlay,
+.header--overlay .header__and,
+.header--overlay .header__button {
+  color: #fff !important;
+}
+
+.header--overlay .header__delimiter:before,
+.header--overlay .header__delimiter:after {
+  background-color: #fff !important;
+}
+
+.header--overlay .header__button {
+  border-color: #fff !important;
+}
 </style>
-</head>
-<body>
 
-<header>
-  <h1>Matt & Leah</h1>
-  <nav>
-    <a href="#intro">Home</a>
-    <a href="#story">Our Story</a>
-    <a href="#photos">Photos</a>
-    <a href="#rsvp">RSVP</a>
-  </nav>
+<link href="https://fonts.googleapis.com/" rel="preconnect">
+<link crossorigin="anonymous" href="https://fonts.gstatic.com/" rel="preconnect">
+<style>
+  /* Fonts */
+  @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap'); @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap'); @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+  
+  /* Font family + weight + style */
+  .menu, .site { font-family: "Lato"; font-weight: 400; font-style: normal; }
+  .header__main, .menu__names { font-family: "Libre Baskerville"; font-weight: 400; font-style: normal; }
+  .and { font-family: "Libre Baskerville"; font-weight: 400; font-style: normal; }
+  .section__title { font-family: "Lato"; font-weight: 300; font-style: normal; }
+  .header__date { font-family: "Lato"; font-weight: 300; font-style: normal; }
+  .section__heading { font-family: "Libre Baskerville"; font-weight: 400; font-style: normal; }
+  .section__label { font-family: "Lato"; font-weight: 300; font-style: normal; }
+  
+  /* Font size + spacing + leading */
+  .site { font-size: 20px; letter-spacing: 0.05em; line-height: 1.8; }
+  .header__main { font-size: 60px; letter-spacing: 0.1em; line-height: 1.25; }
+  .header__delimiter { font-size: 24px; letter-spacing: 0.1em; line-height: 2.5; }
+  .header__date { font-size: 24px; letter-spacing: 0.2em; line-height: 1.25; }
+  .section__heading { font-size: 60px; letter-spacing: 0.1em; line-height: 2.5; }
+  .section__title { font-size: 30px; letter-spacing: 0em; line-height: 1.25; }
+  .section__label { font-size: 16px; letter-spacing: 0em; line-height: 2; }
+  
+  /* Font case */
+  .menu, .site { text-transform: none; }
+  .header__main, .menu__names { text-transform: uppercase; }
+  .and { text-transform: none; }
+  .header__date { text-transform: uppercase; }
+  .section__title { text-transform: uppercase; }
+  .section__heading { text-transform: uppercase; }
+  .section__label { text-transform: uppercase; }
+  
+  /* Color scheme */
+  body, .menu, .menu__items, .site, .section__button, .section__button:hover, .section--element-place .section__content { color: #b18969 !important; }
+   { background-color: #b18969 !important; }
+  .section__input { border-color: #b18969 !important; }
+  .menu__link--rsvp, .header__and, .header__button, .section__heading:before, .section__button, .section__divider { color: #b18969 !important; }
+  .header__delimiter:before, .header__delimiter:after, .section__divider, .section--element-quote .section__text:before, .section--element-quote .section__text:after, .section--element-timeline:before { background-color: #b18969 !important; }
+  .menu__link--rsvp, .header__button, .section__box, .section__button, .section--element-timeline:after { border-color: #b18969 !important; }
+   { color: #23381f !important; }
+  body, .menu, .menu__items, .site, .section--element-timeline:after { background-color: #23381f !important; }
+   { border-color: #23381f !important; }
+  
+  /* Header */
+  .header__content { padding-top: 2% !important; padding-bottom: 2% !important; }
+  
+  /* Wallpaper */
+  
+  
+  /* Custom CSS */
+  
+<p>asfasdsdasdfsdfsadf</p>
+
+</style>
+
+<script type="text/javascript" async="" src="./Angelika & Gabe_WebsiteFiles/analytics.js"></script><script type="text/javascript" async="" src="./Angelika & Gabe_WebsiteFiles/analytics.js"></script><script type="text/javascript" async="" src="./Angelika & Gabe_WebsiteFiles/analytics.js"></script><script type="text/javascript" async="" src="./Angelika & Gabe_WebsiteFiles/js(1)"></script><script type="text/javascript" async="" src="./Angelika & Gabe_WebsiteFiles/js(2)"></script><script src="./Angelika & Gabe_WebsiteFiles/site-43c1b9eb65f4dfd5f65b9ce91738345ff04153a1c7061982ab081a834f7e895c.js" data-turbolinks-track="reload"></script>
+
+
+<link rel="icon" type="image/x-icon" href="https://matt-leah.wedsites.com/favicon.ico">
+<meta name="csrf-param" content="authenticity_token">
+<meta name="csrf-token" content="rfQTwGe9z2AzyGOhfCRzW9uGveXPUAF-pUrH71gZG9SZeGYs_lHxd_56vlzLJPAG_gd89FqV0VUeHVpnBHUtaw">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="./Angelika & Gabe_WebsiteFiles/js(3)"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-N83EQDTZ85'); // 9
+  gtag('config', 'G-7KC194BVMG'); // 7
+  gtag('config', 'UA-81427967-9');
+  gtag('config', 'UA-81427967-7');
+</script>
+
+</head>
+<body class="page-home v2 is-simple has-menu  ">
+
+<nav class="menu js-menu">
+<div class="menu__content">
+<span class="menu__branding">
+<a class="menu__names js-smooth-scroll" data-id="0" href="https://matt-leah.wedsites.com/"><span class="menu__name">
+Angelika
+</span>
+<span class="menu__delimiter">
+<span class="menu__and and" data-font="Libre+Baskerville">&amp;
+</span>
+</span>
+<span class="menu__name">
+Gabe
+</span>
+</a></span>
+<a class="menu__icon js-menu-icon" href="https://matt-leah.wedsites.com/#"><i class="icon icon--menu"></i>
+</a><ul class="menu__items js-menu-items">
+<li class="menu__item">
+<a class="menu__link js-smooth-scroll" data-id="78054" href="https://matt-leah.wedsites.com/#venue" data-i18n="nav.venue">Venue</a>
+</li>
+
+<li class="menu__item">
+<a class="menu__link js-smooth-scroll" data-id="78057" href="https://matt-leah.wedsites.com/#wedding-party" data-i18n="nav.wedding_party">Wedding Party</a>
+</li>
+
+<!-- <li class="menu__item">
+<a class="menu__link js-smooth-scroll" data-id="176034" href="https://matt-leah.wedsites.com/#dress-code" data-i18n="nav.dress_code">Dress Code</a>
+</li> -->
+
+<li class="menu__item">
+<a class="menu__link js-smooth-scroll" data-id="78064" href="https://matt-leah.wedsites.com/#schedule" data-i18n="nav.schedule">Schedule</a>
+</li>
+
+<li class="menu__item">
+<a class="menu__link js-smooth-scroll" data-id="78069" href="https://matt-leah.wedsites.com/#accommodations" data-i18n="nav.accommodations">Accommodations</a>
+</li>
+
+<!-- <li class="menu__item">
+<a class="menu__link js-smooth-scroll" data-id="78076" href="https://matt-leah.wedsites.com/#registry" data-i18n="nav.registry">Registry</a>
+</li> -->
+
+<li class="menu__item menu__item--rsvp">
+<a class="menu__link menu__link--rsvp js-editor-page-link" data-url="/form" target="_blank" href="https://script.google.com/macros/s/AKfycbxWfJlkKTrbzErnT8dv8ec0B6-RYzpLP4wjN7TZ3WTRjbdxAGbd7Jhyfv7ehC3VqX2P/exec" data-i18n="nav.rsvp">RSVP</a>
+</li>
+
+<li class="menu__item">
+<a class="menu__link js-smooth-scroll" data-id="gallery" href="#gallery" data-i18n="nav.gallery">Photo Gallery</a>
+</li>
+
+<li class="menu__item">
+  <div class="lang-switcher" id="langSwitcher">
+    <span class="lang-flag" id="langFlag">🇺🇸</span>
+    <span id="langText">EN</span>
+  </div>
+</li>
+</ul>
+
+<div class="menu__overlay js-menu-overlay"></div>
+</div>
+</nav>
+
+<div class="hero" id="hero">
+<div class="editor__container">
+<img class="hero__image" src="./Angelika & Gabe_WebsiteFiles/TahoeView_Landscape.jpeg">
+</div>
+</div>
+
+<div class="site js-site" id="site">
+<header class="header editor__section editor__section--header js-section js-editor-section" data-id="0" data-url="/site/settings.js?tab=header" id="header" style="">
+<div class="header__content">
+<div class="editor__container">
+<h1 class="header__main">
+<span class="header__names">
+<span class="header__name">
+<span>
+<span class="header__firstname">
+Angelika
+</span>
+<span class="header__lastname">
+
+</span>
+</span>
+</span>
+<span class="header__delimiter">
+<span class="header__and and" data-font="Libre+Baskerville">&amp;
+</span>
+</span>
+<span class="header__name">
+<span>
+<span class="header__firstname">
+Gabe
+</span>
+<span class="header__lastname">
+
+</span>
+</span>
+</span>
+</span>
+</h1>
+<h3 class="header__date">
+<div class="s" data-i18n="header.date">
+September 25, 2026
+</div>
+</h3>
+<div class="header__rsvp">
+<a class="header__button button js-editor-page-link" data-url="/form" target="_blank" href="https://script.google.com/macros/s/AKfycbxWfJlkKTrbzErnT8dv8ec0B6-RYzpLP4wjN7TZ3WTRjbdxAGbd7Jhyfv7ehC3VqX2P/exec"><div class="s" data-i18n="header.rsvp_by">
+RSVP by August 1, 2026
+</div>
+</a></div>
+</div>
+</div>
 </header>
 
-<section id="intro" class="intro">
-  <h2>Welcome to Our Wedding</h2>
-  <p style="text-align:center; font-size:1.2rem;">
-    Join us as we celebrate our love and start our next chapter together. Scroll down to see our story, photos, and RSVP!
-  </p>
+<div class="content editor js-content js-editor">
+<div class="sections editor__sections js-editor-sections" data-url="/site.js">
+<div class="editor__section editor__section--placeholder js-editor-section" data-id="0" data-url="/site/new.js">
+<a class="editor__control editor__control--after js-editor-after-link" href="https://matt-leah.wedsites.com/#"><div class="icon icon--new"></div>
+</a></div>
+<section class="section editor__section js-editor-section section--element-quote section--width-full section--padding-top-25 section--padding-bottom-25 section--alignment-center section--column-odd has-all-widths" data-id="78053" data-url="/site/78053.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<div class="section__text">
+
+<div data-i18n="welcome.text">Welcome to our wedding website! Find out all the details for our big day below. If you have any questions please don't hesitate to ask us.&nbsp;<div class="section__break"></div>We can't wait to celebrate with all of you!</div>
+
+</div>
+
+</div>
+</div>
+</div>
 </section>
 
-<section id="story" class="story">
-  <h2>Our Story</h2>
-  <p>
-    Matt and Leah met on a sunny day in June. Their first date was a coffee shop conversation that lasted hours, 
-    and they’ve been inseparable ever since. From adventures around the world to quiet nights at home, 
-    they’ve built a life full of love and laughter.
-  </p>
+<section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="78054" data-url="/site/78054.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<a name="venue"></a>
+<h2 class="section__heading">
+<span class="s">
+<span class="w" data-i18n="venue.heading">Venue
+</span>
+</span>
+</h2>
+
+</div>
+</div>
+</div>
 </section>
 
-<section id="photos" class="photos">
-  <h2>Photos</h2>
-  <div class="photos-grid">
-    <div class="photo-placeholder"></div>
-    <div class="photo-placeholder"></div>
-    <div class="photo-placeholder"></div>
-    <div class="photo-placeholder"></div>
-    <div class="photo-placeholder"></div>
-    <div class="photo-placeholder"></div>
-  </div>
+<section class="section editor__section js-editor-section section--element-paragraph section--width-full section--padding-top-0 section--padding-bottom-25 section--alignment-center section--column-odd has-all-widths" data-id="78055" data-url="/site/78055.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<div class="section__text">
+
+<div data-i18n="venue.description">Welcome to The Grandview! In the historic city of Poughkeepsie, New York, the venue is perched on the water's edge of the Hudson River featuring breathtaking views of the Mid-Hudson Bridge.</div>
+
+</div>
+
+</div>
+</div>
+</div>
 </section>
 
-<section id="rsvp" class="rsvp">
-  <h2>RSVP</h2>
-  <form onsubmit="handleRSVP(event)">
-    <input type="text" placeholder="Your Name" required>
-    <input type="email" placeholder="Your Email" required>
-    <select required>
-      <option value="">Will you attend?</option>
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
-    </select>
-    <textarea placeholder="Message (optional)"></textarea>
-    <button type="submit">Submit RSVP</button>
-  </form>
-  <p id="rsvp-message" style="text-align:center; margin-top:15px; color: green; display:none;">
-    Thank you! Your RSVP has been recorded.
-  </p>
+<section class="section editor__section js-editor-section section--element-image section--width-thirds section--padding-top-50 section--padding-bottom-50 section--alignment-center section--column-odd has-all-widths" data-id="176037" data-url="/site/176037.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<img class="section__photo" src="./Angelika & Gabe_WebsiteFiles/The_Grandview_Centerpiece.jpg">
+<div class="section__text">
+
+
+
+</div>
+
+</div>
+</div>
+</div>
 </section>
 
-<footer>
-  <p>© 2025 Matt & Leah</p>
-</footer>
+<section class="section editor__section js-editor-section section--element-image section--width-thirds section--padding-top-50 section--padding-bottom-50 section--alignment-center section--column-odd has-all-widths" data-id="176043" data-url="/site/176043.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<img class="section__photo" src="./Angelika & Gabe_WebsiteFiles/Grandview_CocktailHour.jpg">
+<div class="section__text">
+
+
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-image section--width-thirds section--padding-top-50 section--padding-bottom-50 section--alignment-center section--column-odd has-all-widths" data-id="176036" data-url="/site/176036.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<img class="section__photo" src="./Angelika & Gabe_WebsiteFiles/Grandview_Outside.jpg">
+<div class="section__text">
+
+
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="78057" data-url="/site/78057.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<a name="wedding-party"></a>
+<h2 class="section__heading">
+<span class="s">
+<span class="w" data-i18n="wedding_party.heading">Wedding Party
+</span>
+</span>
+</h2>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-party section--width-quarter section--padding-top-0 section--padding-bottom-0 section--alignment-center section--column-odd has-all-widths" data-id="78058" data-url="/site/78058.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<img class="section__avatar section__avatar--150" src="./Angelika & Gabe_WebsiteFiles/DomPic.jpeg">
+<header class="section__header">
+<h4 class="section__label">
+<span class="w" data-i18n="wedding_party.maid_of_honor">Maid of Honor
+</span>
+</h4>
+<h3 class="section__title">
+<div class="s">
+Dominika Deline
+</div>
+</h3>
+</header>
+<div class="section__text">
+
+
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-party section--width-quarter section--padding-top-0 section--padding-bottom-0 section--alignment-center section--column-odd has-all-widths" data-id="78059" data-url="/site/78059.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<img class="section__avatar section__avatar--150" src="./Angelika & Gabe_WebsiteFiles/Hambino.jpeg">
+<header class="section__header">
+<h4 class="section__label">
+<span class="w" data-i18n="wedding_party.best_man">Best Man
+</span>
+</h4>
+<h3 class="section__title">
+<div class="s">
+Colin Hamm
+</div>
+</h3>
+</header>
+<div class="section__text">
+
+
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+
+<!-- DRESS CODE SECTION - COMMENTED OUT FOR NOW -->
+<!--
+<section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="176034" data-url="/site/176034.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<a name="dress-code"></a>
+<h2 class="section__heading">
+<span class="s">
+<span class="w" data-i18n="dress_code.heading">Dress Code
+</span>
+</span>
+</h2>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-paragraph section--width-full section--padding-top-0 section--padding-bottom-25 section--alignment-center section--column-odd has-all-widths" data-id="176035" data-url="/site/176035.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<div class="section__text">
+
+<div data-i18n="dress_code.description">Please help us create our vision by wearing <strong>formal attire</strong> (some examples below). Anything from cocktail dress to formal attire fits our vision.&nbsp;</div>
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-image section--width-full section--padding-top-50 section--padding-bottom-50 section--alignment-center section--column-odd has-all-widths" data-id="176059" data-url="/site/176059.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<img class="section__photo" src="./Angelika & Gabe_WebsiteFiles/DressCode_1.jpg">
+<div class="section__text">
+
+
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+-->
+
+<section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="78064" data-url="/site/78064.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<a name="schedule"></a>
+<h2 class="section__heading">
+<span class="s">
+<span class="w" data-i18n="schedule.heading">Schedule
+</span>
+</span>
+</h2>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-timeline section--width-half section--padding-top-50 section--padding-bottom-25 section--alignment-center section--column-odd" data-id="176030" data-url="/site/176030.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<img class="section__image" src="./Angelika & Gabe_WebsiteFiles/Church.jpg">
+<header class="section__header">
+<h3 class="section__title">
+<div class="s" data-i18n="schedule.church.title">
+Nuptial Mass Wedding Ceremony
+</div>
+</h3>
+<p class="section__subtitle" data-i18n="schedule.church.time">
+Time will be announced on official invites.
+</p>
+</header>
+<div class="section__text">
+
+<div data-i18n="schedule.church.description">The wedding is taking place at the Holy Trinity Roman Catholic Church in Poughkeepsie, NY.&nbsp;</div>
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-timeline section--width-half section--padding-top-50 section--padding-bottom-25 section--alignment-center section--column-odd" data-id="176031" data-url="/site/176031.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<img class="section__image" src="./Angelika & Gabe_WebsiteFiles/GrandviewCocktail2.jpg">
+<header class="section__header">
+<h3 class="section__title">
+<div class="s" data-i18n="schedule.cocktail.title">
+Cocktail Hour
+</div>
+</h3>
+<p class="section__subtitle">
+6:00pm
+</p>
+</header>
+<div class="section__text">
+
+<div data-i18n="schedule.cocktail.description">Have a drink (or two) before the party gets started. Enjoy delicious horderves and drinks from the open bar. &nbsp;</div>
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-timeline section--width-half section--padding-top-50 section--padding-bottom-50 section--alignment-center section--column-odd" data-id="176051" data-url="/site/176051.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<img class="section__image" src="./Angelika & Gabe_WebsiteFiles/Ballroom.jpg">
+<header class="section__header">
+<h3 class="section__title">
+<div class="s" data-i18n="schedule.reception.title">
+Reception 
+</div>
+</h3>
+<p class="section__subtitle">
+7:00pm
+</p>
+</header>
+<div class="section__text">
+
+<div data-i18n="schedule.reception.description">Let the party begin!</div>
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+</div>
+</div>
+</div>
+</section>
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="78069" data-url="/site/78069.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<a name="accommodations"></a>
+<h2 class="section__heading">
+<span class="s">
+<span class="w" data-i18n="accommodations.heading">Accommodations
+</span>
+</span>
+</h2>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-paragraph section--width-half section--padding-top-0 section--padding-bottom-0 section--alignment-center section--column-odd has-all-widths" data-id="176060" data-url="/site/176060.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<header class="section__header">
+<h3 class="section__title">
+<div class="s" data-i18n="accommodations.hotel_info">
+Hotel Information TBD
+</div>
+</h3>
+</header>
+<div class="section__text">
+
+<div data-i18n="accommodations.description">Hotel block TBD! We will reserve a block of rooms at a hotel in the near future. Please keep an eye out for updates! <div class="section__break"></div>
+<a href="https://www.marriott.com/reservation/availability.mi?propertyCode=YYCBL&amp;cc=W14" target="_blank" rel="noreferrer noopener nofollow">CLICK HERE TO BOOK</a>
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-image section--width-half section--padding-top-50 section--padding-bottom-50 section--alignment-center section--column-even has-all-widths" data-id="176261" data-url="/site/176261.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<img class="section__photo" src="./Angelika & Gabe_WebsiteFiles/CourtyardHotel.jpg">
+<div class="section__text">
+
+
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section js-editor-section section--element-countdown section--width-full section--padding-top-0 section--padding-bottom-0 section--alignment-center section--column-odd has-all-widths" data-id="176033" data-url="/site/176033.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<header class="section__header">
+<h3 class="section__title">
+<div class="s">
+<span data-i18n="countdown.only">Only</span> <span id="daysUntilWedding">0</span> <span data-i18n="countdown.days">days</span>
+</div>
+</h3>
+</header>
+<div class="section__text" data-i18n="countdown.until">
+until we tie the knot!
+</div>
+
+</div>
+</div>
+</div>
+</section>
 
 <script>
-  function handleRSVP(e) {
-    e.preventDefault();
-    document.getElementById('rsvp-message').style.display = 'block';
-    e.target.reset();
+  function updateWeddingCountdown() {
+    const weddingDate = new Date(2026, 8, 25);
+    const today = new Date();
+    const timeDiff = weddingDate - today;
+    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    const element = document.getElementById("daysUntilWedding");
+    if (element) {
+      element.textContent = daysLeft > 0 ? daysLeft : 0;
+    }
   }
+  updateWeddingCountdown();
+  setInterval(updateWeddingCountdown, 1000 * 60 * 60 * 24);
+</script>
+
+</div>
+</div>
+
+<section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="78069" data-url="/site/78069.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<a name="rsvp-form"></a>
+<h2 class="section__heading">
+<span class="s">
+<span class="w" data-i18n="rsvp.heading">RSVP
+</span>
+</span>
+</h2>
+
+</div>
+</div>
+</div>
+</section>
+
+<div class="rsvp-wrapper">
+  <a class="rsvp-btn"
+     href="https://script.google.com/macros/s/AKfycbxWfJlkKTrbzErnT8dv8ec0B6-RYzpLP4wjN7TZ3WTRjbdxAGbd7Jhyfv7ehC3VqX2P/exec"
+     target="_blank" data-i18n="rsvp.button">RSVP Now</a>
+</div>
+
+<style>
+.rsvp-wrapper {
+  text-align:center;
+  margin:50px 0;
+}
+.rsvp-btn {
+  display:inline-block;
+  background:#C0A68C;
+  color:#2B3A2F;
+  font-size:18px;
+  font-weight:600;
+  padding:15px 40px;
+  border-radius:12px;
+  text-decoration:none;
+  transition:background .3s, transform .2s;
+  box-shadow:0 4px 10px rgba(0,0,0,0.25);
+}
+.rsvp-btn:hover {
+  background:#A89174;
+  transform:scale(1.05);
+}
+</style>
+
+<!-- Photo Gallery Section -->
+<section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<a name="gallery"></a>
+<h2 class="section__heading">
+<span class="s">
+<span class="w" data-i18n="gallery.heading">Photo Gallery</span>
+</span>
+</h2>
+</div>
+</div>
+</div>
+</section>
+
+<section class="section editor__section section--width-full section--padding-top-25 section--padding-bottom-50 section--alignment-center">
+<div class="section__content">
+<div class="editor__container">
+<div class="gallery-grid">
+<div class="gallery-item" onclick="openLightbox(0)">
+<img src="PhotoGallery/EngagementParty1.JPG" alt="Wedding Photo 1">
+</div>
+<div class="gallery-item" onclick="openLightbox(1)">
+<img src="PhotoGallery/EngagementParty2.JPG" alt="Wedding Photo 2">
+</div>
+<div class="gallery-item" onclick="openLightbox(2)">
+<img src="PhotoGallery/EngagementParty3.JPG" alt="Wedding Photo 3">
+</div>
+<div class="gallery-item" onclick="openLightbox(3)">
+<img src="PhotoGallery/PortgualCastle.JPG" alt="Wedding Photo 4">
+</div>
+<div class="gallery-item" onclick="openLightbox(4)">
+<img src="PhotoGallery/PortgualBoat.JPG" alt="Wedding Photo 5">
+</div>
+<div class="gallery-item" onclick="openLightbox(5)">
+<img src="PhotoGallery/PortugalSunset.JPG" alt="Wedding Photo 6">
+</div>
+<div class="gallery-item" onclick="openLightbox(6)">
+<img src="PhotoGallery/SalamancaEngagement.jpeg" alt="Wedding Photo 7">
+</div>
+<div class="gallery-item" onclick="openLightbox(7)">
+<img src="PhotoGallery/TylerChildersConcert.jpeg" alt="Wedding Photo 8">
+</div>
+<div class="gallery-item" onclick="openLightbox(8)">
+<img src="PhotoGallery/AsburyPark.jpeg" alt="Wedding Photo 9">
+</div>
+<div class="gallery-item" onclick="openLightbox(9)">
+<img src="PhotoGallery/JemBar.jpeg" alt="Wedding Photo 10">
+</div>
+<div class="gallery-item" onclick="openLightbox(10)">
+<img src="PhotoGallery/FirstPolandWedding.jpeg" alt="Wedding Photo 11">
+</div>
+<div class="gallery-item" onclick="openLightbox(11)">
+<img src="PhotoGallery/SanDiegoSunset.JPG" alt="Wedding Photo 12">
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Lightbox Modal -->
+<div id="galleryLightbox" class="gallery-lightbox">
+<span class="gallery-lightbox-close">&times;</span>
+<span class="gallery-lightbox-prev">&#10094;</span>
+<span class="gallery-lightbox-next">&#10095;</span>
+<img class="gallery-lightbox-content" id="lightboxImage" src="" alt="Gallery Image">
+<div class="gallery-lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<style>
+/* Gallery Grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 0 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  aspect-ratio: 1;
+  border: 2px solid #b18969;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.v2 .gallery-item {
+  border-color: #d6b098;
+}
+
+.gallery-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(177, 137, 105, 0.3);
+}
+
+.v2 .gallery-item:hover {
+  box-shadow: 0 8px 20px rgba(214, 176, 152, 0.3);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1);
+}
+
+/* Lightbox */
+.gallery-lightbox {
+  display: none;
+  position: fixed;
+  z-index: 10001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery-lightbox-content {
+  display: block;
+  max-width: 90vw;
+  max-height: 85vh;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain;
+  border-radius: 8px;
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.gallery-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: #fff;
+  font-size: 50px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  z-index: 10002;
+  line-height: 1;
+}
+
+.gallery-lightbox-close:hover,
+.gallery-lightbox-close:focus {
+  opacity: 0.7;
+}
+
+.gallery-lightbox-prev,
+.gallery-lightbox-next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;
+  padding: 16px;
+  color: white;
+  font-weight: 300;
+  font-size: 40px;
+  transition: 0.3s ease;
+  user-select: none;
+  z-index: 10002;
+}
+
+.gallery-lightbox-prev {
+  left: 20px;
+}
+
+.gallery-lightbox-next {
+  right: 20px;
+}
+
+.gallery-lightbox-prev:hover,
+.gallery-lightbox-next:hover {
+  background-color: rgba(177, 137, 105, 0.3);
+  border-radius: 4px;
+}
+
+.gallery-lightbox-caption {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: #fff;
+  padding: 10px 20px;
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 0 10px;
+  }
+  
+.gallery-lightbox-content {
+  max-width: 90vw;
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  object-fit: contain;
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+  
+  .gallery-lightbox-prev,
+  .gallery-lightbox-next {
+    font-size: 30px;
+    padding: 10px;
+  }
+  
+  .gallery-lightbox-prev {
+    left: 10px;
+  }
+  
+  .gallery-lightbox-next {
+    right: 10px;
+  }
+  
+  .gallery-lightbox-close {
+    top: 10px;
+    right: 20px;
+    font-size: 40px;
+  }
+}
+</style>
+
+<script>
+// Gallery images array
+const galleryImages = [
+  'PhotoGallery/EngagementParty1.JPG',
+  'PhotoGallery/EngagementParty2.JPG',
+  'PhotoGallery/EngagementParty3.JPG',
+  'PhotoGallery/PortgualCastle.JPG',
+  'PhotoGallery/PortgualBoat.JPG',
+  'PhotoGallery/PortugalSunset.JPG',
+  'PhotoGallery/SalamancaEngagement.jpeg',
+  'PhotoGallery/TylerChildersConcert.jpeg',
+  'PhotoGallery/AsburyPark.jpeg',
+  'PhotoGallery/JemBar.jpeg',
+  'PhotoGallery/FirstPolandWedding.jpeg',
+  'PhotoGallery/SanDiegoSunset.JPG'
+];
+
+let currentImageIndex = 0;
+
+function openLightbox(index) {
+  currentImageIndex = index;
+  const lightbox = document.getElementById('galleryLightbox');
+  const lightboxImage = document.getElementById('lightboxImage');
+  
+  lightbox.style.display = 'flex';  // Changed from 'block' to 'flex'
+  lightboxImage.src = galleryImages[index];
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('galleryLightbox');
+  lightbox.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+function changeImage(direction) {
+  currentImageIndex += direction;
+  
+  if (currentImageIndex >= galleryImages.length) {
+    currentImageIndex = 0;
+  } else if (currentImageIndex < 0) {
+    currentImageIndex = galleryImages.length - 1;
+  }
+  
+  const lightboxImage = document.getElementById('lightboxImage');
+  lightboxImage.src = galleryImages[currentImageIndex];
+}
+
+// Initialize lightbox controls when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  const closeBtn = document.querySelector('.gallery-lightbox-close');
+  const prevBtn = document.querySelector('.gallery-lightbox-prev');
+  const nextBtn = document.querySelector('.gallery-lightbox-next');
+  const lightbox = document.getElementById('galleryLightbox');
+  
+  if (closeBtn) closeBtn.onclick = closeLightbox;
+  if (prevBtn) prevBtn.onclick = () => changeImage(-1);
+  if (nextBtn) nextBtn.onclick = () => changeImage(1);
+  
+  // Close on background click
+  if (lightbox) {
+    lightbox.onclick = function(event) {
+      if (event.target === lightbox) {
+        closeLightbox();
+      }
+    };
+  }
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', function(event) {
+    if (lightbox && lightbox.style.display === 'block') {
+      if (event.key === 'Escape') closeLightbox();
+      if (event.key === 'ArrowLeft') changeImage(-1);
+      if (event.key === 'ArrowRight') changeImage(1);
+    }
+  });
+});
+</script>
+
+
+<footer class="footer">
+<div class="footer__content" data-i18n="footer.copyright">
+  © JGR - Ritter Digital Works - 2025
+</div>
+</footer>
+
+</div>
+
+<script>
+// Translation dictionary
+const translations = {
+  en: {
+    'nav.venue': 'Venue',
+    'nav.wedding_party': 'Wedding Party',
+    'nav.dress_code': 'Dress Code',
+    'nav.schedule': 'Schedule',
+    'nav.accommodations': 'Accommodations',
+    'nav.registry': 'Registry',
+    'nav.rsvp': 'RSVP',
+    'header.date': 'September 25, 2026',
+    'header.rsvp_by': 'RSVP by August 1, 2026',
+    'welcome.text': 'Welcome to our wedding website! Find out all the details for our big day below. If you have any questions please don\'t hesitate to ask us.<div class="section__break"></div>We can\'t wait to celebrate with all of you!',
+    'venue.heading': 'Venue',
+    'venue.description': 'Welcome to The Grandview! In the historic city of Poughkeepsie, New York, the venue is perched on the water\'s edge of the Hudson River featuring breathtaking views of the Mid-Hudson Bridge.',
+    'wedding_party.heading': 'Wedding Party',
+    'wedding_party.maid_of_honor': 'Maid of Honor',
+    'wedding_party.best_man': 'Best Man',
+    'dress_code.heading': 'Dress Code',
+    'dress_code.description': 'Please help us create our vision by wearing <strong>formal attire</strong> (some examples below). Anything from cocktail dress to formal attire fits our vision.&nbsp;',
+    'schedule.heading': 'Schedule',
+    'schedule.church.title': 'Nuptial Mass Wedding Ceremony',
+    'schedule.church.time': 'Time will be announced on official invites.',
+    'schedule.church.description': 'The wedding is taking place at the Holy Trinity Roman Catholic Church in Poughkeepsie, NY.&nbsp;',
+    'schedule.cocktail.title': 'Cocktail Hour',
+    'schedule.cocktail.description': 'Have a drink (or two) before the party gets started. Enjoy delicious horderves and drinks from the open bar.&nbsp;',
+    'schedule.reception.title': 'Reception',
+    'schedule.reception.description': 'Let the party begin!',
+    'accommodations.heading': 'Accommodations',
+    'accommodations.hotel_info': 'Hotel Information TBD',
+    'accommodations.description': 'Hotel block TBD! We will reserve a block of rooms at a hotel in the near future. Please keep an eye out for updates!<div class="section__break"></div><a href="https://www.marriott.com/reservation/availability.mi?propertyCode=YYCBL&cc=W14" target="_blank" rel="noreferrer noopener nofollow">CLICK HERE TO BOOK</a>',
+    'countdown.only': 'Only',
+    'countdown.days': 'days',
+    'countdown.until': 'until we tie the knot!',
+    'rsvp.heading': 'RSVP',
+    'rsvp.button': 'RSVP Now',
+    'nav.gallery': 'Photo Gallery',
+    'gallery.heading': 'Photo Gallery',
+    'footer.copyright': '© JGR - Ritter Digital Works - 2025'
+  },
+  pl: {
+    'nav.venue': 'Sala',
+    'nav.wedding_party': 'Świadkowie',
+    'nav.dress_code': 'Dress Code',
+    'nav.schedule': 'Nasz Dzień',
+    'nav.accommodations': 'Noclegi',
+    'nav.registry': 'Lista Prezentów',
+    'nav.rsvp': 'Potwierdzenie',
+    'header.date': '25 września 2026',
+    'header.rsvp_by': 'Potwierdzenie obecności do 1 Sierpnia 2026',
+    'welcome.text': 'Witamy na naszej stronie ślubnej! Poniżej znajdziecie wszystkie szczegóły dotyczące naszego wesela. Jeśli macie jakiekolwiek pytania, prosimy o kontakt.<div class="section__break"></div>Z radością zapraszamy na nasz ślub, aby wspólnie uczcić tę uroczystośc!',
+    'venue.heading': 'Sala Weselna',
+    'venue.description': 'Witamy w The Grandview! Miejsce znajduje się nad brzegiem rzeki Hudson z uroczymi widokami na Mid-Hudson Bridge w historycznym mieście Poughkeepsie, Nowy Jork.',
+    'wedding_party.heading': 'Świadkowie',
+    'wedding_party.maid_of_honor': 'Świadkowa',
+    'wedding_party.best_man': 'Świadek',
+    'dress_code.heading': 'Dress Code',
+    'dress_code.description': 'Pomóżcie nam stworzyć naszą wizję, ubierając się w <strong>strój formalny</strong> (kilka przykładów poniżej). Wszystko od sukienki koktajlowej po strój formalny pasuje do naszej wizji.&nbsp;',
+    'schedule.heading': 'Nasz Dzień',
+    'schedule.church.title': 'Sakrament Małżeństwa',
+    'schedule.church.time': 'Godzina zostanie ogłoszona w oficjalnych zaproszeniach.',
+    'schedule.church.description': 'Ślub odbędzie się w kościele Trójcy Świętej w Poughkeepsie, NY.&nbsp;',
+    'schedule.cocktail.title': 'Godzina Koktajlowa',
+    'schedule.cocktail.description': 'Wypijmy drinka (lub dwa) przed rozpoczęciem przyjęcia. Delektujmy się pysznymi przekąskami i napojami.&nbsp;',
+    'schedule.reception.title': 'Przyjęcie',
+    'schedule.reception.description': 'Bawmy się!',
+    'accommodations.heading': 'Noclegi',
+    'accommodations.hotel_info': 'Informacje o hotelu - wkrótce',
+    'accommodations.description': 'Blok hotelowy wkrótce! Zarezerwujemy blok pokoi w hotelu w najbliższej przyszłości. Prosimy o śledzenie aktualizacji!<div class="section__break"></div><a href="https://www.marriott.com/reservation/availability.mi?propertyCode=YYCBL&cc=W14" target="_blank" rel="noreferrer noopener nofollow">KLIKNIJ TUTAJ, ABY ZAREZERWOWAĆ</a>',
+    'countdown.only': 'Tylko',
+    'countdown.days': 'dni',
+    'countdown.until': 'do naszego ślubu!',
+    'rsvp.heading': 'Potwierdzenie Obecności',
+    'rsvp.button': 'Potwierdź Obecność',
+    'nav.gallery': 'Galeria Zdjęć',
+    'gallery.heading': 'Galeria Zdjęć',
+    'footer.copyright': '© JGR - Ritter Digital Works - 2025'
+  }
+};
+
+// Language switcher functionality
+let currentLang = localStorage.getItem('wedding-lang') || 'en';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('wedding-lang', lang);
+  
+  const flag = document.getElementById('langFlag');
+  const text = document.getElementById('langText');
+  
+  if (lang === 'pl') {
+    flag.textContent = '🇵🇱';
+    text.textContent = 'PL';
+  } else {
+    flag.textContent = '🇺🇸';
+    text.textContent = 'EN';
+  }
+  
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    if (translations[lang][key]) {
+      element.innerHTML = translations[lang][key];
+    }
+  });
+  
+  document.documentElement.lang = lang;
+}
+
+setLanguage(currentLang);
+
+document.getElementById('langSwitcher').addEventListener('click', () => {
+  const newLang = currentLang === 'en' ? 'pl' : 'en';
+  setLanguage(newLang);
+});
+</script>
+
+<!-- Password requirement for RSVP -->
+
+<div id="passwordModal" class="password-modal">
+  <div class="password-modal-content">
+    <span class="password-modal-close">&times;</span>
+    <h2 class="password-modal-title">RSVP Access</h2>
+    <p class="password-modal-text">Please enter the password to access the RSVP form</p>
+    <input type="password" id="passwordInput" class="password-input" placeholder="Enter password">
+    <p id="passwordError" class="password-error"></p>
+    <button id="passwordSubmit" class="password-submit">Submit</button>
+  </div>
+</div>
+
+<style>
+/* Password Modal Styles */
+.password-modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.password-modal-content {
+  background: #ffede3;
+  margin: 10% auto;
+  padding: 40px;
+  border: 2px solid #b18969;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.3s ease;
+  position: relative;
+}
+
+/* Dark mode variation */
+.v2 .password-modal-content {
+  background: #003748;
+  border-color: #d6b098;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.password-modal-close {
+  color: #b18969;
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 35px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: color 0.3s;
+  line-height: 1;
+}
+
+.v2 .password-modal-close {
+  color: #d6b098;
+}
+
+.password-modal-close:hover,
+.password-modal-close:focus {
+  opacity: 0.7;
+}
+
+.password-modal-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 36px;
+  color: #b18969;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 15px 0;
+  font-weight: 400;
+}
+
+.v2 .password-modal-title {
+  color: #d6b098;
+}
+
+.password-modal-text {
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  color: #b18969;
+  margin: 0 0 25px 0;
+  letter-spacing: 0.05em;
+}
+
+.v2 .password-modal-text {
+  color: #d6b098;
+}
+
+.password-input {
+  width: 100%;
+  padding: 15px 20px;
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  border: 2px solid #b18969;
+  border-radius: 8px;
+  background: #fff;
+  color: #b18969;
+  letter-spacing: 0.05em;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.v2 .password-input {
+  background: #001a24;
+  border-color: #d6b098;
+  color: #d6b098;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #b18969;
+  box-shadow: 0 0 0 3px rgba(177, 137, 105, 0.2);
+}
+
+.v2 .password-input:focus {
+  border-color: #d6b098;
+  box-shadow: 0 0 0 3px rgba(214, 176, 152, 0.2);
+}
+
+.password-input::placeholder {
+  color: rgba(177, 137, 105, 0.5);
+}
+
+.v2 .password-input::placeholder {
+  color: rgba(214, 176, 152, 0.5);
+}
+
+.password-error {
+  color: #d9534f;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  margin: 5px 0 15px 0;
+  min-height: 20px;
+  letter-spacing: 0.05em;
+}
+
+.password-submit {
+  background: transparent;
+  color: #b18969;
+  border: 2px solid #b18969;
+  padding: 15px 50px;
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+.v2 .password-submit {
+  color: #d6b098;
+  border-color: #d6b098;
+}
+
+.password-submit:hover {
+  background: #b18969;
+  color: #ffede3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(177, 137, 105, 0.3);
+}
+
+.v2 .password-submit:hover {
+  background: #d6b098;
+  color: #003748;
+}
+
+.password-submit:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .password-modal-content {
+    margin: 20% auto;
+    padding: 30px 20px;
+    width: 85%;
+  }
+  
+  .password-modal-title {
+    font-size: 28px;
+  }
+  
+  .password-modal-text {
+    font-size: 16px;
+  }
+  
+  .password-input,
+  .password-submit {
+    font-size: 16px;
+  }
+}
+</style>
+
+<script>
+// Password protection for RSVP links
+const RSVP_URL = 'https://script.google.com/macros/s/AKfycbxWfJlkKTrbzErnT8dv8ec0B6-RYzpLP4wjN7TZ3WTRjbdxAGbd7Jhyfv7ehC3VqX2P/exec';
+const CORRECT_PASSWORD = 'rubi';
+
+// Get modal elements
+let modal, passwordInput, passwordError, submitBtn, closeBtn;
+
+function initPasswordModal() {
+  modal = document.getElementById('passwordModal');
+  passwordInput = document.getElementById('passwordInput');
+  passwordError = document.getElementById('passwordError');
+  submitBtn = document.getElementById('passwordSubmit');
+  closeBtn = document.querySelector('.password-modal-close');
+  
+  // Close modal when clicking X
+  closeBtn.onclick = function() {
+    closeModal();
+  };
+  
+  // Close modal when clicking outside
+  window.onclick = function(event) {
+    if (event.target === modal) {
+      closeModal();
+    }
+  };
+  
+  // Submit on Enter key
+  passwordInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      checkPassword();
+    }
+  });
+  
+  // Submit button click
+  submitBtn.onclick = checkPassword;
+}
+
+function openModal() {
+  modal.style.display = 'block';
+  passwordInput.value = '';
+  passwordError.textContent = '';
+  // Focus input after a short delay to ensure modal is visible
+  setTimeout(() => passwordInput.focus(), 100);
+}
+
+function closeModal() {
+  modal.style.display = 'none';
+  passwordInput.value = '';
+  passwordError.textContent = '';
+}
+
+function checkPassword() {
+  const enteredPassword = passwordInput.value.trim();
+  
+  if (enteredPassword === '') {
+    passwordError.textContent = 'Please enter a password';
+    return;
+  }
+  
+  if (enteredPassword.toLowerCase() === CORRECT_PASSWORD) {
+    // Password correct - open RSVP form and close modal
+    passwordError.textContent = '';
+    closeModal();
+    window.open(RSVP_URL, '_blank');
+  } else {
+    // Password incorrect
+    passwordError.textContent = 'Incorrect password. Please try again.';
+    passwordInput.value = '';
+    passwordInput.focus();
+  }
+}
+
+function handleRSVPClick(event) {
+  event.preventDefault();
+  openModal();
+  return false;
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initPasswordModal();
+  
+  // Apply password protection to all RSVP links
+  const rsvpLinks = document.querySelectorAll('a[href*="AKfycbxWfJlkKTrbzErnT8dv8ec0B6"]');
+  
+  rsvpLinks.forEach(link => {
+    link.addEventListener('click', handleRSVPClick);
+  });
+});
 </script>
 
 </body>
