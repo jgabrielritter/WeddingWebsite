@@ -1101,29 +1101,29 @@ until we tie the knot!
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(10px);
+  align-items: center;
+  justify-content: center;
 }
 
 .gallery-lightbox-content {
-  margin: auto;
   display: block;
-  max-width: 90%;
+  max-width: 90vw;
   max-height: 85vh;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain;
   border-radius: 8px;
   animation: zoomIn 0.3s ease;
 }
 
 @keyframes zoomIn {
   from {
-    transform: translate(-50%, -50%) scale(0.5);
     opacity: 0;
+    transform: scale(0.8);
   }
   to {
-    transform: translate(-50%, -50%) scale(1);
     opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -1198,9 +1198,30 @@ until we tie the knot!
     padding: 0 10px;
   }
   
-  .gallery-lightbox-content {
-    max-width: 95%;
+.gallery-lightbox-content {
+  max-width: 90vw;
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  object-fit: contain;
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
   }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
   
   .gallery-lightbox-prev,
   .gallery-lightbox-next {
@@ -1248,7 +1269,7 @@ function openLightbox(index) {
   const lightbox = document.getElementById('galleryLightbox');
   const lightboxImage = document.getElementById('lightboxImage');
   
-  lightbox.style.display = 'block';
+  lightbox.style.display = 'flex';  // Changed from 'block' to 'flex'
   lightboxImage.src = galleryImages[index];
   document.body.style.overflow = 'hidden';
 }
