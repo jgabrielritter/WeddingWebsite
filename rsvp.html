@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RSVP | Angelika & Gabe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sand: #ffede3;
+      --latte: #b18969;
+      --forest: #2b3a2f;
+      --accent: #c0a68c;
+      --cream: #fff8f2;
+      --error: #8b1c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Lato', sans-serif;
+      background: var(--sand);
+      color: var(--latte);
+      line-height: 1.7;
+      letter-spacing: 0.05em;
+    }
+
+    .site {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero {
+      position: relative;
+      background: url('./Angelika & Gabe_WebsiteFiles/TahoeView_Landscape.jpeg') center / cover no-repeat;
+      color: var(--sand);
+      text-align: center;
+      padding: 80px 15px;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(43, 58, 47, 0.6);
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hero__title {
+      font-size: clamp(42px, 9vw, 72px);
+      font-weight: 300;
+      text-transform: uppercase;
+      margin: 0 0 10px;
+    }
+
+    .hero__subtitle {
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      margin-bottom: 25px;
+      color: var(--cream);
+    }
+
+    .hero__back-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: 1px solid var(--sand);
+      border-radius: 999px;
+      color: var(--sand);
+      text-decoration: none;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .hero__back-link:hover,
+    .hero__back-link:focus-visible {
+      background: var(--sand);
+      color: var(--forest);
+    }
+
+    main {
+      flex: 1;
+      padding: 60px 20px 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: var(--cream);
+      border-radius: 24px;
+      padding: 40px;
+      width: min(640px, 100%);
+      box-shadow: 0 20px 60px rgba(43, 58, 47, 0.15);
+    }
+
+    .card h2 {
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: var(--forest);
+      text-align: center;
+    }
+
+    .card p {
+      margin-top: 0;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 10px;
+      color: var(--forest);
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(177, 137, 105, 0.4);
+      background: white;
+      font-size: 16px;
+      letter-spacing: 0.05em;
+      color: var(--forest);
+      font-family: inherit;
+      margin-bottom: 24px;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    select {
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, var(--latte) 50%),
+        linear-gradient(135deg, var(--latte) 50%, transparent 50%);
+      background-position: calc(100% - 18px) calc(1em + 2px), calc(100% - 12px) calc(1em + 2px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px 24px;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: var(--forest);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover,
+    button:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(192, 166, 140, 0.4);
+    }
+
+    .helper-text {
+      font-size: 14px;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--forest);
+    }
+
+    .confirmation {
+      margin-top: 30px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--forest);
+      min-height: 24px;
+    }
+
+    .error {
+      color: var(--error);
+      font-size: 14px;
+      margin-top: -16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 28px 22px;
+      }
+
+      .hero {
+        padding: 60px 12px;
+      }
+
+      .hero__subtitle {
+        letter-spacing: 0.2em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header class="hero">
+      <div class="hero__content">
+        <h1 class="hero__title">Angelika &amp; Gabe</h1>
+        <p class="hero__subtitle">Kindly RSVP</p>
+        <a class="hero__back-link" href="index.html">&#8592; Back to main site</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="card" aria-labelledby="rsvpTitle">
+        <h2 id="rsvpTitle">RSVP Form</h2>
+        <p>Please share the names of all guests attending and let us know if you will be able to celebrate with us.</p>
+
+        <form id="rsvpForm" novalidate>
+          <label for="guestNames">Name of the Guests Attending</label>
+          <textarea id="guestNames" name="guestNames" placeholder="Angelika &amp; Gabe" required></textarea>
+          <div class="error" id="nameError" role="alert" aria-live="polite"></div>
+
+          <label for="attendance">Will you be attending?</label>
+          <select id="attendance" name="attendance" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes, we'll be there</option>
+            <option value="No">No, we are unable to attend</option>
+          </select>
+          <div class="error" id="attendanceError" role="alert" aria-live="polite"></div>
+
+          <button type="submit">Submit</button>
+        </form>
+        <p class="helper-text">Submitting will open your email app with the details filled in for a quick send.</p>
+        <div class="confirmation" id="confirmation" aria-live="polite"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const rsvpForm = document.getElementById('rsvpForm');
+    const confirmationEl = document.getElementById('confirmation');
+    const nameField = document.getElementById('guestNames');
+    const attendanceField = document.getElementById('attendance');
+    const nameError = document.getElementById('nameError');
+    const attendanceError = document.getElementById('attendanceError');
+
+    rsvpForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      nameError.textContent = '';
+      attendanceError.textContent = '';
+      confirmationEl.textContent = '';
+
+      const names = nameField.value.trim();
+      const attending = attendanceField.value;
+
+      if (!names) {
+        nameError.textContent = 'Please enter the guest name(s).';
+      }
+
+      if (!attending) {
+        attendanceError.textContent = 'Please let us know if you are attending.';
+      }
+
+      if (!names || !attending) {
+        return;
+      }
+
+      const subject = 'Wedding RSVP';
+      const body = `Guest Names: ${names}\nAttending: ${attending}`;
+      const mailtoLink = `mailto:angandgabe@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      confirmationEl.textContent = 'Almost done! Your email app should open with your RSVP details.';
+      window.location.href = mailtoLink;
+    });
+  </script>
+</body>
+</html>
