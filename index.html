@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta content="width=device-width, initial-scale=1" name="viewport">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" name="viewport">
 <title>Angelika &amp; Gabe </title>
 <meta content="The wedding website of Angelika &amp; Gabe" name="description">
 <meta content="noindex, noimageindex, nofollow" name="robots">
@@ -164,6 +164,22 @@ body {
 
 .section__heading {
   font-size: clamp(32px, 8vw, 60px);
+}
+
+.section__heading--single-line {
+  font-size: clamp(32px, 6vw, 60px);
+}
+
+@media (max-width: 600px) {
+  .section__heading--single-line {
+    font-size: clamp(20px, 8vw, 32px);
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+  }
+
+  .section__heading--single-line .w {
+    white-space: nowrap;
+  }
 }
 
 .section__heading:before {
@@ -617,7 +633,7 @@ RSVP by August 1, 2026
 <div class="editor__container">
 <div class="js-section-render">
 <a name="wedding-party"></a>
-<h2 class="section__heading">
+<h2 class="section__heading section__heading--single-line">
 <span class="s">
 <span class="w" data-i18n="wedding_party.heading">Wedding Party
 </span>
@@ -740,7 +756,7 @@ Colin Hamm
 <div class="editor__container">
 <div class="js-section-render">
 <a name="schedule"></a>
-<h2 class="section__heading">
+<h2 class="section__heading section__heading--single-line">
 <span class="s">
 <span class="w" data-i18n="schedule.heading">Schedule
 </span>
@@ -847,7 +863,7 @@ Reception
 <div class="editor__container">
 <div class="js-section-render">
 <a name="accommodations"></a>
-<h2 class="section__heading">
+<h2 class="section__heading section__heading--single-line">
 <span class="s">
 <span class="w" data-i18n="accommodations.heading">Accommodations
 </span>
@@ -989,7 +1005,7 @@ until we tie the knot!
 <div class="editor__container">
 <div class="js-section-render">
 <a name="gallery"></a>
-<h2 class="section__heading">
+<h2 class="section__heading section__heading--single-line">
 <span class="s">
 <span class="w" data-i18n="gallery.heading">Photo Gallery</span>
 </span>
