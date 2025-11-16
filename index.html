@@ -313,6 +313,13 @@ body {
   font-size: clamp(24px, 6vw, 48px);
 }
 
+.dress-code__description {
+  font-size: clamp(24px, 6vw, 48px);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: none;
+}
+
 .section__label {
   font-weight: 400;
   font-size: clamp(14px, 4vw, 24px);
@@ -566,15 +573,15 @@ Gabe
 </li>
 
 <li class="menu__item">
-<a class="menu__link js-smooth-scroll" data-id="dress-code" href="#dress-code" data-i18n="nav.dress_code">Dress Code</a>
-</li>
-
-<li class="menu__item">
 <a class="menu__link js-smooth-scroll" data-id="78064" href="https://matt-leah.wedsites.com/#schedule" data-i18n="nav.schedule">Schedule</a>
 </li>
 
 <li class="menu__item">
 <a class="menu__link js-smooth-scroll" data-id="78069" href="https://matt-leah.wedsites.com/#accommodations" data-i18n="nav.accommodations">Accommodations</a>
+</li>
+
+<li class="menu__item">
+<a class="menu__link js-smooth-scroll" data-id="dress-code" href="#dress-code" data-i18n="nav.dress_code">Dress Code</a>
 </li>
 
 <!-- <li class="menu__item">
@@ -831,7 +838,7 @@ Colin Hamm
 <div class="section__content">
 <div class="editor__container">
 <div class="js-section-render">
-<a name="dress-code"></a>
+<a name="dress-code" id="dress-code"></a>
 <h2 class="section__heading">
 <span class="s">
 <span class="w" data-i18n="dress_code.heading">Dress Code
@@ -1044,13 +1051,13 @@ Hotel Information TBD
 <div class="section__content">
 <div class="editor__container">
 <div class="js-section-render">
-<a name="dress-code"></a>
+  <a name="dress-code" id="dress-code"></a>
 <h2 class="section__heading section__heading--single-line">
 <span class="s">
 <span class="w" data-i18n="dress_code.heading">Dress Code</span>
 </span>
 </h2>
-<div class="section__text" data-i18n="dress_code.description">
+<div class="section__text dress-code__description" data-i18n="dress_code.description">
 Black tie optional, formal attire required.
 </div>
 
@@ -1148,7 +1155,7 @@ until we tie the knot!
 <div class="section__content">
 <div class="editor__container">
 <div class="js-section-render">
-<a name="gallery"></a>
+<a name="gallery" id="gallery"></a>
 <h2 class="section__heading section__heading--single-line">
 <span class="s">
 <span class="w" data-i18n="gallery.heading">Photo Gallery</span>
@@ -1665,6 +1672,44 @@ document.addEventListener('DOMContentLoaded', function() {
       if (event.key === 'Escape' && menuItems.classList.contains('is-open')) {
         closeMenu(true);
       }
+    });
+  })();
+</script>
+
+<script>
+  (function() {
+    const links = document.querySelectorAll('.js-smooth-scroll[href^="#"]');
+
+    if (!links.length) {
+      return;
+    }
+
+    const getMenuOffset = () => {
+      const menu = document.querySelector('.menu');
+      return menu ? menu.offsetHeight : 0;
+    };
+
+    const scrollToTarget = (target) => {
+      const top = target.getBoundingClientRect().top + window.pageYOffset - getMenuOffset();
+      window.scrollTo({ top, behavior: 'smooth' });
+    };
+
+    links.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const hash = link.getAttribute('href');
+
+        if (!hash || hash.length < 2) {
+          return;
+        }
+
+        const target = document.querySelector(hash);
+
+        if (target) {
+          event.preventDefault();
+          scrollToTarget(target);
+          history.replaceState(null, '', hash);
+        }
+      });
     });
   })();
 </script>
