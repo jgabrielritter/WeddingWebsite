@@ -267,8 +267,9 @@
     const attendanceField = document.getElementById('attendance');
     const nameError = document.getElementById('nameError');
     const attendanceError = document.getElementById('attendanceError');
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwP4sIAh3W0iGtEjwPwHsRxfNgUskme-ApIdPjdSYb-q9ovB45xw2Qf9-mG7Y8evPCiDg/exec';
 
-    rsvpForm.addEventListener('submit', function (event) {
+    rsvpForm.addEventListener('submit', async function (event) {
       event.preventDefault();
       nameError.textContent = '';
       attendanceError.textContent = '';
@@ -289,12 +290,31 @@
         return;
       }
 
-      const subject = 'Wedding RSVP';
-      const body = `Guest Names: ${names}\nAttending: ${attending}`;
-      const mailtoLink = `mailto:angandgabe@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      confirmationEl.textContent = 'Submitting your RSVP...';
 
-      confirmationEl.textContent = 'Almost done! Your email app should open with your RSVP details.';
-      window.location.href = mailtoLink;
+      const payload = new URLSearchParams();
+      payload.append('GuestName', names);
+      payload.append('Attending', attending);
+      payload.append('Timestamp', new Date().toISOString());
+
+      try {
+        const response = await fetch(scriptUrl, {
+          method: 'POST',
+          mode: 'cors',
+          body: payload,
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        confirmationEl.textContent = 'Thank you! Your RSVP has been recorded.';
+        rsvpForm.reset();
+      } catch (error) {
+        console.error('RSVP submission failed', error);
+        confirmationEl.textContent =
+          'Something went wrong while submitting your RSVP. Please try again in a moment.';
+      }
     });
   </script>
 </body>
