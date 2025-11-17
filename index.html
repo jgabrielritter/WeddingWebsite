@@ -306,10 +306,13 @@ body {
 .section__heading--single-line {
   font-size: inherit;
   white-space: normal;
+  max-width: 100%;
 }
 
 .section__heading--single-line .w {
   white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 @media (max-width: 600px) {
@@ -364,7 +367,9 @@ body {
   }
 
   .section__heading--single-line .w {
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .js-editor-section[data-id="78057"] .section__heading,
