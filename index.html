@@ -65,6 +65,12 @@ body {
   gap: 24px;
 }
 
+.menu__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .menu__names {
   font-size: 25px;
   font-weight: 300;
@@ -130,6 +136,10 @@ body {
     position: relative;
   }
 
+  .menu__actions {
+    margin-left: auto;
+  }
+
   .menu__icon {
     display: flex;
   }
@@ -165,7 +175,7 @@ body {
   }
 
   .lang-switcher {
-    width: 100%;
+    width: auto;
     justify-content: flex-start;
   }
 
@@ -562,9 +572,7 @@ Angelika
 Gabe
 </span>
 </a></span>
-<button class="menu__icon js-menu-icon" type="button" aria-expanded="false" aria-controls="primaryNavigation" aria-label="Toggle navigation">
-  <i class="icon icon--menu"></i>
-</button><ul class="menu__items js-menu-items" id="primaryNavigation">
+<ul class="menu__items js-menu-items" id="primaryNavigation">
 <li class="menu__item">
 <a class="menu__link js-smooth-scroll" data-id="78054" href="https://matt-leah.wedsites.com/#venue" data-i18n="nav.venue">Venue</a>
 </li>
@@ -597,13 +605,17 @@ Gabe
 <a class="menu__link js-smooth-scroll" data-id="gallery" href="#gallery" data-i18n="nav.gallery">Photo Gallery</a>
 </li>
 
-<li class="menu__item">
+ </ul>
+
+<div class="menu__actions">
   <div class="lang-switcher" id="langSwitcher">
     <span class="lang-flag" id="langFlag">🇺🇸</span>
     <span id="langText">EN</span>
   </div>
-</li>
-</ul>
+  <button class="menu__icon js-menu-icon" type="button" aria-expanded="false" aria-controls="primaryNavigation" aria-label="Toggle navigation">
+    <i class="icon icon--menu"></i>
+  </button>
+</div>
 
 <div class="menu__overlay js-menu-overlay"></div>
 </div>
@@ -1812,7 +1824,7 @@ function setLanguage(lang) {
   
   const flag = document.getElementById('langFlag');
   const text = document.getElementById('langText');
-  
+
   if (lang === 'pl') {
     flag.textContent = '🇵🇱';
     text.textContent = 'PL';
