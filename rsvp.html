@@ -292,20 +292,30 @@
 
       confirmationEl.textContent = 'Submitting your RSVP...';
 
-      const payload = new URLSearchParams();
-      payload.append('GuestName', names);
-      payload.append('Attending', attending);
-      payload.append('Timestamp', new Date().toISOString());
+      const payload = {
+        guestName: names,
+        attending,
+        notes: ''
+      };
 
       try {
         const response = await fetch(scriptUrl, {
           method: 'POST',
           mode: 'cors',
-          body: payload,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
           throw new Error('Network response was not ok');
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.error || 'Submission failed');
         }
 
         confirmationEl.textContent = 'Thank you! Your RSVP has been recorded.';
