@@ -312,9 +312,19 @@
           throw new Error('Network response was not ok');
         }
 
-        const result = await response.json();
+        const contentType = response.headers.get('content-type') || '';
+        let result = { success: true };
 
-        if (!result.success) {
+        if (contentType.includes('application/json')) {
+          result = await response.json();
+        } else {
+          const text = (await response.text()).trim();
+          if (text && !/success/i.test(text)) {
+            result = { success: false, error: text };
+          }
+        }
+
+        if (result.success === false) {
           throw new Error(result.error || 'Submission failed');
         }
 
