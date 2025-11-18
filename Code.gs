@@ -1,19 +1,28 @@
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1uvi-6MCuvjbYEuqUn-FMyoxjZks_nUWKLdnYTZ9evuQ/edit';
-const SHEET_NAME = 'Form Responses 1';
+var SHEET_URL = 'https://docs.google.com/spreadsheets/d/1uvi-6MCuvjbYEuqUn-FMyoxjZks_nUWKLdnYTZ9evuQ/edit';
+var SHEET_NAME = 'Form Responses 1';
+var CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST,GET,OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type'
+};
+
+function doGet() {
+  return buildTextResponse_(true, 'RSVP endpoint is running.');
+}
 
 function doPost(e) {
   if (!e || !e.postData || !e.postData.contents) {
     return buildTextResponse_(false, 'Invalid request body.');
   }
 
-  let payload;
+  var payload;
   try {
     payload = JSON.parse(e.postData.contents);
   } catch (error) {
     return buildTextResponse_(false, 'Body must be valid JSON.');
   }
 
-  const normalized = normalizePayload_(payload);
+  var normalized = normalizePayload_(payload);
   if (!normalized.success) {
     return buildTextResponse_(false, normalized.errorMessage);
   }
@@ -31,8 +40,11 @@ function normalizePayload_(payload) {
     return { success: false, errorMessage: 'Body must be a JSON object.' };
   }
 
-  const guestName = (payload.GuestName || payload.guestName || '').toString().trim();
-  const attendingRaw = payload.Attending ?? payload.attending;
+  var guestName = (payload.GuestName || payload.guestName || '').toString().trim();
+  var attendingRaw = payload.Attending;
+  if (attendingRaw === undefined || attendingRaw === null) {
+    attendingRaw = payload.attending;
+  }
 
   if (!guestName) {
     return { success: false, errorMessage: 'GuestName is required.' };
@@ -42,7 +54,7 @@ function normalizePayload_(payload) {
     return { success: false, errorMessage: 'Attending status is required.' };
   }
 
-  const attending = parseAttending_(attendingRaw);
+  var attending = parseAttending_(attendingRaw);
   if (attending === null) {
     return { success: false, errorMessage: 'Attending must be yes/no, true/false, or 1/0.' };
   }
@@ -51,8 +63,8 @@ function normalizePayload_(payload) {
     success: true,
     data: {
       timestamp: new Date(),
-      guestName,
-      attending
+      guestName: guestName,
+      attending: attending
     }
   };
 }
@@ -69,7 +81,7 @@ function parseAttending_(value) {
   }
 
   if (typeof value === 'string') {
-    const normalized = value.trim().toLowerCase();
+    var normalized = value.trim().toLowerCase();
     if (['yes', 'y', 'true', '1'].indexOf(normalized) >= 0) {
       return 'Yes';
     }
@@ -82,7 +94,7 @@ function parseAttending_(value) {
 }
 
 function appendRsvpRow_(rsvp) {
-  const sheet = SpreadsheetApp.openByUrl(SHEET_URL).getSheetByName(SHEET_NAME);
+  var sheet = SpreadsheetApp.openByUrl(SHEET_URL).getSheetByName(SHEET_NAME);
   if (!sheet) {
     throw new Error('Sheet "' + SHEET_NAME + '" was not found.');
   }
@@ -95,7 +107,15 @@ function appendRsvpRow_(rsvp) {
 }
 
 function buildTextResponse_(success, message) {
-  return ContentService
+  var output = ContentService
     .createTextOutput(JSON.stringify({ success, message }))
     .setMimeType(ContentService.MimeType.JSON);
+
+  for (var header in CORS_HEADERS) {
+    if (CORS_HEADERS.hasOwnProperty(header)) {
+      output.setHeader(header, CORS_HEADERS[header]);
+    }
+  }
+
+  return output;
 }
