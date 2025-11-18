@@ -51,6 +51,17 @@
       background: rgba(43, 58, 47, 0.6);
     }
 
+    .hero__nav {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
     .hero__content {
       position: relative;
       z-index: 1;
@@ -92,6 +103,37 @@
     .hero__back-link:hover,
     .hero__back-link:focus-visible {
       background: var(--sand);
+      color: var(--forest);
+    }
+
+    .language-switcher {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--sand);
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .language-switcher label {
+      margin: 0;
+      color: inherit;
+    }
+
+    .language-switcher select {
+      width: auto;
+      border-radius: 999px;
+      border: 1px solid var(--sand);
+      padding: 8px 12px;
+      background: rgba(255, 237, 227, 0.2);
+      color: var(--sand);
+      font-size: 14px;
+      text-transform: none;
+      letter-spacing: 0.05em;
+    }
+
+    .language-switcher select option {
       color: var(--forest);
     }
 
@@ -221,53 +263,147 @@
       .hero__subtitle {
         letter-spacing: 0.2em;
       }
+
+      .hero__nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
   <div class="site">
     <header class="hero">
+      <nav class="hero__nav" aria-label="Page menu">
+        <a class="hero__back-link" id="backLink" href="index.html">&#8592; Back to main site</a>
+        <div class="language-switcher">
+          <label id="languageLabel" for="languageSelect">Language</label>
+          <select id="languageSelect" aria-label="Language selector">
+            <option value="en" selected>English</option>
+            <option value="pl">Polski</option>
+          </select>
+        </div>
+      </nav>
       <div class="hero__content">
         <h1 class="hero__title">Angelika &amp; Gabe</h1>
-        <p class="hero__subtitle">Kindly RSVP</p>
-        <a class="hero__back-link" href="index.html">&#8592; Back to main site</a>
+        <p class="hero__subtitle" id="heroSubtitle">Kindly RSVP</p>
       </div>
     </header>
 
     <main>
       <section class="card" aria-labelledby="rsvpTitle">
         <h2 id="rsvpTitle">RSVP Form</h2>
-        <p>Please share the names of all guests attending and let us know if you will be able to celebrate with us.</p>
+        <p id="cardIntro">Please share the names of all guests attending and let us know if you will be able to celebrate with us.</p>
 
         <form id="rsvpForm" novalidate>
-          <label for="guestNames">Name of the Guests Attending</label>
+          <label id="guestNamesLabel" for="guestNames">Name of the Guests Attending</label>
           <textarea id="guestNames" name="guestNames" placeholder="Angelika &amp; Gabe" required></textarea>
           <div class="error" id="nameError" role="alert" aria-live="polite"></div>
 
-          <label for="attendance">Will you be attending?</label>
+          <label id="attendanceLabel" for="attendance">Will you be attending?</label>
           <select id="attendance" name="attendance" required>
-            <option value="">Select</option>
-            <option value="Yes">Yes, we'll be there</option>
-            <option value="No">No, we are unable to attend</option>
+            <option value="" id="attendancePrompt">Select</option>
+            <option value="Yes" id="attendanceYes">Yes, we'll be there</option>
+            <option value="No" id="attendanceNo">No, we are unable to attend</option>
           </select>
           <div class="error" id="attendanceError" role="alert" aria-live="polite"></div>
 
-          <button type="submit">Submit</button>
+          <button type="submit" id="submitButton">Submit</button>
         </form>
-        <p class="helper-text">Submitting will open your email app with the details filled in for a quick send.</p>
+        <p class="helper-text" id="helperText">Submitting will open your email app with the details filled in for a quick send.</p>
         <div class="confirmation" id="confirmation" aria-live="polite"></div>
       </section>
     </main>
   </div>
 
   <script>
+    const translations = {
+      en: {
+        languageLabel: 'Language',
+        backLink: '\u2190 Back to main site',
+        heroSubtitle: 'Kindly RSVP',
+        cardTitle: 'RSVP Form',
+        cardIntro: 'Please share the names of all guests attending and let us know if you will be able to celebrate with us.',
+        guestNamesLabel: 'Name of the Guests Attending',
+        guestNamesPlaceholder: 'Angelika & Gabe',
+        attendanceLabel: 'Will you be attending?',
+        selectPrompt: 'Select',
+        selectYes: "Yes, we'll be there",
+        selectNo: 'No, we are unable to attend',
+        submitButton: 'Submit',
+        helperText: 'Submitting will open your email app with the details filled in for a quick send.',
+        validationNames: 'Please enter the guest name(s).',
+        validationAttendance: 'Please let us know if you are attending.',
+        submitting: 'Submitting your RSVP...',
+        success: 'Thank you! Your RSVP has been recorded.',
+        failure: 'Something went wrong while submitting your RSVP. Please try again in a moment.'
+      },
+      pl: {
+        languageLabel: 'J\u0119zyk',
+        backLink: '\u2190 Powr\u00f3t do strony g\u0142\u00f3wnej',
+        heroSubtitle: 'Uprzejmie prosimy o potwierdzenie',
+        cardTitle: 'Formularz RSVP',
+        cardIntro: 'Podaj prosz\u0119 imiona wszystkich go\u015bci i daj nam zna\u0107, czy b\u0119dziecie \u015bwi\u0119towa\u0107 razem z nami.',
+        guestNamesLabel: 'Imiona uczestnicz\u0105cych go\u015bci',
+        guestNamesPlaceholder: 'Angelika i Gabe',
+        attendanceLabel: 'Czy b\u0119dziesz uczestniczy\u0107?',
+        selectPrompt: 'Wybierz',
+        selectYes: 'Tak, b\u0119dziemy obecni',
+        selectNo: 'Nie, nie mo\u017cemy przyby\u0107',
+        submitButton: 'Wy\u015blij',
+        helperText: 'Po wys\u0142aniu otworzy si\u0119 Twoja aplikacja e-mail z uzupe\u0142nionymi danymi.',
+        validationNames: 'Wpisz prosz\u0119 imiona go\u015bci.',
+        validationAttendance: 'Daj nam zna\u0107, czy b\u0119dziesz uczestniczy\u0107.',
+        submitting: 'Wysy\u0142amy Twoje RSVP...',
+        success: 'Dzi\u0119kujemy! Twoja odpowied\u017a zosta\u0142a zapisana.',
+        failure: 'Co\u015b posz\u0142o nie tak podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie za chwil\u0119.'
+      }
+    };
+
     const rsvpForm = document.getElementById('rsvpForm');
     const confirmationEl = document.getElementById('confirmation');
     const nameField = document.getElementById('guestNames');
     const attendanceField = document.getElementById('attendance');
     const nameError = document.getElementById('nameError');
     const attendanceError = document.getElementById('attendanceError');
+    const backLink = document.getElementById('backLink');
+    const heroSubtitle = document.getElementById('heroSubtitle');
+    const cardTitle = document.getElementById('rsvpTitle');
+    const cardIntro = document.getElementById('cardIntro');
+    const guestNamesLabel = document.getElementById('guestNamesLabel');
+    const attendanceLabel = document.getElementById('attendanceLabel');
+    const helperText = document.getElementById('helperText');
+    const submitButton = document.getElementById('submitButton');
+    const attendancePrompt = document.getElementById('attendancePrompt');
+    const attendanceYes = document.getElementById('attendanceYes');
+    const attendanceNo = document.getElementById('attendanceNo');
+    const languageLabel = document.getElementById('languageLabel');
+    const languageSelect = document.getElementById('languageSelect');
     const scriptUrl = 'https://script.google.com/macros/s/AKfycbwP4sIAh3W0iGtEjwPwHsRxfNgUskme-ApIdPjdSYb-q9ovB45xw2Qf9-mG7Y8evPCiDg/exec';
+
+    function applyTranslations(lang = 'en') {
+      const strings = translations[lang] || translations.en;
+      document.documentElement.lang = lang;
+      languageLabel.textContent = strings.languageLabel;
+      backLink.textContent = strings.backLink;
+      heroSubtitle.textContent = strings.heroSubtitle;
+      cardTitle.textContent = strings.cardTitle;
+      cardIntro.textContent = strings.cardIntro;
+      guestNamesLabel.textContent = strings.guestNamesLabel;
+      nameField.placeholder = strings.guestNamesPlaceholder;
+      attendanceLabel.textContent = strings.attendanceLabel;
+      attendancePrompt.textContent = strings.selectPrompt;
+      attendanceYes.textContent = strings.selectYes;
+      attendanceNo.textContent = strings.selectNo;
+      submitButton.textContent = strings.submitButton;
+      helperText.textContent = strings.helperText;
+    }
+
+    applyTranslations(languageSelect.value);
+
+    languageSelect.addEventListener('change', (event) => {
+      applyTranslations(event.target.value);
+    });
 
     rsvpForm.addEventListener('submit', async function (event) {
       event.preventDefault();
@@ -277,20 +413,21 @@
 
       const names = nameField.value.trim();
       const attending = attendanceField.value;
+      const strings = translations[languageSelect.value] || translations.en;
 
       if (!names) {
-        nameError.textContent = 'Please enter the guest name(s).';
+        nameError.textContent = strings.validationNames;
       }
 
       if (!attending) {
-        attendanceError.textContent = 'Please let us know if you are attending.';
+        attendanceError.textContent = strings.validationAttendance;
       }
 
       if (!names || !attending) {
         return;
       }
 
-      confirmationEl.textContent = 'Submitting your RSVP...';
+      confirmationEl.textContent = strings.submitting;
 
       const payload = {
         guestName: names,
@@ -328,12 +465,11 @@
           throw new Error(result.error || 'Submission failed');
         }
 
-        confirmationEl.textContent = 'Thank you! Your RSVP has been recorded.';
+        confirmationEl.textContent = strings.success;
         rsvpForm.reset();
       } catch (error) {
         console.error('RSVP submission failed', error);
-        confirmationEl.textContent =
-          'Something went wrong while submitting your RSVP. Please try again in a moment.';
+        confirmationEl.textContent = strings.failure;
       }
     });
   </script>
