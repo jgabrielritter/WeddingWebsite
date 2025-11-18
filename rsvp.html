@@ -310,7 +310,6 @@
 
           <button type="submit" id="submitButton">Submit</button>
         </form>
-        <p class="helper-text" id="helperText">Submitting will open your email app with the details filled in for a quick send.</p>
         <div class="confirmation" id="confirmation" aria-live="polite"></div>
       </section>
     </main>
@@ -331,7 +330,6 @@
         selectYes: "Yes, we'll be there",
         selectNo: 'No, we are unable to attend',
         submitButton: 'Submit',
-        helperText: 'Submitting will open your email app with the details filled in for a quick send.',
         validationNames: 'Please enter the guest name(s).',
         validationAttendance: 'Please let us know if you are attending.',
         submitting: 'Submitting your RSVP...',
@@ -351,7 +349,6 @@
         selectYes: 'Tak, b\u0119dziemy obecni',
         selectNo: 'Nie, nie mo\u017cemy przyby\u0107',
         submitButton: 'Wy\u015blij',
-        helperText: 'Po wys\u0142aniu otworzy si\u0119 Twoja aplikacja e-mail z uzupe\u0142nionymi danymi.',
         validationNames: 'Wpisz prosz\u0119 imiona go\u015bci.',
         validationAttendance: 'Daj nam zna\u0107, czy b\u0119dziesz uczestniczy\u0107.',
         submitting: 'Wysy\u0142amy Twoje RSVP...',
@@ -372,7 +369,6 @@
     const cardIntro = document.getElementById('cardIntro');
     const guestNamesLabel = document.getElementById('guestNamesLabel');
     const attendanceLabel = document.getElementById('attendanceLabel');
-    const helperText = document.getElementById('helperText');
     const submitButton = document.getElementById('submitButton');
     const attendancePrompt = document.getElementById('attendancePrompt');
     const attendanceYes = document.getElementById('attendanceYes');
@@ -396,7 +392,6 @@
       attendanceYes.textContent = strings.selectYes;
       attendanceNo.textContent = strings.selectNo;
       submitButton.textContent = strings.submitButton;
-      helperText.textContent = strings.helperText;
     }
 
     applyTranslations(languageSelect.value);
