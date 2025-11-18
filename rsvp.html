@@ -433,9 +433,8 @@
       try {
         const response = await fetch(scriptUrl, {
           method: 'POST',
-          mode: 'cors',
           headers: {
-            'Content-Type': 'application/json',
+            Accept: 'application/json',
           },
           body: JSON.stringify(payload),
         });

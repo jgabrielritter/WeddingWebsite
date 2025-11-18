@@ -1,5 +1,14 @@
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1uvi-6MCuvjbYEuqUn-FMyoxjZks_nUWKLdnYTZ9evuQ/edit';
 const SHEET_NAME = 'Form Responses 1';
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST,GET,OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+function doGet() {
+  return buildTextResponse_(true, 'RSVP endpoint is running.');
+}
 
 function doPost(e) {
   if (!e || !e.postData || !e.postData.contents) {
@@ -95,7 +104,15 @@ function appendRsvpRow_(rsvp) {
 }
 
 function buildTextResponse_(success, message) {
-  return ContentService
+  const output = ContentService
     .createTextOutput(JSON.stringify({ success, message }))
     .setMimeType(ContentService.MimeType.JSON);
+
+  for (var header in CORS_HEADERS) {
+    if (CORS_HEADERS.hasOwnProperty(header)) {
+      output.setHeader(header, CORS_HEADERS[header]);
+    }
+  }
+
+  return output;
 }
