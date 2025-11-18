@@ -1,9 +1,9 @@
-var SHEET_URL = 'https://docs.google.com/spreadsheets/d/1uvi-6MCuvjbYEuqUn-FMyoxjZks_nUWKLdnYTZ9evuQ/edit';
-var SHEET_NAME = 'Form Responses 1';
-var CORS_HEADERS = {
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1uvi-6MCuvjbYEuqUn-FMyoxjZks_nUWKLdnYTZ9evuQ/edit';
+const SHEET_NAME = 'Form Responses 1';
+const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST,GET,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type'
+  'Access-Control-Allow-Headers': 'Content-Type',
 };
 
 function doGet() {
@@ -40,7 +40,7 @@ function normalizePayload_(payload) {
     return { success: false, errorMessage: 'Body must be a JSON object.' };
   }
 
-  var guestName = (payload.GuestName || payload.guestName || '').toString().trim();
+  const guestName = (payload.GuestName || payload.guestName || '').toString().trim();
   var attendingRaw = payload.Attending;
   if (attendingRaw === undefined || attendingRaw === null) {
     attendingRaw = payload.attending;
@@ -107,7 +107,7 @@ function appendRsvpRow_(rsvp) {
 }
 
 function buildTextResponse_(success, message) {
-  var output = ContentService
+  const output = ContentService
     .createTextOutput(JSON.stringify({ success, message }))
     .setMimeType(ContentService.MimeType.JSON);
 
