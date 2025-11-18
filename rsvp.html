@@ -424,16 +424,20 @@
 
       confirmationEl.textContent = strings.submitting;
 
-      const payload = new URLSearchParams();
-      payload.append('GuestName', names);
-      payload.append('Attending', attending);
-      payload.append('Timestamp', new Date().toISOString());
+      const payload = {
+        GuestName: names,
+        Attending: attending,
+        Timestamp: new Date().toISOString(),
+      };
 
       try {
         const response = await fetch(scriptUrl, {
           method: 'POST',
           mode: 'cors',
-          body: payload,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
