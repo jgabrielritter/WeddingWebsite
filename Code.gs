@@ -41,7 +41,10 @@ function normalizePayload_(payload) {
   }
 
   const guestName = (payload.GuestName || payload.guestName || '').toString().trim();
-  const attendingRaw = payload.Attending ?? payload.attending;
+  var attendingRaw = payload.Attending;
+  if (attendingRaw === undefined || attendingRaw === null) {
+    attendingRaw = payload.attending;
+  }
 
   if (!guestName) {
     return { success: false, errorMessage: 'GuestName is required.' };
