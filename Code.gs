@@ -15,14 +15,14 @@ function doPost(e) {
     return buildTextResponse_(false, 'Invalid request body.');
   }
 
-  let payload;
+  var payload;
   try {
     payload = JSON.parse(e.postData.contents);
   } catch (error) {
     return buildTextResponse_(false, 'Body must be valid JSON.');
   }
 
-  const normalized = normalizePayload_(payload);
+  var normalized = normalizePayload_(payload);
   if (!normalized.success) {
     return buildTextResponse_(false, normalized.errorMessage);
   }
@@ -54,7 +54,7 @@ function normalizePayload_(payload) {
     return { success: false, errorMessage: 'Attending status is required.' };
   }
 
-  const attending = parseAttending_(attendingRaw);
+  var attending = parseAttending_(attendingRaw);
   if (attending === null) {
     return { success: false, errorMessage: 'Attending must be yes/no, true/false, or 1/0.' };
   }
@@ -63,8 +63,8 @@ function normalizePayload_(payload) {
     success: true,
     data: {
       timestamp: new Date(),
-      guestName,
-      attending
+      guestName: guestName,
+      attending: attending
     }
   };
 }
@@ -81,7 +81,7 @@ function parseAttending_(value) {
   }
 
   if (typeof value === 'string') {
-    const normalized = value.trim().toLowerCase();
+    var normalized = value.trim().toLowerCase();
     if (['yes', 'y', 'true', '1'].indexOf(normalized) >= 0) {
       return 'Yes';
     }
@@ -94,7 +94,7 @@ function parseAttending_(value) {
 }
 
 function appendRsvpRow_(rsvp) {
-  const sheet = SpreadsheetApp.openByUrl(SHEET_URL).getSheetByName(SHEET_NAME);
+  var sheet = SpreadsheetApp.openByUrl(SHEET_URL).getSheetByName(SHEET_NAME);
   if (!sheet) {
     throw new Error('Sheet "' + SHEET_NAME + '" was not found.');
   }
