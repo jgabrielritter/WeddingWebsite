@@ -10,6 +10,10 @@ function doGet() {
   return buildTextResponse_(true, 'RSVP endpoint is running.');
 }
 
+function doOptions() {
+  return buildTextResponse_(true, 'Preflight check');
+}
+
 function doPost(e) {
   if (!e || !e.postData || !e.postData.contents) {
     return buildTextResponse_(false, 'Invalid request body.');
