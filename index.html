@@ -618,7 +618,7 @@ Gabe
 </li> -->
 
 <li class="menu__item menu__item--rsvp">
-<a class="menu__link menu__link--rsvp js-editor-page-link" data-url="/form" target="_blank" href="rsvp.html" data-i18n="nav.rsvp">RSVP</a>
+<a class="menu__link menu__link--rsvp js-editor-page-link js-rsvp-link" data-url="/form" target="_blank" href="rsvp.html" data-i18n="nav.rsvp">RSVP</a>
 </li>
 
 <li class="menu__item">
@@ -685,7 +685,7 @@ September 25, 2026
 </div>
 </h3>
 <div class="header__rsvp">
-<a class="header__button button js-editor-page-link" data-url="/form" target="_blank" href="rsvp.html"><div class="s" data-i18n="header.rsvp_by">
+<a class="header__button button js-editor-page-link js-rsvp-link" data-url="/form" target="_blank" href="rsvp.html"><div class="s" data-i18n="header.rsvp_by">
 RSVP by August 1, 2026
 </div>
 </a></div>
@@ -1156,7 +1156,7 @@ until we tie the knot!
 </section>
 
 <div class="rsvp-wrapper">
-  <a class="rsvp-btn"
+  <a class="rsvp-btn js-rsvp-link"
      href="rsvp.html"
      target="_blank" data-i18n="rsvp.button">RSVP Now</a>
 </div>
@@ -1188,7 +1188,103 @@ until we tie the knot!
   background:#A89174;
   transform:scale(1.05);
 }
+.rsvp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 4000;
+}
+.rsvp-modal-overlay.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+.rsvp-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.98);
+  background: #fff5ec;
+  color: #2B3A2F;
+  padding: 32px;
+  border-radius: 14px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  width: min(520px, 90vw);
+  max-width: 90vw;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+  z-index: 4001;
+}
+.rsvp-modal.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+.rsvp-modal__title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 24px;
+  color: #b18969;
+}
+.rsvp-modal__text {
+  margin: 0 0 8px;
+  line-height: 1.6;
+}
+.rsvp-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.rsvp-modal__button {
+  background: #C0A68C;
+  color: #2B3A2F;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 22px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.rsvp-modal__button:hover,
+.rsvp-modal__button:focus-visible {
+  background: #A89174;
+  transform: translateY(-1px);
+  outline: none;
+}
+.rsvp-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #2B3A2F;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 6px;
+}
+.rsvp-modal__close:focus-visible {
+  outline: 2px solid #b18969;
+  outline-offset: 3px;
+}
+.rsvp-modal-open {
+  overflow: hidden;
+}
 </style>
+
+<div class="rsvp-modal-overlay" id="rsvpModalOverlay" aria-hidden="true"></div>
+<div class="rsvp-modal" id="rsvpModal" role="dialog" aria-modal="true" aria-labelledby="rsvpModalTitle">
+  <button class="rsvp-modal__close" id="rsvpModalClose" aria-label="Close RSVP notice">×</button>
+  <h3 class="rsvp-modal__title" id="rsvpModalTitle">RSVPs Opening Soon</h3>
+  <p class="rsvp-modal__text">Please check back once official invitations are mailed to submit your RSVP.</p>
+  <p class="rsvp-modal__text">Prosimy o ponowne sprawdzenie strony po otrzymaniu oficjalnych zaproszeń, aby potwierdzić obecność.</p>
+  <div class="rsvp-modal__actions">
+    <button class="rsvp-modal__button" id="rsvpModalAcknowledge">OK</button>
+  </div>
+</div>
 
 <!-- Photo Gallery Section -->
 <section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="gallery">
@@ -1711,6 +1807,56 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && menuItems.classList.contains('is-open')) {
         closeMenu(true);
+      }
+    });
+  })();
+</script>
+
+<script>
+  (function() {
+    const modal = document.getElementById('rsvpModal');
+    const overlay = document.getElementById('rsvpModalOverlay');
+    const closeButton = document.getElementById('rsvpModalClose');
+    const acknowledgeButton = document.getElementById('rsvpModalAcknowledge');
+
+    if (!modal || !overlay || !closeButton || !acknowledgeButton) {
+      return;
+    }
+
+    const openModal = () => {
+      overlay.classList.add('is-visible');
+      modal.classList.add('is-visible');
+      document.body.classList.add('rsvp-modal-open');
+      closeButton.focus();
+    };
+
+    const closeModal = () => {
+      overlay.classList.remove('is-visible');
+      modal.classList.remove('is-visible');
+      document.body.classList.remove('rsvp-modal-open');
+    };
+
+    const rsvpSelector = '.js-rsvp-link, a[href*="rsvp" i]';
+
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest(rsvpSelector);
+
+      if (!link) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      openModal();
+    });
+
+    overlay.addEventListener('click', closeModal);
+    closeButton.addEventListener('click', closeModal);
+    acknowledgeButton.addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && overlay.classList.contains('is-visible')) {
+        closeModal();
       }
     });
   })();
