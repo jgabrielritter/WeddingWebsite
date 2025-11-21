@@ -1836,18 +1836,13 @@ document.addEventListener('DOMContentLoaded', function() {
       document.body.classList.remove('rsvp-modal-open');
     };
 
-    const rsvpSelector = '.js-rsvp-link, a[href*="rsvp" i]';
+    const rsvpLinks = document.querySelectorAll('a[href="rsvp.html"], .js-rsvp-link');
 
-    document.addEventListener('click', (event) => {
-      const link = event.target.closest(rsvpSelector);
-
-      if (!link) {
-        return;
-      }
-
-      event.preventDefault();
-      event.stopPropagation();
-      openModal();
+    rsvpLinks.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        openModal();
+      });
     });
 
     overlay.addEventListener('click', closeModal);
