@@ -517,6 +517,41 @@ RSVP by August 1, 2026
 </div>
 </section>
 
+<section class="section editor__section js-editor-section section--element-countdown section--width-full section--padding-top-0 section--padding-bottom-0 section--alignment-center section--column-odd has-all-widths" data-id="176033" data-url="/site/176033.js">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<header class="section__header">
+<h3 class="section__title">
+<div class="s">
+<span data-i18n="countdown.only">Only</span> <span id="daysUntilWedding">0</span> <span data-i18n="countdown.days">days</span>
+</div>
+</h3>
+</header>
+<div class="section__text" data-i18n="countdown.until">
+until we tie the knot!
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<script>
+  function updateWeddingCountdown() {
+    const weddingDate = new Date(2026, 8, 25);
+    const today = new Date();
+    const timeDiff = weddingDate - today;
+    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    const element = document.getElementById("daysUntilWedding");
+    if (element) {
+      element.textContent = daysLeft > 0 ? daysLeft : 0;
+    }
+  }
+  updateWeddingCountdown();
+  setInterval(updateWeddingCountdown, 1000 * 60 * 60 * 24);
+</script>
+
 <section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="78054" data-url="/site/78054.js">
 <div class="section__content">
 <div class="editor__container">
@@ -882,46 +917,6 @@ Hotel Information TBD
 </div>
 </div>
 </div>
-</section>
-
-<section class="section editor__section js-editor-section section--element-countdown section--width-full section--padding-top-0 section--padding-bottom-0 section--alignment-center section--column-odd has-all-widths" data-id="176033" data-url="/site/176033.js">
-<div class="section__content">
-<div class="editor__container">
-<div class="js-section-render">
-<header class="section__header">
-<h3 class="section__title">
-<div class="s">
-<span data-i18n="countdown.only">Only</span> <span id="daysUntilWedding">0</span> <span data-i18n="countdown.days">days</span>
-</div>
-</h3>
-</header>
-<div class="section__text" data-i18n="countdown.until">
-until we tie the knot!
-</div>
-
-</div>
-</div>
-</div>
-</section>
-
-<script>
-  function updateWeddingCountdown() {
-    const weddingDate = new Date(2026, 8, 25);
-    const today = new Date();
-    const timeDiff = weddingDate - today;
-    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-    const element = document.getElementById("daysUntilWedding");
-    if (element) {
-      element.textContent = daysLeft > 0 ? daysLeft : 0;
-    }
-  }
-  updateWeddingCountdown();
-  setInterval(updateWeddingCountdown, 1000 * 60 * 60 * 24);
-</script>
-
-</div>
-</div>
-
 <section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="78069" data-url="/site/78069.js">
 <div class="section__content">
 <div class="editor__container">
