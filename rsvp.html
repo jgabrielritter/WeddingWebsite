@@ -17,6 +17,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script
+    id="supabase-config"
+    data-url="https://YOUR_PROJECT_ID.supabase.co"
+    data-anon-key="YOUR_ANON_PUBLIC_KEY"
+  ></script>
   <style>
     :root {
       --sand: #ffede3;
@@ -386,10 +391,24 @@
     const languageLabel = document.getElementById('languageLabel');
     const languageSelect = document.getElementById('languageSelect');
     const { createClient } = supabase;
-    const supabaseUrl = 'https://YOUR_PROJECT_ID.supabase.co';
-    const supabaseKey = 'YOUR_ANON_PUBLIC_KEY';
-    const supabaseClient = createClient(supabaseUrl, supabaseKey);
-    const openDate = new Date('2026-06-01T00:00:00Z');
+    const supabaseConfigElement = document.getElementById('supabase-config');
+    const supabaseUrl = supabaseConfigElement?.dataset.url?.trim();
+    const supabaseKey = supabaseConfigElement?.dataset.anonKey?.trim();
+    const supabaseConfigured = Boolean(
+      supabaseUrl &&
+      supabaseKey &&
+      !supabaseUrl.includes('YOUR_PROJECT_ID') &&
+      !supabaseKey.includes('YOUR_ANON_PUBLIC_KEY')
+    );
+    const supabaseClient = supabaseConfigured ? createClient(supabaseUrl, supabaseKey) : null;
+    const openDate = new Date('2024-01-01T00:00:00Z');
+
+    function disableForm(message) {
+      Array.from(rsvpForm.elements).forEach((element) => {
+        element.disabled = true;
+      });
+      confirmationEl.textContent = message;
+    }
 
     function applyTranslations(lang = 'en') {
       const strings = translations[lang] || translations.en;
@@ -415,13 +434,15 @@
     });
 
     function setFormAvailability() {
+      if (!supabaseConfigured) {
+        disableForm('RSVPs are temporarily unavailable while we connect to our database. Please try again soon.');
+        return false;
+      }
+
       const now = new Date();
       if (now < openDate) {
         alert('RSVPs will open closer to the wedding date!');
-        confirmationEl.textContent = 'RSVPs will open soon.';
-        Array.from(rsvpForm.elements).forEach((element) => {
-          element.disabled = true;
-        });
+        disableForm('RSVPs will open soon.');
         return false;
       }
 
