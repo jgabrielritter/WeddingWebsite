@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --sand: #ffede3;
@@ -384,7 +385,11 @@
     const attendanceNo = document.getElementById('attendanceNo');
     const languageLabel = document.getElementById('languageLabel');
     const languageSelect = document.getElementById('languageSelect');
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzMZfJuWuUB45wanWYYECL4ehDyHkEIaGiw6kqrzX1vNv1fR72SbLENGZtwMiv7bPzfgw/exec';
+    const { createClient } = supabase;
+    const supabaseUrl = 'https://YOUR_PROJECT_ID.supabase.co';
+    const supabaseKey = 'YOUR_ANON_PUBLIC_KEY';
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
+    const openDate = new Date('2026-06-01T00:00:00Z');
 
     function applyTranslations(lang = 'en') {
       const strings = translations[lang] || translations.en;
@@ -409,8 +414,33 @@
       applyTranslations(event.target.value);
     });
 
+    function setFormAvailability() {
+      const now = new Date();
+      if (now < openDate) {
+        alert('RSVPs will open closer to the wedding date!');
+        confirmationEl.textContent = 'RSVPs will open soon.';
+        Array.from(rsvpForm.elements).forEach((element) => {
+          element.disabled = true;
+        });
+        return false;
+      }
+
+      Array.from(rsvpForm.elements).forEach((element) => {
+        element.disabled = false;
+      });
+      confirmationEl.textContent = '';
+      return true;
+    }
+
+    setFormAvailability();
+
     rsvpForm.addEventListener('submit', async function (event) {
       event.preventDefault();
+
+      if (!setFormAvailability()) {
+        return;
+      }
+
       nameError.textContent = '';
       attendanceError.textContent = '';
       confirmationEl.textContent = '';
@@ -433,40 +463,14 @@
 
       confirmationEl.textContent = strings.submitting;
 
-      const payload = {
-        GuestName: names,
-        Attending: attending,
-        Timestamp: new Date().toISOString(),
-      };
-
       try {
-        const response = await fetch(scriptUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
+        const timestamp = new Date().toISOString();
+        const { error } = await supabaseClient
+          .from('RSVP')
+          .insert([{ created_at: timestamp, Name: names, 'Yes/No': attending }]);
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const contentType = response.headers.get('content-type') || '';
-        let result = { success: true };
-
-        if (contentType.includes('application/json')) {
-          result = await response.json();
-        } else {
-          const text = (await response.text()).trim();
-          if (text && !/success/i.test(text)) {
-            result = { success: false, error: text };
-          }
-        }
-
-        if (result.success === false) {
-          throw new Error(result.error || 'Submission failed');
+        if (error) {
+          throw error;
         }
 
         confirmationEl.textContent = strings.success;
