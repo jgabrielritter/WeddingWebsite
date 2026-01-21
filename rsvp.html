@@ -16,11 +16,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script
-    id="supabase-config"
-    data-url="https://YOUR_PROJECT_ID.supabase.co"
-    data-anon-key="YOUR_ANON_PUBLIC_KEY"
+    id="rsvp-config"
+    data-endpoint="https://YOUR_SCRIPT_ID.exec"
   ></script>
   <style>
     :root {
@@ -349,7 +347,8 @@
         validationAttendance: 'Please let us know if you are attending.',
         submitting: 'Submitting your RSVP...',
         success: 'Thank you! Your RSVP has been recorded.',
-        failure: 'Something went wrong while submitting your RSVP. Please try again in a moment.'
+        failure: 'Something went wrong while submitting your RSVP. Please try again in a moment.',
+        unavailable: 'RSVPs are temporarily unavailable while we connect to our response form. Please try again soon.'
       },
       pl: {
         languageLabel: 'J\u0119zyk',
@@ -368,7 +367,8 @@
         validationAttendance: 'Daj nam zna\u0107, czy b\u0119dziesz uczestniczy\u0107.',
         submitting: 'Wysy\u0142amy Twoje RSVP...',
         success: 'Dzi\u0119kujemy! Twoja odpowied\u017a zosta\u0142a zapisana.',
-        failure: 'Co\u015b posz\u0142o nie tak podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie za chwil\u0119.'
+        failure: 'Co\u015b posz\u0142o nie tak podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie za chwil\u0119.',
+        unavailable: 'RSVP jest tymczasowo niedost\u0119pne. Spr\u00f3buj ponownie za chwil\u0119.'
       }
     };
 
@@ -390,18 +390,9 @@
     const attendanceNo = document.getElementById('attendanceNo');
     const languageLabel = document.getElementById('languageLabel');
     const languageSelect = document.getElementById('languageSelect');
-    const { createClient } = supabase;
-    const supabaseConfigElement = document.getElementById('supabase-config');
-    const supabaseUrl = supabaseConfigElement?.dataset.url?.trim();
-    const supabaseKey = supabaseConfigElement?.dataset.anonKey?.trim();
-    const supabaseConfigured = Boolean(
-      supabaseUrl &&
-      supabaseKey &&
-      !supabaseUrl.includes('YOUR_PROJECT_ID') &&
-      !supabaseKey.includes('YOUR_ANON_PUBLIC_KEY')
-    );
-    const supabaseClient = supabaseConfigured ? createClient(supabaseUrl, supabaseKey) : null;
-    const openDate = new Date('2024-01-01T00:00:00Z');
+    const rsvpConfigElement = document.getElementById('rsvp-config');
+    const rsvpEndpoint = rsvpConfigElement?.dataset.endpoint?.trim();
+    const rsvpConfigured = Boolean(rsvpEndpoint && !rsvpEndpoint.includes('YOUR_SCRIPT_ID'));
 
     function disableForm(message) {
       Array.from(rsvpForm.elements).forEach((element) => {
@@ -434,15 +425,9 @@
     });
 
     function setFormAvailability() {
-      if (!supabaseConfigured) {
-        disableForm('RSVPs are temporarily unavailable while we connect to our database. Please try again soon.');
-        return false;
-      }
-
-      const now = new Date();
-      if (now < openDate) {
-        alert('RSVPs will open closer to the wedding date!');
-        disableForm('RSVPs will open soon.');
+      if (!rsvpConfigured) {
+        const strings = translations[languageSelect.value] || translations.en;
+        disableForm(strings.unavailable);
         return false;
       }
 
@@ -485,13 +470,22 @@
       confirmationEl.textContent = strings.submitting;
 
       try {
-        const timestamp = new Date().toISOString();
-        const { error } = await supabaseClient
-          .from('RSVP')
-          .insert([{ created_at: timestamp, Name: names, 'Yes/No': attending }]);
+        const response = await fetch(rsvpEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            GuestName: names,
+            Attending: attending
+          })
+        });
 
-        if (error) {
-          throw error;
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const payload = await response.json();
+        if (!payload?.success) {
+          throw new Error(payload?.message || 'RSVP rejected.');
         }
 
         confirmationEl.textContent = strings.success;
