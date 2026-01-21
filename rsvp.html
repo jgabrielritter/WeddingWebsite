@@ -16,10 +16,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
-  <script
-    id="rsvp-config"
-    data-endpoint="https://YOUR_SCRIPT_ID.exec"
-  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./rsvp-config.js"></script>
   <style>
     :root {
       --sand: #ffede3;
@@ -390,9 +388,13 @@
     const attendanceNo = document.getElementById('attendanceNo');
     const languageLabel = document.getElementById('languageLabel');
     const languageSelect = document.getElementById('languageSelect');
-    const rsvpConfigElement = document.getElementById('rsvp-config');
-    const rsvpEndpoint = rsvpConfigElement?.dataset.endpoint?.trim();
-    const rsvpConfigured = Boolean(rsvpEndpoint && !rsvpEndpoint.includes('YOUR_SCRIPT_ID'));
+    const rsvpConfig = window.RSVP_CONFIG || {};
+    const supabaseUrl = rsvpConfig.supabaseUrl;
+    const supabaseKey = rsvpConfig.supabaseKey;
+    const supabaseClient = supabaseUrl && supabaseKey && window.supabase?.createClient
+      ? window.supabase.createClient(supabaseUrl, supabaseKey)
+      : null;
+    const rsvpConfigured = Boolean(supabaseClient);
 
     function disableForm(message) {
       Array.from(rsvpForm.elements).forEach((element) => {
@@ -470,22 +472,18 @@
       confirmationEl.textContent = strings.submitting;
 
       try {
-        const response = await fetch(rsvpEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            GuestName: names,
-            Attending: attending
-          })
-        });
+        const { error } = await supabaseClient
+          .from('rsvps')
+          .insert([
+            {
+              guest_name: names,
+              attending,
+              language: languageSelect.value
+            }
+          ]);
 
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-
-        const payload = await response.json();
-        if (!payload?.success) {
-          throw new Error(payload?.message || 'RSVP rejected.');
+        if (error) {
+          throw error;
         }
 
         confirmationEl.textContent = strings.success;
