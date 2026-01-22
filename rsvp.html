@@ -396,13 +396,6 @@
       : null;
     const rsvpConfigured = Boolean(supabaseClient);
 
-    function disableForm(message) {
-      Array.from(rsvpForm.elements).forEach((element) => {
-        element.disabled = true;
-      });
-      confirmationEl.textContent = message;
-    }
-
     function applyTranslations(lang = 'en') {
       const strings = translations[lang] || translations.en;
       document.documentElement.lang = lang;
@@ -424,30 +417,24 @@
 
     languageSelect.addEventListener('change', (event) => {
       applyTranslations(event.target.value);
+      setFormAvailability();
     });
 
     function setFormAvailability() {
-      if (!rsvpConfigured) {
-        const strings = translations[languageSelect.value] || translations.en;
-        disableForm(strings.unavailable);
-        return false;
-      }
+      const strings = translations[languageSelect.value] || translations.en;
 
       Array.from(rsvpForm.elements).forEach((element) => {
         element.disabled = false;
       });
-      confirmationEl.textContent = '';
-      return true;
+
+      confirmationEl.textContent = rsvpConfigured ? '' : strings.unavailable;
+      return rsvpConfigured;
     }
 
     setFormAvailability();
 
     rsvpForm.addEventListener('submit', async function (event) {
       event.preventDefault();
-
-      if (!setFormAvailability()) {
-        return;
-      }
 
       nameError.textContent = '';
       attendanceError.textContent = '';
@@ -466,6 +453,10 @@
       }
 
       if (!names || !attending) {
+        return;
+      }
+
+      if (!setFormAvailability()) {
         return;
       }
 
