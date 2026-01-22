@@ -14,7 +14,16 @@ export async function POST(req: Request) {
   const debug = process.env.RSVP_DEBUG === "true";
 
   try {
-    const body = await req.json();
+    let body: any;
+    try {
+      body = await req.json();
+    } catch (error) {
+      console.warn("[RSVP PARSE FAILED]", { traceId, error });
+      return NextResponse.json(
+        { ok: false, traceId, step: "parse", message: "Invalid JSON body" },
+        { status: 400 }
+      );
+    }
 
     const name = (body?.name ?? "").trim();
     const attending = parseAttending(body?.attending);
@@ -23,21 +32,21 @@ export async function POST(req: Request) {
 
     if (!name) {
       return NextResponse.json(
-        { ok: false, traceId, error: "Name is required" },
+        { ok: false, traceId, step: "validate", message: "Name is required" },
         { status: 400 }
       );
     }
 
     if (attending === null) {
       return NextResponse.json(
-        { ok: false, traceId, error: "Attending is required" },
+        { ok: false, traceId, step: "validate", message: "Attending is required" },
         { status: 400 }
       );
     }
 
     if (!email || !isValidEmail(email)) {
       return NextResponse.json(
-        { ok: false, traceId, error: "Valid email is required" },
+        { ok: false, traceId, step: "validate", message: "Valid email is required" },
         { status: 400 }
       );
     }
@@ -45,14 +54,35 @@ export async function POST(req: Request) {
     const { closeAt, closed } = getRsvpCloseInfo(process.env.RSVP_CLOSE_AT);
     if (closed) {
       return NextResponse.json(
-        { ok: false, traceId, error: "RSVPs are closed" },
+        { ok: false, traceId, step: "validate", message: "RSVPs are closed" },
         { status: 403 }
       );
     }
 
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!supabaseUrl) {
+      return NextResponse.json(
+        { ok: false, traceId, step: "env", message: "Missing SUPABASE URL" },
+        { status: 500 }
+      );
+    }
+
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!serviceRoleKey) {
+      return NextResponse.json(
+        {
+          ok: false,
+          traceId,
+          step: "env",
+          message: "Missing SUPABASE_SERVICE_ROLE_KEY",
+        },
+        { status: 500 }
+      );
+    }
+
     const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      supabaseUrl,
+      serviceRoleKey,
       { auth: { persistSession: false } }
     );
 
@@ -60,8 +90,7 @@ export async function POST(req: Request) {
 
     const payload = {
       Name: name,
-      attending,
-      email,
+      "Yes/No": attending ? "Yes" : "No",
     };
 
     const { data: inserted, error: insertError } = await supabase
@@ -71,6 +100,9 @@ export async function POST(req: Request) {
       .maybeSingle();
 
     if (insertError) {
+      const isRls =
+        insertError.message?.toLowerCase().includes("permission denied") ||
+        insertError.message?.toLowerCase().includes("row-level security");
       console.error("[RSVP INSERT FAILED]", {
         traceId,
         message: insertError.message,
@@ -81,7 +113,10 @@ export async function POST(req: Request) {
         {
           ok: false,
           traceId,
-          error: "Insert failed",
+          step: "insert",
+          message: isRls
+            ? "Insert blocked by row-level security"
+            : "Insert failed",
         },
         { status: 500 }
       );
@@ -128,9 +163,9 @@ export async function POST(req: Request) {
       closeAt: closeAt ? formatDisplayDate(closeAt, process.env.RSVP_TIMEZONE) : null,
     });
   } catch (e) {
-    console.error("[RSVP EXCEPTION]", e);
+    console.error("[RSVP EXCEPTION]", { traceId, error: e });
     return NextResponse.json(
-      { ok: false, traceId, step: "exception", message: String(e) },
+      { ok: false, traceId, step: "exception", message: "Unexpected error" },
       { status: 500 }
     );
   }
