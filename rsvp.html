@@ -253,6 +253,20 @@
       min-height: 24px;
     }
 
+    .notice {
+      margin: 16px 0 24px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: #f6efe6;
+      color: var(--forest);
+      font-size: 14px;
+    }
+
+    .form-disabled {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
     .error {
       color: var(--error);
       font-size: 14px;
@@ -303,11 +317,16 @@
       <section class="card" aria-labelledby="rsvpTitle">
         <h2 id="rsvpTitle">RSVP Form</h2>
         <p id="cardIntro">Please share the names of all guests attending and let us know if you will be able to celebrate with us.</p>
+        <div class="notice" id="closedNotice" role="status" aria-live="polite"></div>
 
         <form id="rsvpForm" novalidate>
           <label id="guestNamesLabel" for="guestNames">Name of the Guests Attending</label>
           <textarea id="guestNames" name="guestNames" placeholder="Angelika &amp; Gabe" required></textarea>
           <div class="error" id="nameError" role="alert" aria-live="polite"></div>
+
+          <label id="guestEmailLabel" for="guestEmail">Email Address</label>
+          <input type="email" id="guestEmail" name="guestEmail" placeholder="name@email.com" required />
+          <div class="error" id="emailError" role="alert" aria-live="polite"></div>
 
           <label id="attendanceLabel" for="attendance">Will you be attending?</label>
           <select id="attendance" name="attendance" required>
@@ -334,13 +353,17 @@
         cardIntro: 'Please share the names of all guests attending and let us know if you will be able to celebrate with us.',
         guestNamesLabel: 'Name of the Guests Attending',
         guestNamesPlaceholder: 'Angelika & Gabe',
+        guestEmailLabel: 'Email Address',
+        guestEmailPlaceholder: 'name@email.com',
         attendanceLabel: 'Will you be attending?',
         selectPrompt: 'Select',
         selectYes: "Yes, we'll be there",
         selectNo: 'No, we are unable to attend',
         submitButton: 'Submit',
         validationNames: 'Please enter the guest name(s).',
+        validationEmail: 'Please share a valid email address.',
         validationAttendance: 'Please let us know if you are attending.',
+        closedMessage: 'RSVPs are now closed. If you need help, please contact us directly.',
         submitting: 'Submitting your RSVP...',
         success: 'Thank you! Your RSVP has been recorded.',
         failure: 'Something went wrong while submitting your RSVP. Please try again in a moment.',
@@ -354,13 +377,17 @@
         cardIntro: 'Podaj prosz\u0119 imiona wszystkich go\u015bci i daj nam zna\u0107, czy b\u0119dziecie \u015bwi\u0119towa\u0107 razem z nami.',
         guestNamesLabel: 'Imiona uczestnicz\u0105cych go\u015bci',
         guestNamesPlaceholder: 'Angelika i Gabe',
+        guestEmailLabel: 'Adres email',
+        guestEmailPlaceholder: 'name@email.com',
         attendanceLabel: 'Czy b\u0119dziesz uczestniczy\u0107?',
         selectPrompt: 'Wybierz',
         selectYes: 'Tak, b\u0119dziemy obecni',
         selectNo: 'Nie, nie mo\u017cemy przyby\u0107',
         submitButton: 'Wy\u015blij',
         validationNames: 'Wpisz prosz\u0119 imiona go\u015bci.',
+        validationEmail: 'Podaj poprawny adres email.',
         validationAttendance: 'Daj nam zna\u0107, czy b\u0119dziesz uczestniczy\u0107.',
+        closedMessage: 'RSVP jest ju\u017c zamkni\u0119te. Je\u015bli potrzebujesz pomocy, skontaktuj si\u0119 z nami.',
         submitting: 'Wysy\u0142amy Twoje RSVP...',
         success: 'Dzi\u0119kujemy! Twoja odpowied\u017a zosta\u0142a zapisana.',
         failure: 'Co\u015b posz\u0142o nie tak podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie za chwil\u0119.',
@@ -371,14 +398,17 @@
     const rsvpForm = document.getElementById('rsvpForm');
     const confirmationEl = document.getElementById('confirmation');
     const nameField = document.getElementById('guestNames');
+    const emailField = document.getElementById('guestEmail');
     const attendanceField = document.getElementById('attendance');
     const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
     const attendanceError = document.getElementById('attendanceError');
     const backLink = document.getElementById('backLink');
     const heroSubtitle = document.getElementById('heroSubtitle');
     const cardTitle = document.getElementById('rsvpTitle');
     const cardIntro = document.getElementById('cardIntro');
     const guestNamesLabel = document.getElementById('guestNamesLabel');
+    const guestEmailLabel = document.getElementById('guestEmailLabel');
     const attendanceLabel = document.getElementById('attendanceLabel');
     const submitButton = document.getElementById('submitButton');
     const attendancePrompt = document.getElementById('attendancePrompt');
@@ -386,7 +416,10 @@
     const attendanceNo = document.getElementById('attendanceNo');
     const languageLabel = document.getElementById('languageLabel');
     const languageSelect = document.getElementById('languageSelect');
+    const closedNotice = document.getElementById('closedNotice');
     let isSubmitting = false;
+    let isClosed = false;
+    let closeAtLabel = '';
 
     function applyTranslations(lang = 'en') {
       const strings = translations[lang] || translations.en;
@@ -398,11 +431,18 @@
       cardIntro.textContent = strings.cardIntro;
       guestNamesLabel.textContent = strings.guestNamesLabel;
       nameField.placeholder = strings.guestNamesPlaceholder;
+      guestEmailLabel.textContent = strings.guestEmailLabel;
+      emailField.placeholder = strings.guestEmailPlaceholder;
       attendanceLabel.textContent = strings.attendanceLabel;
       attendancePrompt.textContent = strings.selectPrompt;
       attendanceYes.textContent = strings.selectYes;
       attendanceNo.textContent = strings.selectNo;
       submitButton.textContent = strings.submitButton;
+      if (isClosed) {
+        closedNotice.textContent = closeAtLabel
+          ? `${strings.closedMessage} (${closeAtLabel})`
+          : strings.closedMessage;
+      }
     }
 
     applyTranslations(languageSelect.value);
@@ -413,29 +453,81 @@
     });
 
     function setFormAvailability() {
-      return true;
+      if (!isClosed) {
+        closedNotice.textContent = '';
+        rsvpForm.classList.remove('form-disabled');
+        nameField.disabled = false;
+        emailField.disabled = false;
+        attendanceField.disabled = false;
+        submitButton.disabled = false;
+        return;
+      }
+
+      const strings = translations[languageSelect.value] || translations.en;
+      closedNotice.textContent = closeAtLabel
+        ? `${strings.closedMessage} (${closeAtLabel})`
+        : strings.closedMessage;
+      rsvpForm.classList.add('form-disabled');
+      nameField.disabled = true;
+      emailField.disabled = true;
+      attendanceField.disabled = true;
+      submitButton.disabled = true;
     }
+
+    async function checkAvailability() {
+      try {
+        const response = await fetch('/api/rsvp/health');
+        const json = await response.json();
+        if (json && json.ok) {
+          isClosed = Boolean(json.closed);
+          if (json.closeAt) {
+            const closeDate = new Date(json.closeAt);
+            if (!Number.isNaN(closeDate.getTime())) {
+              closeAtLabel = closeDate.toLocaleString();
+            }
+          }
+          setFormAvailability();
+        }
+      } catch (error) {
+        console.warn('RSVP availability check failed', error);
+      }
+    }
+
+    checkAvailability();
 
     rsvpForm.addEventListener('submit', async function (event) {
       event.preventDefault();
 
       nameError.textContent = '';
+      emailError.textContent = '';
       attendanceError.textContent = '';
       confirmationEl.textContent = '';
 
       const names = nameField.value.trim();
+      const email = emailField.value.trim();
       const attending = attendanceField.value;
       const strings = translations[languageSelect.value] || translations.en;
 
+      if (isClosed) {
+        closedNotice.textContent = closeAtLabel
+          ? `${strings.closedMessage} (${closeAtLabel})`
+          : strings.closedMessage;
+        return;
+      }
+
       if (!names) {
         nameError.textContent = strings.validationNames;
+      }
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        emailError.textContent = strings.validationEmail;
       }
 
       if (!attending) {
         attendanceError.textContent = strings.validationAttendance;
       }
 
-      if (!names || !attending) {
+      if (!names || !email || !attending) {
         return;
       }
 
@@ -453,7 +545,8 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: names,
-            attending,
+            attending: attending === 'Yes',
+            email,
             language: languageSelect.value
           })
         });
@@ -461,8 +554,8 @@
         const json = await response.json();
 
         if (!json.ok) {
-          console.error('RSVP failed:', json.traceId, json.message);
-          throw new Error(json.message || 'RSVP insert failed');
+          console.error('RSVP failed:', json.traceId, json.error);
+          throw new Error(json.error || 'RSVP insert failed');
         }
 
         confirmationEl.textContent = strings.success;

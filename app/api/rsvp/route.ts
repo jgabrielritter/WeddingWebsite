@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
+import {
+  formatDisplayDate,
+  getRsvpCloseInfo,
+  isValidEmail,
+  parseAttending,
+} from "../../lib/rsvp-utils";
+import { sendRsvpConfirmationEmail } from "../../lib/email";
 
 export async function POST(req: Request) {
   const traceId = crypto.randomUUID();
@@ -10,12 +17,9 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const name = (body?.name ?? "").trim();
-    const attendingRaw = body?.attending;
-
-    const attending =
-      typeof attendingRaw === "string"
-        ? attendingRaw.toLowerCase().includes("y")
-        : Boolean(attendingRaw);
+    const attending = parseAttending(body?.attending);
+    const email = (body?.email ?? "").trim();
+    const language = body?.language ?? null;
 
     if (!name) {
       return NextResponse.json(
@@ -24,10 +28,31 @@ export async function POST(req: Request) {
       );
     }
 
+    if (attending === null) {
+      return NextResponse.json(
+        { ok: false, traceId, error: "Attending is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!email || !isValidEmail(email)) {
+      return NextResponse.json(
+        { ok: false, traceId, error: "Valid email is required" },
+        { status: 400 }
+      );
+    }
+
+    const { closeAt, closed } = getRsvpCloseInfo(process.env.RSVP_CLOSE_AT);
+    if (closed) {
+      return NextResponse.json(
+        { ok: false, traceId, error: "RSVPs are closed" },
+        { status: 403 }
+      );
+    }
+
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY ??
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       { auth: { persistSession: false } }
     );
 
@@ -35,7 +60,8 @@ export async function POST(req: Request) {
 
     const payload = {
       Name: name,
-      "Yes/No": attending ? "Yes" : "No",
+      attending,
+      email,
     };
 
     const { data: inserted, error: insertError } = await supabase
@@ -69,26 +95,37 @@ export async function POST(req: Request) {
       });
     }
 
-    const { data: latest, error: readError } = await supabase
-      .from(table)
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(1);
-
-    if (readError) {
-      console.warn("[RSVP READBACK WARNING]", { traceId, readError });
-    } else if (debug) {
-      console.info("[RSVP READBACK OK]", {
+    const receivedAt = new Date();
+    let emailResult = { status: "skipped" as const };
+    try {
+      emailResult = await sendRsvpConfirmationEmail({
+        to: email,
+        name,
+        attending,
+        receivedAt,
         traceId,
-        latestId: latest?.[0]?.id ?? null,
+        language,
+      });
+    } catch (error) {
+      console.warn("[RSVP EMAIL WARNING]", { traceId, error });
+      emailResult = { status: "failed" as const };
+    }
+
+    if (emailResult.status === "failed") {
+      console.warn("[RSVP EMAIL WARNING]", {
+        traceId,
+        email,
+        provider: "provider" in emailResult ? emailResult.provider : undefined,
+        error: "error" in emailResult ? emailResult.error : undefined,
       });
     }
 
     return NextResponse.json({
       ok: true,
       traceId,
-      step: readError ? "insert_ok_read_warn" : "insert_ok_read_ok",
       insertedId: inserted?.id ?? null,
+      emailStatus: emailResult.status,
+      closeAt: closeAt ? formatDisplayDate(closeAt, process.env.RSVP_TIMEZONE) : null,
     });
   } catch (e) {
     console.error("[RSVP EXCEPTION]", e);

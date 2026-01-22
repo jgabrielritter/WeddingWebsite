@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { getRsvpCloseInfo } from "../../../lib/rsvp-utils";
 
 export async function GET() {
   const supabase = createClient(
@@ -21,8 +22,12 @@ export async function GET() {
     );
   }
 
+  const { closeAt, closed } = getRsvpCloseInfo(process.env.RSVP_CLOSE_AT);
+
   return NextResponse.json({
     ok: true,
     rowCount: data?.length ?? 0,
+    closed,
+    closeAt: closeAt ? closeAt.toISOString() : null,
   });
 }
