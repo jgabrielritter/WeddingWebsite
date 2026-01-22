@@ -31,13 +31,11 @@ export async function POST(req: Request) {
       { auth: { persistSession: false } }
     );
 
-    const table = process.env.RSVP_TABLE ?? "rsvps";
+    const table = process.env.RSVP_TABLE ?? "RSVP";
 
     const payload = {
-      name,
-      attending,
-      language: typeof body?.language === "string" ? body.language : undefined,
-      timestampz: new Date().toISOString(),
+      Name: name,
+      "Yes/No": attending ? "Yes" : "No",
     };
 
     const { data: inserted, error: insertError } = await supabase
@@ -47,13 +45,17 @@ export async function POST(req: Request) {
       .maybeSingle();
 
     if (insertError) {
-      console.error("[RSVP INSERT ERROR]", { traceId, insertError });
+      console.error("[RSVP INSERT FAILED]", {
+        traceId,
+        message: insertError.message,
+        details: insertError.details,
+        hint: insertError.hint,
+      });
       return NextResponse.json(
         {
           ok: false,
           traceId,
-          step: "insert",
-          message: insertError.message,
+          error: "Insert failed",
         },
         { status: 500 }
       );
@@ -69,8 +71,8 @@ export async function POST(req: Request) {
 
     const { data: latest, error: readError } = await supabase
       .from(table)
-      .select("id")
-      .order("timestampz", { ascending: false })
+      .select("*")
+      .order("created_at", { ascending: false })
       .limit(1);
 
     if (readError) {

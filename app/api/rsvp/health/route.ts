@@ -10,8 +10,8 @@ export async function GET() {
   );
 
   const { data, error } = await supabase
-    .from(process.env.RSVP_TABLE ?? "rsvps")
-    .select("*")
+    .from(process.env.RSVP_TABLE ?? "RSVP")
+    .select("id")
     .limit(1);
 
   if (error) {
@@ -23,7 +23,6 @@ export async function GET() {
 
   return NextResponse.json({
     ok: true,
-    step: "select",
-    sampleCount: data?.length ?? 0,
+    rowCount: data?.length ?? 0,
   });
 }
