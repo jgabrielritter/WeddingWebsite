@@ -551,11 +551,20 @@
           })
         });
 
-        const json = await response.json();
+        let json = null;
+        try {
+          json = await response.json();
+        } catch (parseError) {
+          console.warn('RSVP response JSON parse failed', parseError);
+        }
 
-        if (!json.ok) {
-          console.error('RSVP failed:', json.traceId, json.error);
-          throw new Error(json.error || 'RSVP insert failed');
+        if (!response.ok || !json?.ok) {
+          console.error('RSVP submit failed:', {
+            status: response.status,
+            statusText: response.statusText,
+            body: json
+          });
+          throw new Error(json?.message || json?.error || 'RSVP failed');
         }
 
         confirmationEl.textContent = strings.success;
