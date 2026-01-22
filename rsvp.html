@@ -391,10 +391,9 @@
     const rsvpConfig = window.RSVP_CONFIG || {};
     const supabaseUrl = rsvpConfig.supabaseUrl;
     const supabaseKey = rsvpConfig.supabaseKey;
-    const supabaseClient = supabaseUrl && supabaseKey && window.supabase?.createClient
-      ? window.supabase.createClient(supabaseUrl, supabaseKey)
-      : null;
-    const rsvpConfigured = Boolean(supabaseClient);
+    const hasSupabaseKey = Boolean(supabaseKey && supabaseKey !== 'YOUR_SUPABASE_KEY');
+    const rsvpConfigured = Boolean(supabaseUrl && hasSupabaseKey && window.supabase?.createClient);
+    const supabaseClient = rsvpConfigured ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
 
     function applyTranslations(lang = 'en') {
       const strings = translations[lang] || translations.en;
@@ -424,7 +423,7 @@
       const strings = translations[languageSelect.value] || translations.en;
 
       Array.from(rsvpForm.elements).forEach((element) => {
-        element.disabled = false;
+        element.disabled = !rsvpConfigured;
       });
 
       confirmationEl.textContent = rsvpConfigured ? '' : strings.unavailable;
