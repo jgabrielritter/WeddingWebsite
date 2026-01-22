@@ -16,9 +16,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./rsvp-config.example.js"></script>
-  <script src="./rsvp-config.js"></script>
   <style>
     :root {
       --sand: #ffede3;
@@ -389,12 +386,7 @@
     const attendanceNo = document.getElementById('attendanceNo');
     const languageLabel = document.getElementById('languageLabel');
     const languageSelect = document.getElementById('languageSelect');
-    const rsvpConfig = window.RSVP_CONFIG || {};
-    const supabaseUrl = rsvpConfig.supabaseUrl;
-    const supabaseKey = rsvpConfig.supabaseKey;
-    const hasSupabaseKey = Boolean(supabaseKey && supabaseKey !== 'YOUR_SUPABASE_KEY');
-    const rsvpConfigured = Boolean(supabaseUrl && hasSupabaseKey && window.supabase?.createClient);
-    const supabaseClient = rsvpConfigured ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
+    let isSubmitting = false;
 
     function applyTranslations(lang = 'en') {
       const strings = translations[lang] || translations.en;
@@ -421,17 +413,8 @@
     });
 
     function setFormAvailability() {
-      const strings = translations[languageSelect.value] || translations.en;
-
-      Array.from(rsvpForm.elements).forEach((element) => {
-        element.disabled = !rsvpConfigured;
-      });
-
-      confirmationEl.textContent = rsvpConfigured ? '' : strings.unavailable;
-      return rsvpConfigured;
+      return true;
     }
-
-    setFormAvailability();
 
     rsvpForm.addEventListener('submit', async function (event) {
       event.preventDefault();
@@ -456,25 +439,30 @@
         return;
       }
 
-      if (!setFormAvailability()) {
+      if (isSubmitting) {
         return;
       }
 
+      isSubmitting = true;
+      submitButton.disabled = true;
       confirmationEl.textContent = strings.submitting;
 
       try {
-        const { error } = await supabaseClient
-          .from('rsvps')
-          .insert([
-            {
-              guest_name: names,
-              attending,
-              language: languageSelect.value
-            }
-          ]);
+        const response = await fetch('/api/rsvp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: names,
+            attending,
+            language: languageSelect.value
+          })
+        });
 
-        if (error) {
-          throw error;
+        const json = await response.json();
+
+        if (!json.ok) {
+          console.error('RSVP failed:', json.traceId, json.message);
+          throw new Error(json.message || 'RSVP insert failed');
         }
 
         confirmationEl.textContent = strings.success;
@@ -482,6 +470,9 @@
       } catch (error) {
         console.error('RSVP submission failed', error);
         confirmationEl.textContent = strings.failure;
+      } finally {
+        isSubmitting = false;
+        submitButton.disabled = false;
       }
     });
   </script>
