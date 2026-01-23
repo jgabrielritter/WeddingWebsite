@@ -321,20 +321,26 @@
 
         <form id="rsvpForm" novalidate>
           <label id="guestNamesLabel" for="guestNames">Name of the Guests Attending</label>
-          <textarea id="guestNames" name="guestNames" placeholder="Angelika &amp; Gabe" required></textarea>
+          <textarea id="guestNames" name="guestNames" placeholder="Angelika &amp; Gabe" required maxlength="200" autocomplete="name" autocapitalize="words" aria-describedby="nameError"></textarea>
           <div class="error" id="nameError" role="alert" aria-live="polite"></div>
 
           <label id="guestEmailLabel" for="guestEmail">Email Address</label>
-          <input type="email" id="guestEmail" name="guestEmail" placeholder="name@email.com" required />
+          <input type="email" id="guestEmail" name="guestEmail" placeholder="name@email.com" required maxlength="254" autocomplete="email" inputmode="email" aria-describedby="emailError" />
           <div class="error" id="emailError" role="alert" aria-live="polite"></div>
 
           <label id="attendanceLabel" for="attendance">Will you be attending?</label>
           <select id="attendance" name="attendance" required>
             <option value="" id="attendancePrompt">Select</option>
-            <option value="Yes" id="attendanceYes">Yes, we'll be there</option>
-            <option value="No" id="attendanceNo">No, we are unable to attend</option>
+            <option value="yes" id="attendanceYes">Yes, we'll be there</option>
+            <option value="no" id="attendanceNo">No, we are unable to attend</option>
           </select>
           <div class="error" id="attendanceError" role="alert" aria-live="polite"></div>
+
+          <div style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+          <input type="hidden" id="formStart" name="formStart" value="" />
 
           <button type="submit" id="submitButton">Submit</button>
         </form>
@@ -361,12 +367,15 @@
         selectNo: 'No, we are unable to attend',
         submitButton: 'Submit',
         validationNames: 'Please enter the guest name(s).',
+        validationNameLength: 'Please keep the guest name(s) under 200 characters.',
         validationEmail: 'Please share a valid email address.',
+        validationEmailLength: 'Please keep the email under 254 characters.',
         validationAttendance: 'Please let us know if you are attending.',
         closedMessage: 'RSVPs are now closed. If you need help, please contact us directly.',
         submitting: 'Submitting your RSVP...',
         success: 'Thank you! Your RSVP has been recorded.',
         failure: 'Something went wrong while submitting your RSVP. Please try again in a moment.',
+        failureWithTrace: 'Something went wrong while submitting your RSVP. Please try again in a moment. Reference:',
         unavailable: 'RSVPs are temporarily unavailable while we connect to our response form. Please try again soon.'
       },
       pl: {
@@ -385,12 +394,15 @@
         selectNo: 'Nie, nie mo\u017cemy przyby\u0107',
         submitButton: 'Wy\u015blij',
         validationNames: 'Wpisz prosz\u0119 imiona go\u015bci.',
+        validationNameLength: 'Wpisz prosz\u0119 imiona go\u015bci (maksymalnie 200 znak\u00f3w).',
         validationEmail: 'Podaj poprawny adres email.',
+        validationEmailLength: 'Podaj poprawny adres email (maksymalnie 254 znaki).',
         validationAttendance: 'Daj nam zna\u0107, czy b\u0119dziesz uczestniczy\u0107.',
         closedMessage: 'RSVP jest ju\u017c zamkni\u0119te. Je\u015bli potrzebujesz pomocy, skontaktuj si\u0119 z nami.',
         submitting: 'Wysy\u0142amy Twoje RSVP...',
         success: 'Dzi\u0119kujemy! Twoja odpowied\u017a zosta\u0142a zapisana.',
         failure: 'Co\u015b posz\u0142o nie tak podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie za chwil\u0119.',
+        failureWithTrace: 'Co\u015b posz\u0142o nie tak podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie za chwil\u0119. Identyfikator:',
         unavailable: 'RSVP jest tymczasowo niedost\u0119pne. Spr\u00f3buj ponownie za chwil\u0119.'
       }
     };
@@ -417,6 +429,8 @@
     const languageLabel = document.getElementById('languageLabel');
     const languageSelect = document.getElementById('languageSelect');
     const closedNotice = document.getElementById('closedNotice');
+    const honeypotField = document.getElementById('website');
+    const formStartField = document.getElementById('formStart');
     let isSubmitting = false;
     let isClosed = false;
     let closeAtLabel = '';
@@ -460,6 +474,7 @@
         emailField.disabled = false;
         attendanceField.disabled = false;
         submitButton.disabled = false;
+        honeypotField.disabled = false;
         return;
       }
 
@@ -472,6 +487,7 @@
       emailField.disabled = true;
       attendanceField.disabled = true;
       submitButton.disabled = true;
+      honeypotField.disabled = true;
     }
 
     async function checkAvailability() {
@@ -490,17 +506,31 @@
         }
       } catch (error) {
         console.warn('RSVP availability check failed', error);
+        const strings = translations[languageSelect.value] || translations.en;
+        closedNotice.textContent = strings.unavailable;
       }
     }
 
     checkAvailability();
 
+    formStartField.value = Date.now().toString();
+
+    function clearFieldError(field, errorEl) {
+      errorEl.textContent = '';
+      field.setAttribute('aria-invalid', 'false');
+    }
+
+    function setFieldError(field, errorEl, message) {
+      errorEl.textContent = message;
+      field.setAttribute('aria-invalid', 'true');
+    }
+
     rsvpForm.addEventListener('submit', async function (event) {
       event.preventDefault();
 
-      nameError.textContent = '';
-      emailError.textContent = '';
-      attendanceError.textContent = '';
+      clearFieldError(nameField, nameError);
+      clearFieldError(emailField, emailError);
+      clearFieldError(attendanceField, attendanceError);
       confirmationEl.textContent = '';
 
       const names = nameField.value.trim();
@@ -516,18 +546,22 @@
       }
 
       if (!names) {
-        nameError.textContent = strings.validationNames;
+        setFieldError(nameField, nameError, strings.validationNames);
+      } else if (names.length > 200) {
+        setFieldError(nameField, nameError, strings.validationNameLength);
       }
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        emailError.textContent = strings.validationEmail;
+        setFieldError(emailField, emailError, strings.validationEmail);
+      } else if (email.length > 254) {
+        setFieldError(emailField, emailError, strings.validationEmailLength);
       }
 
       if (!attending) {
-        attendanceError.textContent = strings.validationAttendance;
+        setFieldError(attendanceField, attendanceError, strings.validationAttendance);
       }
 
-      if (!names || !email || !attending) {
+      if (!names || names.length > 200 || !email || email.length > 254 || !attending) {
         return;
       }
 
@@ -539,15 +573,18 @@
       submitButton.disabled = true;
       confirmationEl.textContent = strings.submitting;
 
+      let responseTraceId = null;
       try {
         const response = await fetch('/api/rsvp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: names,
-            attending: attending === 'Yes',
+            attending: attending === 'yes',
             email,
-            language: languageSelect.value
+            language: languageSelect.value,
+            website: honeypotField.value,
+            formStart: formStartField.value
           })
         });
 
@@ -558,6 +595,7 @@
           console.warn('RSVP response JSON parse failed', parseError);
         }
 
+        responseTraceId = json?.traceId ?? null;
         if (!response.ok || !json?.ok) {
           console.error('RSVP submit failed:', {
             status: response.status,
@@ -569,9 +607,12 @@
 
         confirmationEl.textContent = strings.success;
         rsvpForm.reset();
+        formStartField.value = Date.now().toString();
       } catch (error) {
         console.error('RSVP submission failed', error);
-        confirmationEl.textContent = strings.failure;
+        confirmationEl.textContent = responseTraceId
+          ? `${strings.failureWithTrace} ${responseTraceId}`
+          : strings.failure;
       } finally {
         isSubmitting = false;
         submitButton.disabled = false;
