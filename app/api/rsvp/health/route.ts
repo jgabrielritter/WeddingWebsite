@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 import { getRsvpCloseInfo } from "../../../lib/rsvp-utils";
+import { getRsvpSchemaConfig } from "../../../lib/rsvp-schema";
+import { createRsvpClient } from "../../../lib/rsvp-supabase";
 
 export async function GET() {
   const traceId = crypto.randomUUID();
@@ -27,20 +28,17 @@ export async function GET() {
     );
   }
 
-  const supabase = createClient(
-    supabaseUrl,
-    serviceRoleKey ?? anonKey!,
-    { auth: { persistSession: false } }
-  );
+  const supabase = createRsvpClient(supabaseUrl, serviceRoleKey ?? anonKey!);
+  const { table } = getRsvpSchemaConfig();
 
-  const { data, error } = await supabase
-    .from(process.env.RSVP_TABLE ?? "RSVP")
-    .select("id")
-    .limit(1);
+  const { count, error } = await supabase
+    .from(table)
+    .select("id", { count: "exact", head: true });
 
   if (error) {
+    console.error("[RSVP HEALTH FAILED]", { traceId, step: "select", error });
     return NextResponse.json(
-      { ok: false, traceId, step: "select", message: error.message },
+      { ok: false, traceId, step: "select", message: "Health check failed" },
       { status: 500 }
     );
   }
@@ -50,7 +48,7 @@ export async function GET() {
   return NextResponse.json({
     ok: true,
     traceId,
-    rowCount: data?.length ?? 0,
+    rowCount: count ?? 0,
     closed,
     closeAt: closeAt ? closeAt.toISOString() : null,
   });

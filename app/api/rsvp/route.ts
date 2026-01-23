@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 import {
   formatDisplayDate,
@@ -8,17 +7,24 @@ import {
   parseAttending,
 } from "../../lib/rsvp-utils";
 import { sendRsvpConfirmationEmail } from "../../lib/email";
+import {
+  buildAttendingPayload,
+  getRsvpSchemaConfig,
+} from "../../lib/rsvp-schema";
+import { consumeRateLimit, getClientIp } from "../../lib/rate-limit";
+import { createRsvpClient } from "../../lib/rsvp-supabase";
 
 export async function POST(req: Request) {
   const traceId = crypto.randomUUID();
   const debug = process.env.RSVP_DEBUG === "true";
+  const startedAt = Date.now();
 
   try {
     let body: any;
     try {
       body = await req.json();
     } catch (error) {
-      console.warn("[RSVP PARSE FAILED]", { traceId, error });
+      console.warn("[RSVP PARSE FAILED]", { traceId, step: "parse", error });
       return NextResponse.json(
         { ok: false, traceId, step: "parse", message: "Invalid JSON body" },
         { status: 400 }
@@ -29,6 +35,40 @@ export async function POST(req: Request) {
     const attending = parseAttending(body?.attending);
     const email = (body?.email ?? "").trim();
     const language = body?.language ?? null;
+    const honeypot = (body?.website ?? "").trim();
+    const formStart = Number(body?.formStart ?? 0);
+    const now = Date.now();
+
+    if (honeypot) {
+      console.warn("[RSVP BOT BLOCKED]", { traceId, step: "honeypot" });
+      return NextResponse.json(
+        { ok: false, traceId, step: "honeypot", message: "Submission rejected" },
+        { status: 400 }
+      );
+    }
+
+    if (formStart && now - formStart < 1500) {
+      console.warn("[RSVP BOT BLOCKED]", { traceId, step: "timing" });
+      return NextResponse.json(
+        { ok: false, traceId, step: "timing", message: "Submission rejected" },
+        { status: 429 }
+      );
+    }
+
+    const ip = getClientIp(req);
+    const rate = consumeRateLimit(`rsvp:${ip}`, 10, 60_000, now);
+    if (!rate.allowed) {
+      console.warn("[RSVP RATE LIMITED]", {
+        traceId,
+        step: "rate-limit",
+        ip,
+        resetAt: rate.resetAt,
+      });
+      return NextResponse.json(
+        { ok: false, traceId, step: "rate-limit", message: "Too many requests" },
+        { status: 429, headers: { "Retry-After": "60" } }
+      );
+    }
 
     if (!name) {
       return NextResponse.json(
@@ -47,6 +87,20 @@ export async function POST(req: Request) {
     if (!email || !isValidEmail(email)) {
       return NextResponse.json(
         { ok: false, traceId, step: "validate", message: "Valid email is required" },
+        { status: 400 }
+      );
+    }
+
+    if (name.length > 200) {
+      return NextResponse.json(
+        { ok: false, traceId, step: "validate", message: "Name is too long" },
+        { status: 400 }
+      );
+    }
+
+    if (email.length > 254) {
+      return NextResponse.json(
+        { ok: false, traceId, step: "validate", message: "Email is too long" },
         { status: 400 }
       );
     }
@@ -80,17 +134,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const supabase = createClient(
-      supabaseUrl,
-      serviceRoleKey,
-      { auth: { persistSession: false } }
-    );
-
-    const table = process.env.RSVP_TABLE ?? "RSVP";
+    const { table, attendingColumn, emailColumn } = getRsvpSchemaConfig();
+    const supabase = createRsvpClient(supabaseUrl, serviceRoleKey);
 
     const payload = {
       Name: name,
-      "Yes/No": attending ? "Yes" : "No",
+      ...(emailColumn ? { [emailColumn]: email } : {}),
+      ...buildAttendingPayload(attending, attendingColumn),
     };
 
     const { data: inserted, error: insertError } = await supabase
@@ -105,6 +155,7 @@ export async function POST(req: Request) {
         insertError.message?.toLowerCase().includes("row-level security");
       console.error("[RSVP INSERT FAILED]", {
         traceId,
+        step: "insert",
         message: insertError.message,
         details: insertError.details,
         hint: insertError.hint,
@@ -127,6 +178,7 @@ export async function POST(req: Request) {
         traceId,
         table,
         insertedId: inserted?.id ?? null,
+        durationMs: Date.now() - startedAt,
       });
     }
 
@@ -142,14 +194,13 @@ export async function POST(req: Request) {
         language,
       });
     } catch (error) {
-      console.warn("[RSVP EMAIL WARNING]", { traceId, error });
+      console.warn("[RSVP EMAIL WARNING]", { traceId, step: "email", error });
       emailResult = { status: "failed" as const };
     }
 
     if (emailResult.status === "failed") {
       console.warn("[RSVP EMAIL WARNING]", {
         traceId,
-        email,
         provider: "provider" in emailResult ? emailResult.provider : undefined,
         error: "error" in emailResult ? emailResult.error : undefined,
       });
@@ -163,7 +214,7 @@ export async function POST(req: Request) {
       closeAt: closeAt ? formatDisplayDate(closeAt, process.env.RSVP_TIMEZONE) : null,
     });
   } catch (e) {
-    console.error("[RSVP EXCEPTION]", { traceId, error: e });
+    console.error("[RSVP EXCEPTION]", { traceId, step: "exception", error: e });
     return NextResponse.json(
       { ok: false, traceId, step: "exception", message: "Unexpected error" },
       { status: 500 }

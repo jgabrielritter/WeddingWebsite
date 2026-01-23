@@ -1,4 +1,9 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import {
+  getAttendingSelectColumn,
+  getRsvpSchemaConfig,
+  normalizeAttendingValue,
+} from "./rsvp-schema";
 
 export type RsvpRow = {
   id: string | number;
@@ -28,7 +33,7 @@ export function createServiceClient(): SupabaseClient {
 }
 
 function tableName() {
-  return process.env.RSVP_TABLE ?? "RSVP";
+  return getRsvpSchemaConfig().table;
 }
 
 async function fetchCount(supabase: SupabaseClient, filters?: (query: any) => any) {
@@ -49,11 +54,14 @@ export async function getRsvpSummary(supabase: SupabaseClient): Promise<RsvpSumm
   since7.setDate(now.getDate() - 7);
   const since30 = new Date(now);
   since30.setDate(now.getDate() - 30);
+  const { attendingColumn } = getRsvpSchemaConfig();
+  const attendingFilterValue = attendingColumn === "attending" ? true : "Yes";
+  const notAttendingFilterValue = attendingColumn === "attending" ? false : "No";
 
   const [total, attending, notAttending, last7Days, last30Days] = await Promise.all([
     fetchCount(supabase),
-    fetchCount(supabase, (query) => query.eq("attending", true)),
-    fetchCount(supabase, (query) => query.eq("attending", false)),
+    fetchCount(supabase, (query) => query.eq(attendingColumn, attendingFilterValue)),
+    fetchCount(supabase, (query) => query.eq(attendingColumn, notAttendingFilterValue)),
     fetchCount(supabase, (query) => query.gte("created_at", since7.toISOString())),
     fetchCount(supabase, (query) => query.gte("created_at", since30.toISOString())),
   ]);
@@ -66,9 +74,15 @@ export async function getRsvpList(
   limit = 100,
   offset = 0
 ): Promise<RsvpRow[]> {
+  const { attendingColumn, emailColumn } = getRsvpSchemaConfig();
+  const attendingSelect = getAttendingSelectColumn(attendingColumn);
+  const selectColumns = ["id", "created_at", "Name", attendingSelect];
+  if (emailColumn) {
+    selectColumns.push(emailColumn);
+  }
   const { data, error } = await supabase
     .from(tableName())
-    .select("id,created_at,Name,attending,email")
+    .select(selectColumns.join(","))
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
 
@@ -76,7 +90,17 @@ export async function getRsvpList(
     throw error;
   }
 
-  return (data ?? []) as RsvpRow[];
+  return (data ?? []).map((row: any) => {
+    const attendingValue =
+      attendingColumn === "attending" ? row.attending : row[attendingColumn];
+    return {
+      id: row.id,
+      created_at: row.created_at,
+      Name: row.Name,
+      email: emailColumn ? row[emailColumn] ?? null : null,
+      attending: normalizeAttendingValue(attendingValue),
+    } as RsvpRow;
+  });
 }
 
 export async function getAllRsvps(supabase: SupabaseClient): Promise<RsvpRow[]> {
