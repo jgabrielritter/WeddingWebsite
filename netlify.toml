@@ -1,0 +1,17 @@
+[build]
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/rsvp"
+  to = "/.netlify/functions/rsvp"
+  status = 200
+
+[[redirects]]
+  from = "/api/rsvp/health"
+  to = "/.netlify/functions/rsvp-health"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/rsvp/*"
+  to = "/.netlify/functions/admin-rsvp"
+  status = 200

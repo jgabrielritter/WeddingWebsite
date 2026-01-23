@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { createRsvpClient } from "../../../lib/rsvp-supabase";
 import {
-  buildAttendingPayload,
+  buildInsertPayload,
   getRsvpSchemaConfig,
-} from "../../../lib/rsvp-schema";
+} from "../../../lib/rsvp/schema";
 
 export async function POST() {
   const traceId = crypto.randomUUID();
@@ -24,12 +24,13 @@ export async function POST() {
     );
   }
 
-  const { table, attendingColumn } = getRsvpSchemaConfig();
+  const { table, attendingColumn, writeMode, nameColumn } = getRsvpSchemaConfig();
   const supabase = createRsvpClient(supabaseUrl, serviceRoleKey);
-  const payload = {
-    Name: "Debug Probe",
-    ...buildAttendingPayload(false, attendingColumn),
-  };
+  const payload = buildInsertPayload(
+    { name: "Debug Probe", attending: false },
+    writeMode,
+    { nameColumn, attendingColumn }
+  );
 
   const { data, error } = await supabase
     .from(table)

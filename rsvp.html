@@ -321,15 +321,15 @@
 
         <form id="rsvpForm" novalidate>
           <label id="guestNamesLabel" for="guestNames">Name of the Guests Attending</label>
-          <textarea id="guestNames" name="guestNames" placeholder="Angelika &amp; Gabe" required maxlength="200" autocomplete="name" autocapitalize="words" aria-describedby="nameError"></textarea>
+          <textarea id="guestNames" name="guestNames" placeholder="Angelika &amp; Gabe" required maxlength="200" autocomplete="name" autocapitalize="words" aria-describedby="nameError" aria-invalid="false"></textarea>
           <div class="error" id="nameError" role="alert" aria-live="polite"></div>
 
           <label id="guestEmailLabel" for="guestEmail">Email Address</label>
-          <input type="email" id="guestEmail" name="guestEmail" placeholder="name@email.com" required maxlength="254" autocomplete="email" inputmode="email" aria-describedby="emailError" />
+          <input type="email" id="guestEmail" name="guestEmail" placeholder="name@email.com" required maxlength="254" autocomplete="email" inputmode="email" aria-describedby="emailError" aria-invalid="false" />
           <div class="error" id="emailError" role="alert" aria-live="polite"></div>
 
           <label id="attendanceLabel" for="attendance">Will you be attending?</label>
-          <select id="attendance" name="attendance" required>
+          <select id="attendance" name="attendance" required aria-invalid="false">
             <option value="" id="attendancePrompt">Select</option>
             <option value="yes" id="attendanceYes">Yes, we'll be there</option>
             <option value="no" id="attendanceNo">No, we are unable to attend</option>
@@ -340,11 +340,12 @@
             <label for="website">Website</label>
             <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
           </div>
-          <input type="hidden" id="formStart" name="formStart" value="" />
+          <input type="hidden" id="formStartTs" name="formStartTs" value="" />
 
           <button type="submit" id="submitButton">Submit</button>
         </form>
         <div class="confirmation" id="confirmation" aria-live="polite"></div>
+        <div class="helper-text" id="traceReference" aria-live="polite"></div>
       </section>
     </main>
   </div>
@@ -375,7 +376,7 @@
         submitting: 'Submitting your RSVP...',
         success: 'Thank you! Your RSVP has been recorded.',
         failure: 'Something went wrong while submitting your RSVP. Please try again in a moment.',
-        failureWithTrace: 'Something went wrong while submitting your RSVP. Please try again in a moment. Reference:',
+        referenceLabel: 'Reference:',
         unavailable: 'RSVPs are temporarily unavailable while we connect to our response form. Please try again soon.'
       },
       pl: {
@@ -402,7 +403,7 @@
         submitting: 'Wysy\u0142amy Twoje RSVP...',
         success: 'Dzi\u0119kujemy! Twoja odpowied\u017a zosta\u0142a zapisana.',
         failure: 'Co\u015b posz\u0142o nie tak podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie za chwil\u0119.',
-        failureWithTrace: 'Co\u015b posz\u0142o nie tak podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie za chwil\u0119. Identyfikator:',
+        referenceLabel: 'Identyfikator:',
         unavailable: 'RSVP jest tymczasowo niedost\u0119pne. Spr\u00f3buj ponownie za chwil\u0119.'
       }
     };
@@ -430,7 +431,8 @@
     const languageSelect = document.getElementById('languageSelect');
     const closedNotice = document.getElementById('closedNotice');
     const honeypotField = document.getElementById('website');
-    const formStartField = document.getElementById('formStart');
+    const formStartField = document.getElementById('formStartTs');
+    const traceReference = document.getElementById('traceReference');
     let isSubmitting = false;
     let isClosed = false;
     let closeAtLabel = '';
@@ -532,6 +534,7 @@
       clearFieldError(emailField, emailError);
       clearFieldError(attendanceField, attendanceError);
       confirmationEl.textContent = '';
+      traceReference.textContent = '';
 
       const names = nameField.value.trim();
       const email = emailField.value.trim();
@@ -584,7 +587,7 @@
             email,
             language: languageSelect.value,
             website: honeypotField.value,
-            formStart: formStartField.value
+            formStartTs: formStartField.value
           })
         });
 
@@ -602,17 +605,31 @@
             statusText: response.statusText,
             body: json
           });
+          if (response.status === 403 && json?.error === 'RSVPs are closed') {
+            isClosed = true;
+            if (json?.closeAt) {
+              const closeDate = new Date(json.closeAt);
+              if (!Number.isNaN(closeDate.getTime())) {
+                closeAtLabel = closeDate.toLocaleString();
+              }
+            }
+            setFormAvailability();
+            confirmationEl.textContent = '';
+            return;
+          }
           throw new Error(json?.message || json?.error || 'RSVP failed');
         }
 
         confirmationEl.textContent = strings.success;
+        traceReference.textContent = '';
         rsvpForm.reset();
         formStartField.value = Date.now().toString();
       } catch (error) {
         console.error('RSVP submission failed', error);
-        confirmationEl.textContent = responseTraceId
-          ? `${strings.failureWithTrace} ${responseTraceId}`
-          : strings.failure;
+        confirmationEl.textContent = strings.failure;
+        traceReference.textContent = responseTraceId
+          ? `${strings.referenceLabel} ${responseTraceId}`
+          : '';
       } finally {
         isSubmitting = false;
         submitButton.disabled = false;

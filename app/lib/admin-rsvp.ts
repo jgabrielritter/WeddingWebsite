@@ -2,8 +2,8 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import {
   getAttendingSelectColumn,
   getRsvpSchemaConfig,
-  normalizeAttendingValue,
-} from "./rsvp-schema";
+  normalizeAttending,
+} from "./rsvp/schema";
 
 export type RsvpRow = {
   id: string | number;
@@ -98,7 +98,7 @@ export async function getRsvpList(
       created_at: row.created_at,
       Name: row.Name,
       email: emailColumn ? row[emailColumn] ?? null : null,
-      attending: normalizeAttendingValue(attendingValue),
+      attending: normalizeAttending(attendingValue),
     } as RsvpRow;
   });
 }
