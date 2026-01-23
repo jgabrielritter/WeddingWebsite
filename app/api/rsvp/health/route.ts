@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { getRsvpCloseInfo } from "../../../lib/rsvp-utils";
-import { getRsvpSchemaConfig } from "../../../lib/rsvp-schema";
+import { getRsvpSchemaConfig } from "../../../lib/rsvp/schema";
 import { createRsvpClient } from "../../../lib/rsvp-supabase";
 
 export async function GET() {

@@ -3,7 +3,7 @@
 ## Unit Tests
 - **Attending normalization**
   - `parseAttending` should accept yes/no variants and booleans.
-  - `normalizeAttendingValue` should map legacy `"Yes/No"` strings to booleans.
+  - `normalizeAttending` should map legacy `"Yes/No"` strings to booleans.
 
 ## Integration Tests
 - **API validation**

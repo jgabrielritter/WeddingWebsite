@@ -14,7 +14,7 @@
 - **Table & column mapping**
   - Table: `RSVP` (default via `RSVP_TABLE`).
   - Columns: `Name`, `attending` (preferred), legacy `"Yes/No"`, optional `email`.
-  - Column configuration: `app/lib/rsvp-schema.ts`.
+  - Column configuration: `app/lib/rsvp/schema.ts`.
 
 ## User Journey (Happy Path)
 1. User opens `rsvp.html` and sees the RSVP form with language selection.

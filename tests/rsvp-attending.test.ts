@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { parseAttending } from "../app/lib/rsvp-utils";
-import { buildAttendingPayload, normalizeAttendingValue } from "../app/lib/rsvp-schema";
+import { buildInsertPayload, normalizeAttending } from "../app/lib/rsvp/schema";
 
 describe("attending normalization", () => {
   it("parses common truthy values", () => {
@@ -19,13 +19,19 @@ describe("attending normalization", () => {
   });
 
   it("normalizes RSVP table values", () => {
-    assert.equal(normalizeAttendingValue("Yes"), true);
-    assert.equal(normalizeAttendingValue("No"), false);
-    assert.equal(normalizeAttendingValue("maybe"), null);
+    assert.equal(normalizeAttending("Yes"), true);
+    assert.equal(normalizeAttending("No"), false);
+    assert.equal(normalizeAttending("maybe"), null);
   });
 
   it("builds payload for attending column", () => {
-    assert.deepEqual(buildAttendingPayload(true, "attending"), { attending: true });
-    assert.deepEqual(buildAttendingPayload(false, "Yes/No"), { "Yes/No": "No" });
+    assert.deepEqual(buildInsertPayload({ name: "Test", attending: true }, "attending"), {
+      Name: "Test",
+      attending: true,
+    });
+    assert.deepEqual(buildInsertPayload({ name: "Test", attending: false }, "legacy"), {
+      Name: "Test",
+      "Yes/No": "No",
+    });
   });
 });

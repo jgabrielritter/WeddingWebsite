@@ -8,9 +8,9 @@ import {
 } from "../../lib/rsvp-utils";
 import { sendRsvpConfirmationEmail } from "../../lib/email";
 import {
-  buildAttendingPayload,
+  buildInsertPayload,
   getRsvpSchemaConfig,
-} from "../../lib/rsvp-schema";
+} from "../../lib/rsvp/schema";
 import { consumeRateLimit, getClientIp } from "../../lib/rate-limit";
 import { createRsvpClient } from "../../lib/rsvp-supabase";
 
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     const email = (body?.email ?? "").trim();
     const language = body?.language ?? null;
     const honeypot = (body?.website ?? "").trim();
-    const formStart = Number(body?.formStart ?? 0);
+    const formStart = Number(body?.formStartTs ?? body?.formStart ?? 0);
     const now = Date.now();
 
     if (honeypot) {
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       );
     }
 
-    if (formStart && now - formStart < 1500) {
+    if (formStart && now - formStart < 800) {
       console.warn("[RSVP BOT BLOCKED]", { traceId, step: "timing" });
       return NextResponse.json(
         { ok: false, traceId, step: "timing", message: "Submission rejected" },
@@ -134,14 +134,19 @@ export async function POST(req: Request) {
       );
     }
 
-    const { table, attendingColumn, emailColumn } = getRsvpSchemaConfig();
+    const { table, attendingColumn, emailColumn, writeMode, nameColumn } =
+      getRsvpSchemaConfig();
     const supabase = createRsvpClient(supabaseUrl, serviceRoleKey);
 
-    const payload = {
-      Name: name,
-      ...(emailColumn ? { [emailColumn]: email } : {}),
-      ...buildAttendingPayload(attending, attendingColumn),
-    };
+    const payload = buildInsertPayload(
+      { name, attending, email },
+      writeMode,
+      {
+        nameColumn,
+        attendingColumn,
+        emailColumn,
+      }
+    );
 
     const { data: inserted, error: insertError } = await supabase
       .from(table)
