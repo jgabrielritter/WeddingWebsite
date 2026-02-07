@@ -376,6 +376,10 @@
         submitting: 'Submitting your RSVP...',
         success: 'Thank you! Your RSVP has been recorded.',
         failure: 'Something went wrong while submitting your RSVP. Please try again in a moment.',
+        endpointNotFound: 'RSVP endpoint not found (404). Please try again soon.',
+        serverError: 'Server error (500). Please try again soon.',
+        invalidResponse: 'Invalid response from the RSVP service. Please try again soon.',
+        networkError: 'Network error while submitting your RSVP. Please try again.',
         referenceLabel: 'Reference:',
         unavailable: 'RSVPs are temporarily unavailable while we connect to our response form. Please try again soon.'
       },
@@ -403,6 +407,10 @@
         submitting: 'Wysy\u0142amy Twoje RSVP...',
         success: 'Dzi\u0119kujemy! Twoja odpowied\u017a zosta\u0142a zapisana.',
         failure: 'Co\u015b posz\u0142o nie tak podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie za chwil\u0119.',
+        endpointNotFound: 'Nie znaleziono punktu RSVP (404). Spr\u00f3buj ponownie za chwil\u0119.',
+        serverError: 'B\u0142\u0105d serwera (500). Spr\u00f3buj ponownie za chwil\u0119.',
+        invalidResponse: 'Nieprawid\u0142owa odpowied\u017a z us\u0142ugi RSVP. Spr\u00f3buj ponownie za chwil\u0119.',
+        networkError: 'B\u0142\u0105d sieci podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie.',
         referenceLabel: 'Identyfikator:',
         unavailable: 'RSVP jest tymczasowo niedost\u0119pne. Spr\u00f3buj ponownie za chwil\u0119.'
       }
@@ -495,7 +503,24 @@
     async function checkAvailability() {
       try {
         const response = await fetch('/api/rsvp/health');
-        const json = await response.json();
+        if (!response.ok) {
+          const responseText = await response.text();
+          console.warn('RSVP availability check failed', {
+            status: response.status,
+            statusText: response.statusText,
+            body: responseText
+          });
+          throw new Error('RSVP availability check failed');
+        }
+
+        let json = null;
+        try {
+          json = await response.json();
+        } catch (parseError) {
+          console.warn('RSVP availability JSON parse failed', parseError);
+          throw parseError;
+        }
+
         if (json && json.ok) {
           isClosed = Boolean(json.closed);
           if (json.closeAt) {
@@ -505,6 +530,9 @@
             }
           }
           setFormAvailability();
+        } else {
+          console.warn('RSVP availability returned not ok', json);
+          throw new Error('RSVP availability returned not ok');
         }
       } catch (error) {
         console.warn('RSVP availability check failed', error);
@@ -591,9 +619,10 @@
           })
         });
 
+        const responseText = await response.text();
         let json = null;
         try {
-          json = await response.json();
+          json = responseText ? JSON.parse(responseText) : null;
         } catch (parseError) {
           console.warn('RSVP response JSON parse failed', parseError);
         }
@@ -603,9 +632,12 @@
           console.error('RSVP submit failed:', {
             status: response.status,
             statusText: response.statusText,
-            body: json
+            body: json ?? responseText
           });
-          if (response.status === 403 && json?.error === 'RSVPs are closed') {
+          if (
+            response.status === 403 &&
+            (json?.error === 'RSVPs are closed' || json?.message === 'RSVPs are closed')
+          ) {
             isClosed = true;
             if (json?.closeAt) {
               const closeDate = new Date(json.closeAt);
@@ -617,7 +649,21 @@
             confirmationEl.textContent = '';
             return;
           }
-          throw new Error(json?.message || json?.error || 'RSVP failed');
+
+          let failureMessage = strings.failure;
+          if (response.status === 404) {
+            failureMessage = strings.endpointNotFound;
+          } else if (response.status >= 500) {
+            failureMessage = strings.serverError;
+          } else if (!json && responseText) {
+            failureMessage = strings.invalidResponse;
+          } else if (json?.message) {
+            failureMessage = json.message;
+          } else if (json?.error) {
+            failureMessage = json.error;
+          }
+
+          throw new Error(failureMessage);
         }
 
         confirmationEl.textContent = strings.success;
@@ -626,7 +672,13 @@
         formStartField.value = Date.now().toString();
       } catch (error) {
         console.error('RSVP submission failed', error);
-        confirmationEl.textContent = strings.failure;
+        let message = strings.networkError;
+        if (error?.message && typeof error.message === 'string') {
+          message = /failed to fetch/i.test(error.message)
+            ? strings.networkError
+            : error.message;
+        }
+        confirmationEl.textContent = message;
         traceReference.textContent = responseTraceId
           ? `${strings.referenceLabel} ${responseTraceId}`
           : '';

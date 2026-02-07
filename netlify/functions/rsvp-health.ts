@@ -30,13 +30,28 @@ export const handler: Handler = async (event) => {
   const traceId = crypto.randomUUID();
 
   if (event.httpMethod !== "GET") {
-    return jsonResponse(405, { ok: false, traceId, error: "Method not allowed" });
+    return jsonResponse(405, { ok: false, traceId, message: "Method not allowed" });
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!supabaseUrl || !serviceRoleKey) {
-    return jsonResponse(500, { ok: false, traceId });
+  console.info("[RSVP HEALTH REQUEST]", { traceId });
+
+  const supabaseUrl =
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.SUPABASE_ANON_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!supabaseUrl) {
+    console.error("[RSVP HEALTH FAILED]", { traceId, step: "supabase-url" });
+    return jsonResponse(500, { ok: false, traceId, message: "Missing SUPABASE URL" });
+  }
+  if (!serviceRoleKey) {
+    console.error("[RSVP HEALTH FAILED]", { traceId, step: "supabase-key" });
+    return jsonResponse(500, {
+      ok: false,
+      traceId,
+      message: "Missing Supabase credentials",
+    });
   }
 
   try {
@@ -53,7 +68,11 @@ export const handler: Handler = async (event) => {
         details: error.details,
         hint: error.hint,
       });
-      return jsonResponse(500, { ok: false, traceId });
+      return jsonResponse(500, {
+        ok: false,
+        traceId,
+        message: "Health check failed",
+      });
     }
 
     const { closeAt, closed } = getRsvpCloseInfo(process.env.RSVP_CLOSE_AT);
@@ -67,6 +86,10 @@ export const handler: Handler = async (event) => {
     });
   } catch (error) {
     console.error("[RSVP HEALTH FAILED]", { traceId, step: "exception", error });
-    return jsonResponse(500, { ok: false, traceId });
+    return jsonResponse(500, {
+      ok: false,
+      traceId,
+      message: "Health check failed",
+    });
   }
 };
