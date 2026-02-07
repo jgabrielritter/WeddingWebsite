@@ -60,15 +60,23 @@ function parseJsonBody(event: HandlerEvent): { ok: true; value: any } | { ok: fa
 export const handler: Handler = async (event) => {
   const traceId = crypto.randomUUID();
   const startedAt = Date.now();
+  const ip = getNetlifyClientIp(event.headers ?? {});
+
+  console.info("[RSVP REQUEST]", {
+    traceId,
+    method: event.httpMethod,
+    ip,
+    hasBody: Boolean(event.body),
+  });
 
   if (event.httpMethod !== "POST") {
-    return jsonResponse(405, { ok: false, traceId, error: "Method not allowed" });
+    return jsonResponse(405, { ok: false, traceId, message: "Method not allowed" });
   }
 
   const parsed = parseJsonBody(event);
   if (!parsed.ok) {
     console.warn("[RSVP PARSE FAILED]", { traceId, step: "parse" });
-    return jsonResponse(400, { ok: false, traceId, error: "Invalid JSON body" });
+    return jsonResponse(400, { ok: false, traceId, message: "Invalid JSON body" });
   }
 
   const body = parsed.value ?? {};
@@ -82,15 +90,14 @@ export const handler: Handler = async (event) => {
 
   if (isHoneypotTripped(honeypot)) {
     console.warn("[RSVP BOT BLOCKED]", { traceId, step: "honeypot" });
-    return jsonResponse(400, { ok: false, traceId, error: "Submission rejected" });
+    return jsonResponse(400, { ok: false, traceId, message: "Submission rejected" });
   }
 
   if (isTimingTrapTripped(formStart, now, 800)) {
     console.warn("[RSVP BOT BLOCKED]", { traceId, step: "timing" });
-    return jsonResponse(429, { ok: false, traceId, error: "Submission rejected" });
+    return jsonResponse(429, { ok: false, traceId, message: "Submission rejected" });
   }
 
-  const ip = getNetlifyClientIp(event.headers ?? {});
   const rate = await consumeRateLimit(`rsvp:${ip}`, 10, 60_000, { now });
   if (!rate.allowed) {
     console.warn("[RSVP RATE LIMITED]", {
@@ -107,43 +114,63 @@ export const handler: Handler = async (event) => {
         "Cache-Control": "no-store",
         "Retry-After": "60",
       },
-      body: JSON.stringify({ ok: false, traceId, error: "Too many requests" }),
+      body: JSON.stringify({ ok: false, traceId, message: "Too many requests" }),
     };
   }
 
   if (!name) {
-    return jsonResponse(400, { ok: false, traceId, error: "Name is required" });
+    console.warn("[RSVP VALIDATION FAILED]", { traceId, step: "name" });
+    return jsonResponse(400, { ok: false, traceId, message: "Name is required" });
   }
 
   if (attending === null) {
-    return jsonResponse(400, { ok: false, traceId, error: "Attending is required" });
+    console.warn("[RSVP VALIDATION FAILED]", { traceId, step: "attending" });
+    return jsonResponse(400, { ok: false, traceId, message: "Attending is required" });
   }
 
   if (!email || !isValidEmail(email)) {
-    return jsonResponse(400, { ok: false, traceId, error: "Valid email is required" });
+    console.warn("[RSVP VALIDATION FAILED]", { traceId, step: "email" });
+    return jsonResponse(400, { ok: false, traceId, message: "Valid email is required" });
   }
 
   if (name.length > 200) {
-    return jsonResponse(400, { ok: false, traceId, error: "Name is too long" });
+    console.warn("[RSVP VALIDATION FAILED]", { traceId, step: "name-length" });
+    return jsonResponse(400, { ok: false, traceId, message: "Name is too long" });
   }
 
   if (email.length > 254) {
-    return jsonResponse(400, { ok: false, traceId, error: "Email is too long" });
+    console.warn("[RSVP VALIDATION FAILED]", { traceId, step: "email-length" });
+    return jsonResponse(400, { ok: false, traceId, message: "Email is too long" });
   }
 
   const { closeAt, closed } = getRsvpCloseInfo(process.env.RSVP_CLOSE_AT);
   if (closed) {
-    return jsonResponse(403, { ok: false, traceId, error: "RSVPs are closed" });
+    console.warn("[RSVP CLOSED]", { traceId, step: "closed" });
+    return jsonResponse(403, { ok: false, traceId, message: "RSVPs are closed" });
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseUrl =
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
   if (!supabaseUrl) {
-    return jsonResponse(500, { ok: false, traceId, error: "Server misconfigured" });
+    console.error("[RSVP ENV MISSING]", { traceId, step: "supabase-url" });
+    return jsonResponse(500, {
+      ok: false,
+      traceId,
+      message: "Missing SUPABASE URL",
+    });
   }
 
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.SUPABASE_ANON_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!serviceRoleKey) {
-    return jsonResponse(500, { ok: false, traceId, error: "Server misconfigured" });
+    console.error("[RSVP ENV MISSING]", { traceId, step: "supabase-key" });
+    return jsonResponse(500, {
+      ok: false,
+      traceId,
+      message: "Missing Supabase credentials",
+    });
   }
 
   const { table, attendingColumn, emailColumn, nameColumn, writeMode } =
@@ -175,7 +202,7 @@ export const handler: Handler = async (event) => {
     return jsonResponse(500, {
       ok: false,
       traceId,
-      error: isRls ? "Insert blocked by row-level security" : "Insert failed",
+      message: isRls ? "Insert blocked by row-level security" : "Insert failed",
     });
   }
 
