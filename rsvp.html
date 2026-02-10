@@ -498,8 +498,9 @@
       confirmationEl.textContent = strings.submitting;
 
       let responseTraceId = null;
+      const requestUrl = '/api/rsvp';
       try {
-        const response = await fetch('/api/rsvp', {
+        const response = await fetch(requestUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -514,14 +515,34 @@
 
         const responseText = await response.text();
         let json = null;
+        let parseError = null;
         try {
           json = responseText ? JSON.parse(responseText) : null;
-        } catch (parseError) {
-          console.warn('RSVP response JSON parse failed', parseError);
+        } catch (error) {
+          parseError = error;
         }
 
+        console.info('RSVP submit diagnostics', {
+          requestUrl,
+          status: response.status,
+          responseText,
+          parsedJson: json,
+          parseError: parseError ? String(parseError) : null
+        });
+
         responseTraceId = json?.traceId ?? null;
-        if (!response.ok || !json?.ok) {
+        const isServerSuccess = json?.ok === true;
+        const isServerFailure = json?.ok === false;
+
+        if (parseError && !response.ok) {
+          console.error('RSVP submit failed due to JSON parse + non-2xx status', {
+            status: response.status,
+            responseText
+          });
+          throw new Error(strings.submitError);
+        }
+
+        if ((!response.ok && !isServerSuccess) || isServerFailure) {
           console.error('RSVP submit failed:', {
             status: response.status,
             statusText: response.statusText,

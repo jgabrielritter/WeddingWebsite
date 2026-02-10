@@ -41,16 +41,16 @@ netlify dev
 
 Then submit a test RSVP:
 ```bash
-curl -s -X POST http://localhost:8888/api/rsvp \
+curl -i -X POST "http://localhost:8888/api/rsvp" \
   -H "Content-Type: application/json" \
-  -d '{"name":"Local Test","attending":true,"email":"local@example.com","formStartTs":1700000000000}'
+  -d '{"name":"Local Smoke Test","attending":true,"email":"test@example.com","language":"en","formStartTs":1700000000000,"website":""}'
 ```
 
 ### Production verification
 ```bash
-curl -s -X POST https://<your-site>.netlify.app/api/rsvp \
+curl -i -X POST "https://<site>.netlify.app/api/rsvp" \
   -H "Content-Type: application/json" \
-  -d '{"name":"Prod Test","attending":true,"email":"prod@example.com","formStartTs":1700000000000}'
+  -d '{"name":"Prod Smoke Test","attending":true,"email":"test@example.com","language":"en","formStartTs":1700000000000,"website":""}'
 ```
 
 ### What to check

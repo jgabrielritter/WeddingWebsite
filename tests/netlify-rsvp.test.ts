@@ -77,6 +77,28 @@ describe("netlify/functions/rsvp handleRsvp", () => {
     assert.equal(insertCalled, false);
   });
 
+
+  it("returns 500 when service role key is missing (anon fallback disabled)", async () => {
+    const response = await handleRsvp(
+      {
+        name: "Test User",
+        attending: true,
+        formStartTs: Date.now() - 2_000,
+      },
+      {
+        SUPABASE_URL: "https://example.supabase.co",
+        SUPABASE_ANON_KEY: "anon-key",
+      },
+      console
+    );
+
+    const body = readBody(response);
+    assert.equal(response.statusCode, 500);
+    assert.equal(body.ok, false);
+    assert.equal(body.message, "Server misconfigured");
+    assert.equal(typeof body.traceId, "string");
+  });
+
   it("returns 500 with safe message and traceId when env is missing", async () => {
     const response = await handleRsvp(
       {

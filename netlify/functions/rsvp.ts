@@ -117,10 +117,15 @@ function validatePayload(payload: ReturnType<typeof normalizePayload>): string |
 
 async function getSupabaseInsert(env: Env) {
   const supabaseUrl = env.SUPABASE_URL ?? env.NEXT_PUBLIC_SUPABASE_URL;
+  const hasServiceRole = Boolean(env.SUPABASE_SERVICE_ROLE_KEY);
   const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY ?? env.SUPABASE_ANON_KEY;
+  const keyMode = hasServiceRole ? "service_role" : env.SUPABASE_ANON_KEY ? "anon_fallback" : "missing";
+
+  console.info("[RSVP SUPABASE KEY MODE]", { keyMode });
 
   if (!supabaseUrl) throw new Error("MISSING_SUPABASE_URL");
   if (!supabaseKey) throw new Error("MISSING_SUPABASE_KEY");
+  if (!hasServiceRole) throw new Error("MISSING_SUPABASE_SERVICE_ROLE_KEY");
 
   const { createClient } = await import("@supabase/supabase-js");
   const client = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
@@ -158,12 +163,13 @@ export async function handleRsvp(
   try {
     const insertRsvp = deps?.insertRsvp ?? (await getSupabaseInsert(env));
     const schema = getRsvpSchemaConfig(env);
+    const insertPayload = buildInsertPayload(
+      { name: payload.name, attending: payload.attending as boolean, email: payload.email || undefined },
+      schema
+    );
     const inserted = await insertRsvp(
       schema.table,
-      buildInsertPayload(
-        { name: payload.name, attending: payload.attending as boolean, email: payload.email || undefined },
-        schema
-      )
+      insertPayload
     );
 
     if (deps?.sendEmail && payload.email) {
@@ -191,16 +197,39 @@ export async function handleRsvp(
         traceId,
         missing: "SUPABASE_SERVICE_ROLE_KEY/SUPABASE_ANON_KEY",
       });
-      return jsonResponse(500, { ok: false, traceId, message: "Server is missing configuration." });
+      return jsonResponse(500, { ok: false, traceId, message: "Server misconfigured" });
+    }
+    if (error?.message === "MISSING_SUPABASE_SERVICE_ROLE_KEY") {
+      logger.error("[RSVP ENV MISSING]", {
+        traceId,
+        missing: "SUPABASE_SERVICE_ROLE_KEY",
+      });
+      return jsonResponse(500, { ok: false, traceId, message: "Server misconfigured" });
     }
 
     logger.error("[RSVP INSERT FAILED]", {
       traceId,
+      table: getRsvpSchemaConfig(env).table,
+      payloadKeys: Object.keys(
+        buildInsertPayload(
+          {
+            name: payload.name,
+            attending: (payload.attending ?? false) as boolean,
+            email: payload.email || undefined,
+          },
+          getRsvpSchemaConfig(env)
+        )
+      ),
+      code: error?.code,
       message: error?.message,
       details: error?.details,
       hint: error?.hint,
     });
-    return jsonResponse(500, { ok: false, traceId, message: "Unable to submit RSVP right now." });
+    return jsonResponse(500, {
+      ok: false,
+      traceId,
+      message: "We couldn’t submit your RSVP. Please try again.",
+    });
   }
 }
 
@@ -208,8 +237,25 @@ export const handler: Handler = async (event) => {
   const traceId = crypto.randomUUID();
   const ip = getNetlifyClientIp(event.headers ?? {});
 
+  console.info("[RSVP REQUEST]", {
+    traceId,
+    method: event.httpMethod,
+    path: "/.netlify/functions/rsvp",
+    contentType: event.headers?.["content-type"] ?? event.headers?.["Content-Type"] ?? null,
+  });
+
   if (event.httpMethod === "OPTIONS") {
-    return jsonResponse(200, { ok: true, traceId });
+    return {
+      statusCode: 204,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+      body: "",
+    };
   }
   if (event.httpMethod !== "POST") {
     return jsonResponse(405, { ok: false, traceId, message: "Method not allowed" });
@@ -227,6 +273,9 @@ export const handler: Handler = async (event) => {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
         "Cache-Control": "no-store",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
         "Retry-After": "60",
       },
       body: JSON.stringify({ ok: false, traceId, message: "Too many requests" }),
