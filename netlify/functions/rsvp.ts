@@ -150,7 +150,7 @@ export const handler: Handler = async (event) => {
   }
 
   const supabaseUrl =
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+    process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!supabaseUrl) {
     console.error("[RSVP ENV MISSING]", { traceId, step: "supabase-url" });
     return jsonResponse(500, {
@@ -161,9 +161,7 @@ export const handler: Handler = async (event) => {
   }
 
   const serviceRoleKey =
-    process.env.SUPABASE_SERVICE_ROLE_KEY ??
-    process.env.SUPABASE_ANON_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY;
   if (!serviceRoleKey) {
     console.error("[RSVP ENV MISSING]", { traceId, step: "supabase-key" });
     return jsonResponse(500, {
