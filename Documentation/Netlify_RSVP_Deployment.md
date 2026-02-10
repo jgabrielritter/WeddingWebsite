@@ -2,7 +2,7 @@
 
 ## Runtime + Routing
 - **Production handler**: Netlify Functions (`/.netlify/functions/rsvp`, `rsvp-health`, `admin-rsvp`).
-- **Routing**: `netlify.toml` redirects `/api/rsvp`, `/api/rsvp/health`, and `/api/admin/rsvp/*` to the functions.
+- **Routing**: `netlify.toml` rewrites `/api/rsvp`, `/api/rsvp/health`, and `/api/admin/rsvp/*` to functions with `status = 200` and `force = true` so POST methods are preserved and never redirected to SPA HTML.
 
 ## Required Environment Variables
 
@@ -10,7 +10,9 @@
 - `NEXT_PUBLIC_SUPABASE_URL` — Supabase project URL.
 
 ### Secret (server-only)
-- `SUPABASE_SERVICE_ROLE_KEY` — **required** for inserts and admin endpoints.
+- `SUPABASE_URL` — recommended explicit server URL.
+- `SUPABASE_SERVICE_ROLE_KEY` — **preferred** for server-side inserts and admin endpoints.
+- `SUPABASE_ANON_KEY` — fallback only (requires RLS policy allowing inserts).
 - `ADMIN_SECRET` — bearer token for admin analytics + CSV export.
 - `RSVP_CLOSE_AT` — ISO8601 timestamp for RSVP close date (example: `2026-08-15T23:59:59-05:00`).
 - `EMAIL_PROVIDER` — optional (e.g. `resend`) to enable confirmation email.
@@ -29,20 +31,36 @@
 2. Add public + secret variables as listed above.
 3. Redeploy to apply new environment variables.
 
-## Logs + Debugging
-- View logs: **Functions → View logs** in the Netlify dashboard.
-- Look for trace IDs in logs when debugging RSVP submissions.
+## Verification Commands
+
+### Local verification (Netlify dev)
+Run Netlify dev in one terminal:
+```bash
+netlify dev
+```
+
+Then submit a test RSVP:
+```bash
+curl -s -X POST http://localhost:8888/api/rsvp \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Local Test","attending":true,"email":"local@example.com","formStartTs":1700000000000}'
+```
+
+### Production verification
+```bash
+curl -s -X POST https://<your-site>.netlify.app/api/rsvp \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Prod Test","attending":true,"email":"prod@example.com","formStartTs":1700000000000}'
+```
+
+### What to check
+- **Netlify Function logs** (`Functions → rsvp → logs`): find the `traceId` and verify no `ENV MISSING` or `INSERT FAILED` entries.
+- **Supabase table** (`RSVP` by default): verify a new row exists and core columns are populated (`Name`, attendance column, optional email column).
+- **Spam checks**: submit with non-empty `website` or very recent `formStartTs`; expect `{ "ok": true }` and no new row.
 
 ## Health Check
 ```bash
 curl -s https://<your-site>.netlify.app/api/rsvp/health
-```
-
-## RSVP Submit (POST)
-```bash
-curl -s -X POST https://<your-site>.netlify.app/api/rsvp \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test User","attending":true,"email":"test@example.com","formStartTs":1234567890}'
 ```
 
 ## Admin Summary (Bearer Token)
