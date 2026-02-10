@@ -262,11 +262,6 @@
       font-size: 14px;
     }
 
-    .form-disabled {
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
     .error {
       color: var(--error);
       font-size: 14px;
@@ -317,8 +312,6 @@
       <section class="card" aria-labelledby="rsvpTitle">
         <h2 id="rsvpTitle">RSVP Form</h2>
         <p id="cardIntro">Please share the names of all guests attending and let us know if you will be able to celebrate with us.</p>
-        <div class="notice" id="closedNotice" role="status" aria-live="polite"></div>
-
         <form id="rsvpForm" novalidate>
           <label id="guestNamesLabel" for="guestNames">Name of the Guests Attending</label>
           <textarea id="guestNames" name="guestNames" placeholder="Angelika &amp; Gabe" required maxlength="200" autocomplete="name" autocapitalize="words" aria-describedby="nameError" aria-invalid="false"></textarea>
@@ -345,7 +338,6 @@
           <button type="submit" id="submitButton">Submit</button>
         </form>
         <div class="confirmation" id="confirmation" aria-live="polite"></div>
-        <div class="helper-text" id="traceReference" aria-live="polite"></div>
       </section>
     </main>
   </div>
@@ -372,16 +364,9 @@
         validationEmail: 'Please share a valid email address.',
         validationEmailLength: 'Please keep the email under 254 characters.',
         validationAttendance: 'Please let us know if you are attending.',
-        closedMessage: 'RSVPs are now closed. If you need help, please contact us directly.',
-        submitting: 'Submitting your RSVP...',
+        submitting: 'Submitting\u2026',
         success: 'Thank you! Your RSVP has been recorded.',
-        failure: 'Something went wrong while submitting your RSVP. Please try again in a moment.',
-        endpointNotFound: 'RSVP endpoint not found (404). Please try again soon.',
-        serverError: 'Server error (500). Please try again soon.',
-        invalidResponse: 'Invalid response from the RSVP service. Please try again soon.',
-        networkError: 'Network error while submitting your RSVP. Please try again.',
-        referenceLabel: 'Reference:',
-        unavailable: 'RSVPs are temporarily unavailable while we connect to our response form. Please try again soon.'
+        submitError: "We couldn't submit your RSVP. Please try again."
       },
       pl: {
         languageLabel: 'J\u0119zyk',
@@ -403,16 +388,9 @@
         validationEmail: 'Podaj poprawny adres email.',
         validationEmailLength: 'Podaj poprawny adres email (maksymalnie 254 znaki).',
         validationAttendance: 'Daj nam zna\u0107, czy b\u0119dziesz uczestniczy\u0107.',
-        closedMessage: 'RSVP jest ju\u017c zamkni\u0119te. Je\u015bli potrzebujesz pomocy, skontaktuj si\u0119 z nami.',
-        submitting: 'Wysy\u0142amy Twoje RSVP...',
+        submitting: 'Wysy\u0142amy\u2026',
         success: 'Dzi\u0119kujemy! Twoja odpowied\u017a zosta\u0142a zapisana.',
-        failure: 'Co\u015b posz\u0142o nie tak podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie za chwil\u0119.',
-        endpointNotFound: 'Nie znaleziono punktu RSVP (404). Spr\u00f3buj ponownie za chwil\u0119.',
-        serverError: 'B\u0142\u0105d serwera (500). Spr\u00f3buj ponownie za chwil\u0119.',
-        invalidResponse: 'Nieprawid\u0142owa odpowied\u017a z us\u0142ugi RSVP. Spr\u00f3buj ponownie za chwil\u0119.',
-        networkError: 'B\u0142\u0105d sieci podczas wysy\u0142ania RSVP. Spr\u00f3buj ponownie.',
-        referenceLabel: 'Identyfikator:',
-        unavailable: 'RSVP jest tymczasowo niedost\u0119pne. Spr\u00f3buj ponownie za chwil\u0119.'
+        submitError: 'Nie uda\u0142o si\u0119 wys\u0142a\u0107 RSVP. Spr\u00f3buj ponownie.'
       }
     };
 
@@ -437,13 +415,9 @@
     const attendanceNo = document.getElementById('attendanceNo');
     const languageLabel = document.getElementById('languageLabel');
     const languageSelect = document.getElementById('languageSelect');
-    const closedNotice = document.getElementById('closedNotice');
     const honeypotField = document.getElementById('website');
     const formStartField = document.getElementById('formStartTs');
-    const traceReference = document.getElementById('traceReference');
     let isSubmitting = false;
-    let isClosed = false;
-    let closeAtLabel = '';
 
     function applyTranslations(lang = 'en') {
       const strings = translations[lang] || translations.en;
@@ -462,86 +436,13 @@
       attendanceYes.textContent = strings.selectYes;
       attendanceNo.textContent = strings.selectNo;
       submitButton.textContent = strings.submitButton;
-      if (isClosed) {
-        closedNotice.textContent = closeAtLabel
-          ? `${strings.closedMessage} (${closeAtLabel})`
-          : strings.closedMessage;
-      }
     }
 
     applyTranslations(languageSelect.value);
 
     languageSelect.addEventListener('change', (event) => {
       applyTranslations(event.target.value);
-      setFormAvailability();
     });
-
-    function setFormAvailability() {
-      if (!isClosed) {
-        closedNotice.textContent = '';
-        rsvpForm.classList.remove('form-disabled');
-        nameField.disabled = false;
-        emailField.disabled = false;
-        attendanceField.disabled = false;
-        submitButton.disabled = false;
-        honeypotField.disabled = false;
-        return;
-      }
-
-      const strings = translations[languageSelect.value] || translations.en;
-      closedNotice.textContent = closeAtLabel
-        ? `${strings.closedMessage} (${closeAtLabel})`
-        : strings.closedMessage;
-      rsvpForm.classList.add('form-disabled');
-      nameField.disabled = true;
-      emailField.disabled = true;
-      attendanceField.disabled = true;
-      submitButton.disabled = true;
-      honeypotField.disabled = true;
-    }
-
-    async function checkAvailability() {
-      try {
-        const response = await fetch('/api/rsvp/health');
-        if (!response.ok) {
-          const responseText = await response.text();
-          console.warn('RSVP availability check failed', {
-            status: response.status,
-            statusText: response.statusText,
-            body: responseText
-          });
-          throw new Error('RSVP availability check failed');
-        }
-
-        let json = null;
-        try {
-          json = await response.json();
-        } catch (parseError) {
-          console.warn('RSVP availability JSON parse failed', parseError);
-          throw parseError;
-        }
-
-        if (json && json.ok) {
-          isClosed = Boolean(json.closed);
-          if (json.closeAt) {
-            const closeDate = new Date(json.closeAt);
-            if (!Number.isNaN(closeDate.getTime())) {
-              closeAtLabel = closeDate.toLocaleString();
-            }
-          }
-          setFormAvailability();
-        } else {
-          console.warn('RSVP availability returned not ok', json);
-          throw new Error('RSVP availability returned not ok');
-        }
-      } catch (error) {
-        console.warn('RSVP availability check failed', error);
-        const strings = translations[languageSelect.value] || translations.en;
-        closedNotice.textContent = strings.unavailable;
-      }
-    }
-
-    checkAvailability();
 
     formStartField.value = Date.now().toString();
 
@@ -562,19 +463,11 @@
       clearFieldError(emailField, emailError);
       clearFieldError(attendanceField, attendanceError);
       confirmationEl.textContent = '';
-      traceReference.textContent = '';
 
       const names = nameField.value.trim();
       const email = emailField.value.trim();
       const attending = attendanceField.value;
       const strings = translations[languageSelect.value] || translations.en;
-
-      if (isClosed) {
-        closedNotice.textContent = closeAtLabel
-          ? `${strings.closedMessage} (${closeAtLabel})`
-          : strings.closedMessage;
-        return;
-      }
 
       if (!names) {
         setFieldError(nameField, nameError, strings.validationNames);
@@ -634,54 +527,18 @@
             statusText: response.statusText,
             body: json ?? responseText
           });
-          if (
-            response.status === 403 &&
-            (json?.error === 'RSVPs are closed' || json?.message === 'RSVPs are closed')
-          ) {
-            isClosed = true;
-            if (json?.closeAt) {
-              const closeDate = new Date(json.closeAt);
-              if (!Number.isNaN(closeDate.getTime())) {
-                closeAtLabel = closeDate.toLocaleString();
-              }
-            }
-            setFormAvailability();
-            confirmationEl.textContent = '';
-            return;
-          }
-
-          let failureMessage = strings.failure;
-          if (response.status === 404) {
-            failureMessage = strings.endpointNotFound;
-          } else if (response.status >= 500) {
-            failureMessage = strings.serverError;
-          } else if (!json && responseText) {
-            failureMessage = strings.invalidResponse;
-          } else if (json?.message) {
-            failureMessage = json.message;
-          } else if (json?.error) {
-            failureMessage = json.error;
-          }
-
-          throw new Error(failureMessage);
+          throw new Error(strings.submitError);
         }
 
         confirmationEl.textContent = strings.success;
-        traceReference.textContent = '';
         rsvpForm.reset();
         formStartField.value = Date.now().toString();
       } catch (error) {
-        console.error('RSVP submission failed', error);
-        let message = strings.networkError;
-        if (error?.message && typeof error.message === 'string') {
-          message = /failed to fetch/i.test(error.message)
-            ? strings.networkError
-            : error.message;
-        }
-        confirmationEl.textContent = message;
-        traceReference.textContent = responseTraceId
-          ? `${strings.referenceLabel} ${responseTraceId}`
-          : '';
+        console.error('RSVP submission failed', {
+          error,
+          traceId: responseTraceId
+        });
+        confirmationEl.textContent = strings.submitError;
       } finally {
         isSubmitting = false;
         submitButton.disabled = false;
