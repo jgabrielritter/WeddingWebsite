@@ -1,0 +1,8 @@
+{
+  "name": "wedding-website",
+  "private": true,
+  "scripts": {
+    "test": "node --test --experimental-strip-types tests/netlify-rsvp.test.ts"
+  },
+  "type": "module"
+}

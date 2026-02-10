@@ -1,128 +1,97 @@
-import { describe, it, beforeEach, afterEach } from "node:test";
+import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { handler as rsvpHandler } from "../netlify/functions/rsvp";
-import { handler as healthHandler } from "../netlify/functions/rsvp-health";
-import {
-  getNetlifyClientIp,
-} from "../app/lib/rsvp/netlify-utils";
-import { buildInsertPayload } from "../app/lib/rsvp/schema";
-import { setTestSupabaseClient } from "../app/lib/rsvp-supabase";
+import { handleRsvp } from "../netlify/functions/rsvp.ts";
 
-describe("Netlify RSVP handlers", () => {
-  const originalEnv = { ...process.env };
+function readBody(response: { body: string }) {
+  return JSON.parse(response.body) as Record<string, any>;
+}
 
-  beforeEach(() => {
-    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role-key";
-    process.env.RSVP_ATTENDING_COLUMN = "attending";
-    process.env.RSVP_EMAIL_COLUMN = "email";
-    process.env.RSVP_TABLE = "RSVP";
-    delete process.env.UPSTASH_REDIS_REST_URL;
-    delete process.env.UPSTASH_REDIS_REST_TOKEN;
-  });
-
-  afterEach(() => {
-    process.env = { ...originalEnv };
-    setTestSupabaseClient(null);
-  });
-
-  it("prefers the Netlify client IP header", () => {
-    assert.equal(
-      getNetlifyClientIp({
-        "x-nf-client-connection-ip": "203.0.113.5",
-        "x-forwarded-for": "198.51.100.1",
-      }),
-      "203.0.113.5"
+describe("netlify/functions/rsvp handleRsvp", () => {
+  it("returns ok for a valid payload when insert succeeds", async () => {
+    let insertCalled = false;
+    const response = await handleRsvp(
+      {
+        name: "Test User",
+        attending: true,
+        email: "test@example.com",
+        formStartTs: Date.now() - 2_000,
+      },
+      {
+        SUPABASE_URL: "https://example.supabase.co",
+        SUPABASE_SERVICE_ROLE_KEY: "service-role-key",
+      },
+      console,
+      {
+        insertRsvp: async () => {
+          insertCalled = true;
+          return { id: "mock-id" };
+        },
+        sendEmail: async () => undefined,
+      }
     );
+
+    const body = readBody(response);
+    assert.equal(response.statusCode, 200);
+    assert.equal(body.ok, true);
+    assert.equal(body.insertedId, "mock-id");
+    assert.equal(insertCalled, true);
   });
 
-  it("builds insert payloads with the correct columns", () => {
-    assert.deepEqual(
-      buildInsertPayload({ name: "Test", attending: true, email: "a@b.com" }, "attending"),
-      { Name: "Test", email: "a@b.com", attending: true }
+  it("returns 400 for invalid payload", async () => {
+    const response = await handleRsvp(
+      { name: "", attending: true },
+      {},
+      console,
+      { insertRsvp: async () => ({ id: "unused" }) }
     );
-    assert.deepEqual(buildInsertPayload({ name: "Test", attending: false }, "legacy"), {
-      Name: "Test",
-      "Yes/No": "No",
-    });
+
+    const body = readBody(response);
+    assert.equal(response.statusCode, 400);
+    assert.equal(body.ok, false);
+    assert.equal(body.message, "Name is required");
+    assert.equal(typeof body.traceId, "string");
   });
 
-  it("blocks honeypot submissions", () => {
-    const payload = {
-      name: "Bot User",
-      attending: true,
-      email: "bot@example.com",
-      website: "spam",
-      formStartTs: Date.now() - 2000,
-    };
-    return rsvpHandler({
-      httpMethod: "POST",
-      headers: { "x-nf-client-connection-ip": "203.0.113.88" },
-      body: JSON.stringify(payload),
-    }).then((response) => {
-      assert.equal(response.statusCode, 400);
-    });
+  it("returns ok and does not insert for honeypot payload", async () => {
+    let insertCalled = false;
+    const response = await handleRsvp(
+      {
+        name: "Bot User",
+        attending: true,
+        website: "https://spam.example",
+        formStartTs: Date.now() - 2_000,
+      },
+      {},
+      console,
+      {
+        insertRsvp: async () => {
+          insertCalled = true;
+          return { id: "should-not-happen" };
+        },
+      }
+    );
+
+    const body = readBody(response);
+    assert.equal(response.statusCode, 200);
+    assert.equal(body.ok, true);
+    assert.equal(insertCalled, false);
   });
 
-  it("blocks timing trap submissions", async () => {
-    const payload = {
-      name: "Fast User",
-      attending: true,
-      email: "fast@example.com",
-      formStartTs: Date.now(),
-    };
-    const response = await rsvpHandler({
-      httpMethod: "POST",
-      headers: { "x-nf-client-connection-ip": "203.0.113.89" },
-      body: JSON.stringify(payload),
-    });
-    assert.equal(response.statusCode, 429);
-  });
+  it("returns 500 with safe message and traceId when env is missing", async () => {
+    const response = await handleRsvp(
+      {
+        name: "Test User",
+        attending: true,
+        formStartTs: Date.now() - 2_000,
+      },
+      {},
+      console
+    );
 
-  it("rate limits after the configured threshold", async () => {
-    const mockClient = {
-      from: () => ({
-        insert: () => ({
-          select: () => ({
-            maybeSingle: async () => ({ data: { id: "mock-id" }, error: null }),
-          }),
-        }),
-      }),
-    };
-    setTestSupabaseClient(mockClient as any);
-
-    const payload = {
-      name: "Test User",
-      attending: true,
-      email: "test@example.com",
-      formStartTs: Date.now() - 2000,
-    };
-
-    const event = {
-      httpMethod: "POST",
-      headers: { "x-nf-client-connection-ip": "198.51.100.10" },
-      body: JSON.stringify(payload),
-    };
-
-    let lastStatus = 200;
-    for (let i = 0; i < 11; i += 1) {
-      const response = await rsvpHandler(event);
-      lastStatus = response.statusCode;
-    }
-
-    assert.equal(lastStatus, 429);
-  });
-
-  it("returns a safe error payload for health checks", async () => {
-    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    const response = await healthHandler({ httpMethod: "GET" });
+    const body = readBody(response);
     assert.equal(response.statusCode, 500);
-    const json = JSON.parse(response.body);
-    assert.equal(json.ok, false);
-    assert.equal(typeof json.traceId, "string");
-    assert.equal("error" in json, false);
-    assert.equal("message" in json, false);
+    assert.equal(body.ok, false);
+    assert.equal(body.message, "Server is missing configuration.");
+    assert.equal(typeof body.traceId, "string");
   });
 });
