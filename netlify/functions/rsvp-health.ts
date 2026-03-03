@@ -37,11 +37,25 @@ export const handler: Handler = async (event) => {
 
   const supabaseUrl =
     process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey =
-    process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const hasSupabaseUrl = Boolean(supabaseUrl);
+  const hasKey = Boolean(serviceRoleKey);
+
+  console.info("[RSVP HEALTH ENV CHECK]", {
+    traceId,
+    hasSupabaseUrl,
+    hasServiceRoleKey: hasKey,
+  });
+
   if (!supabaseUrl) {
     console.error("[RSVP HEALTH FAILED]", { traceId, step: "supabase-url" });
-    return jsonResponse(500, { ok: false, traceId, message: "Missing SUPABASE URL" });
+    return jsonResponse(500, {
+      ok: false,
+      traceId,
+      message: "Missing SUPABASE URL",
+      hasSupabaseUrl,
+      hasKey,
+    });
   }
   if (!serviceRoleKey) {
     console.error("[RSVP HEALTH FAILED]", { traceId, step: "supabase-key" });
@@ -49,6 +63,8 @@ export const handler: Handler = async (event) => {
       ok: false,
       traceId,
       message: "Missing Supabase credentials",
+      hasSupabaseUrl,
+      hasKey,
     });
   }
 
@@ -78,6 +94,8 @@ export const handler: Handler = async (event) => {
     return jsonResponse(200, {
       ok: true,
       traceId,
+      hasSupabaseUrl,
+      hasKey,
       rowCount: Array.isArray(data) ? data.length : 0,
       closed,
       closeAt: closeAt ? closeAt.toISOString() : null,
