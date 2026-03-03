@@ -111,6 +111,9 @@ function validatePayload(payload: ReturnType<typeof normalizePayload>): string |
   if (!payload.name) return "Name is required";
   if (payload.attending === null) return "Attending is required";
   if (payload.name.length > 200) return "Name is too long";
+  if (payload.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
+    return "Valid email is required";
+  }
   if (payload.email && payload.email.length > 254) return "Email is too long";
   return null;
 }
@@ -121,7 +124,12 @@ async function getSupabaseInsert(env: Env) {
   const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY ?? env.SUPABASE_ANON_KEY;
   const keyMode = hasServiceRole ? "service_role" : env.SUPABASE_ANON_KEY ? "anon_fallback" : "missing";
 
-  console.info("[RSVP SUPABASE KEY MODE]", { keyMode });
+  console.info("[RSVP ENV CHECK]", {
+    hasSupabaseUrl: Boolean(supabaseUrl),
+    hasAnonKey: Boolean(env.SUPABASE_ANON_KEY),
+    hasServiceRole,
+    keyMode,
+  });
 
   if (!supabaseUrl) throw new Error("MISSING_SUPABASE_URL");
   if (!supabaseKey) throw new Error("MISSING_SUPABASE_KEY");
@@ -151,8 +159,21 @@ export async function handleRsvp(
   const traceId = deps?.traceId?.() ?? crypto.randomUUID();
   const now = deps?.now?.() ?? Date.now();
   const payload = normalizePayload(requestBody);
-
   const validationError = validatePayload(payload);
+
+  logger.info("[RSVP HANDLE START]", {
+    traceId,
+    method: "POST",
+    payload: {
+      nameLength: payload.name.length,
+      hasEmail: Boolean(payload.email),
+      attending: payload.attending,
+      hasWebsiteValue: Boolean(payload.website),
+      formStartTs: payload.formStartTs,
+    },
+    validation: validationError ? { ok: false, reason: validationError } : { ok: true },
+  });
+
   if (validationError) return jsonResponse(400, { ok: false, traceId, message: validationError });
 
   if (isHoneypotTripped(payload.website) || isTimingTrapTripped(payload.formStartTs, now, 800)) {
@@ -167,10 +188,21 @@ export async function handleRsvp(
       { name: payload.name, attending: payload.attending as boolean, email: payload.email || undefined },
       schema
     );
+    logger.info("[RSVP INSERT ATTEMPT]", {
+      traceId,
+      table: schema.table,
+      insertPayload,
+    });
+
     const inserted = await insertRsvp(
       schema.table,
       insertPayload
     );
+
+    logger.info("[RSVP INSERT RESULT]", {
+      traceId,
+      insertedId: inserted?.id ?? null,
+    });
 
     if (deps?.sendEmail && payload.email) {
       try {
@@ -210,15 +242,13 @@ export async function handleRsvp(
     logger.error("[RSVP INSERT FAILED]", {
       traceId,
       table: getRsvpSchemaConfig(env).table,
-      payloadKeys: Object.keys(
-        buildInsertPayload(
-          {
-            name: payload.name,
-            attending: (payload.attending ?? false) as boolean,
-            email: payload.email || undefined,
-          },
-          getRsvpSchemaConfig(env)
-        )
+      insertPayload: buildInsertPayload(
+        {
+          name: payload.name,
+          attending: (payload.attending ?? false) as boolean,
+          email: payload.email || undefined,
+        },
+        getRsvpSchemaConfig(env)
       ),
       code: error?.code,
       message: error?.message,
@@ -265,6 +295,11 @@ export const handler: Handler = async (event) => {
   if (!parsed.ok) {
     return jsonResponse(400, { ok: false, traceId, message: "Invalid JSON body" });
   }
+
+  console.info("[RSVP REQUEST BODY]", {
+    traceId,
+    parsedBody: parsed.value,
+  });
 
   const rate = await consumeRateLimit(`rsvp:${ip}`, 10, 60_000, { now: Date.now() });
   if (!rate.allowed) {

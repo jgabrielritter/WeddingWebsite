@@ -559,7 +559,9 @@
           error,
           traceId: responseTraceId
         });
-        confirmationEl.textContent = strings.submitError;
+        confirmationEl.textContent = responseTraceId
+          ? `${strings.submitError} (Trace ID: ${responseTraceId})`
+          : strings.submitError;
       } finally {
         isSubmitting = false;
         submitButton.disabled = false;
