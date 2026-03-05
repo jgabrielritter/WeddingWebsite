@@ -1,2 +1,3 @@
+# Local-only configuration (never commit secrets)
 rsvp-config.js
 .env

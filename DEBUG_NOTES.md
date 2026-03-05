@@ -43,3 +43,6 @@ This behavior is now explicit and traceable in server logs.
 ## Supabase policy approach
 Implemented safer server-side insert approach using `SUPABASE_SERVICE_ROLE_KEY` on Netlify function only.
 No service-role secret is exposed to the browser.
+
+## Secret handling reminder
+Never commit real Supabase URLs/keys to repo; keep them in Netlify env vars or local gitignored files.
