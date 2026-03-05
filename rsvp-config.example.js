@@ -1,5 +1,5 @@
-// Copy this file to rsvp-config.js and replace the key with your Supabase anon key.
+// Template only: do not commit real Supabase URLs or keys to this repository.
 window.RSVP_CONFIG = {
-  supabaseUrl: 'https://gokjzlqkmdcsnbgvcrtk.supabase.co',
-  supabaseKey: 'sb_publishable_4Zl5xIWsUsxo1HP2G63AYA_2Oeshwk9'
+  supabaseUrl: 'https://YOUR_PROJECT_REF.supabase.co',
+  supabaseKey: 'YOUR_SUPABASE_ANON_KEY'
 };
