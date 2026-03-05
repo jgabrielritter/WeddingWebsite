@@ -57,32 +57,27 @@ function parseAttending(value: unknown): boolean | null {
 }
 
 function getRsvpSchemaConfig(env: Env) {
-  const ATTENDING_COL = "attending";
   return {
     table: env.RSVP_TABLE ?? "RSVP",
-    nameColumn: "Name",
-    attendingColumn: env.RSVP_ATTENDING_COLUMN ?? ATTENDING_COL,
-    legacyYesNoColumn: "Yes/No",
-    emailColumn: env.RSVP_EMAIL_COLUMN === "" ? null : env.RSVP_EMAIL_COLUMN ?? "email",
-    writeMode: (env.RSVP_ATTENDING_COLUMN ?? ATTENDING_COL) === ATTENDING_COL ? "attending" : "legacy",
+    nameColumn: env.RSVP_NAME_COLUMN ?? "names_of_guests",
+    emailColumn: env.RSVP_EMAIL_COLUMN === "" ? null : env.RSVP_EMAIL_COLUMN ?? "email_address",
+    attendingColumn: env.RSVP_ATTENDING_COLUMN ?? "attending",
   } as const;
 }
 
 function buildInsertPayload(
   payload: { name: string; attending: boolean; email?: string },
   schema: ReturnType<typeof getRsvpSchemaConfig>
-): Record<string, string | boolean> {
-  const insertPayload: Record<string, string | boolean> = {
+): Record<string, string> {
+  const insertPayload: Record<string, string> = {
     [schema.nameColumn]: payload.name,
+    [schema.attendingColumn]: payload.attending ? "Yes" : "No",
   };
+
   if (payload.email && schema.emailColumn) {
     insertPayload[schema.emailColumn] = payload.email;
   }
-  if (schema.writeMode === "attending") {
-    insertPayload[schema.attendingColumn] = payload.attending;
-  } else {
-    insertPayload[schema.legacyYesNoColumn] = payload.attending ? "Yes" : "No";
-  }
+
   return insertPayload;
 }
 
