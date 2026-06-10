@@ -353,6 +353,109 @@ body {
   font-size: clamp(20px, 2.5vw, 28px);
 }
 
+.attractions-section .section__text {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.attractions__intro {
+  font-size: clamp(18px, 2.2vw, 24px);
+  margin-bottom: 36px;
+}
+
+.attractions__group {
+  margin-top: 42px;
+}
+
+.attractions__title {
+  color: inherit;
+  font-family: "Lato", sans-serif;
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  line-height: 1.4;
+  margin: 0 0 20px;
+  text-transform: uppercase;
+}
+
+.attractions__carousel {
+  margin: 0 auto;
+  max-width: min(100%, 1120px);
+  overflow-x: auto;
+  padding: 4px 20px 24px;
+  scroll-padding-left: 20px;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: #d6b098 transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.attractions__carousel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.attractions__carousel::-webkit-scrollbar-track {
+  background: rgba(214, 176, 152, 0.12);
+  border-radius: 999px;
+}
+
+.attractions__carousel::-webkit-scrollbar-thumb {
+  background: rgba(214, 176, 152, 0.65);
+  border-radius: 999px;
+}
+
+.attractions__track {
+  display: flex;
+  gap: 18px;
+}
+
+.attractions__card {
+  background: rgba(255, 237, 227, 0.06);
+  border: 1px solid rgba(214, 176, 152, 0.55);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+  box-sizing: border-box;
+  flex: 0 0 280px;
+  min-height: 150px;
+  padding: 24px;
+  scroll-snap-align: start;
+  text-align: left;
+}
+
+.attractions__card h4 {
+  color: inherit;
+  font-family: "Libre Baskerville", serif;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  margin: 0 0 12px;
+}
+
+.attractions__card p {
+  color: inherit;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .attractions__carousel {
+    padding-left: 12px;
+    padding-right: 12px;
+    scroll-padding-left: 12px;
+  }
+
+  .attractions__track {
+    gap: 14px;
+  }
+
+  .attractions__card {
+    flex-basis: min(76vw, 280px);
+    padding: 20px;
+  }
+}
+
 .section__label {
   font-weight: 400;
   font-size: clamp(14px, 4vw, 24px);
@@ -381,6 +484,7 @@ body {
   .js-editor-section[data-id="78064"] .section__heading,
   .js-editor-section[data-id="78069"] .section__heading,
   .dress-code-section .section__heading,
+  .attractions-section .section__heading,
   a[name="gallery"] + .section__heading,
   a[name="accommodations"] + .section__heading {
     font-size: clamp(18px, 5vw, 24px);
@@ -627,6 +731,10 @@ Gabe
 
 <li class="menu__item">
 <a class="menu__link js-smooth-scroll" data-id="registry" href="#registry" data-i18n="nav.registry">Registry</a>
+</li>
+
+<li class="menu__item">
+<a class="menu__link js-smooth-scroll" data-id="attractions" href="#attractions" data-i18n="nav.attractions">Attractions</a>
 </li>
 
 <li class="menu__item">
@@ -1218,6 +1326,59 @@ We won’t be having a traditional wedding registry. If you would like to celebr
 }
 </style>
 
+<!-- Attractions Section -->
+<section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-50 section--alignment-center section--column-odd js-section has-all-widths attractions-section" data-id="attractions">
+<div class="section__content">
+<div class="editor__container">
+<div class="js-section-render">
+<a name="attractions" id="attractions"></a>
+<h2 class="section__heading section__heading--single-line">
+<span class="s">
+<span class="w" data-i18n="attractions.heading">Attractions</span>
+</span>
+</h2>
+<div class="section__text attractions__intro" data-i18n="attractions.intro">
+Make the most of your time in Poughkeepsie and the Hudson Valley. Here are a few local restaurants, cafes, breweries, wineries, and nearby attractions we recommend exploring while you’re in town.
+</div>
+
+<div class="attractions__group" aria-labelledby="attractions-food-title">
+<h3 class="attractions__title" id="attractions-food-title" data-i18n="attractions.food_heading">Food &amp; Drinks</h3>
+<div class="attractions__carousel" tabindex="0" aria-label="Food and drinks recommendations">
+<div class="attractions__track">
+<article class="attractions__card"><h4>Lola’s</h4></article>
+<article class="attractions__card"><h4>Zeus Brewing Company</h4><p>Rooftop</p></article>
+<article class="attractions__card"><h4>Schatzi’s Pub &amp; Bier Garden</h4></article>
+<article class="attractions__card"><h4>Hudson &amp; Packard</h4><p>Pizza</p></article>
+<article class="attractions__card"><h4>Cosimo’s</h4></article>
+<article class="attractions__card"><h4>Brasserie 292</h4></article>
+<article class="attractions__card"><h4>The Governess</h4></article>
+<article class="attractions__card"><h4>Farmers &amp; Chefs</h4></article>
+<article class="attractions__card"><h4>Kelly’s Bakery</h4></article>
+<article class="attractions__card"><h4>Mill House Brewing Company</h4></article>
+<article class="attractions__card"><h4>Pho 96</h4></article>
+<article class="attractions__card"><h4>Anna et Pierre</h4><p>Cafe</p></article>
+<article class="attractions__card"><h4>Rosticceria Rossi &amp; Sons</h4><p>Deli sandwiches</p></article>
+<article class="attractions__card"><h4>Millbrook Vineyards &amp; Winery</h4></article>
+</div>
+</div>
+</div>
+
+<div class="attractions__group" aria-labelledby="attractions-things-title">
+<h3 class="attractions__title" id="attractions-things-title" data-i18n="attractions.things_heading">Things To Do</h3>
+<div class="attractions__carousel" tabindex="0" aria-label="Things to do recommendations">
+<div class="attractions__track">
+<article class="attractions__card"><h4>Vanderbilt Mansion National Historic Site</h4><p>Hyde Park</p></article>
+<article class="attractions__card"><h4>Culinary Institute of America</h4></article>
+<article class="attractions__card"><h4>Walkway Over the Hudson</h4></article>
+<article class="attractions__card"><h4>Home of Franklin D. Roosevelt National Historic Site</h4></article>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
 <!-- Photo Gallery Section -->
 <section class="section editor__section js-editor-section section--element-heading section--width-full section--padding-top-50 section--padding-bottom-0 section--alignment-center section--column-odd js-section has-all-widths" data-id="gallery">
 <div class="section__content">
@@ -1792,6 +1953,7 @@ const translations = {
     'nav.schedule': 'Schedule',
     'nav.accommodations': 'Accommodations',
     'nav.registry': 'Registry',
+    'nav.attractions': 'Attractions',
     'nav.rsvp': 'RSVP',
     'header.date': 'September 25, 2026',
     'header.rsvp_by': 'RSVP by August 1, 2026',
@@ -1818,6 +1980,10 @@ const translations = {
     'registry.description': 'We won\'t be having a traditional wedding registry. If you would like to celebrate us with a gift, we are saving for our honeymoon and future adventures. Contributions can be made in person or through the Venmo link below - but most of all, we\'re just excited to celebrate with you!',
     'registry.button': 'Send a Honeymoon Gift on Venmo',
     'registry.note': 'Venmo: @Angelika-Sieruta',
+    'attractions.heading': 'Attractions',
+    'attractions.intro': 'Make the most of your time in Poughkeepsie and the Hudson Valley. Here are a few local restaurants, cafes, breweries, wineries, and nearby attractions we recommend exploring while you’re in town.',
+    'attractions.food_heading': 'Food & Drinks',
+    'attractions.things_heading': 'Things To Do',
     'countdown.only': 'Only',
     'countdown.days': 'days',
     'countdown.until': 'until we tie the knot!',
@@ -1834,6 +2000,7 @@ const translations = {
     'nav.schedule': 'Nasz Dzień',
     'nav.accommodations': 'Noclegi',
     'nav.registry': 'Lista Prezentów',
+    'nav.attractions': 'Atrakcje',
     'nav.rsvp': 'Potwierdzenie',
     'header.date': '25 września 2026',
     'header.rsvp_by': 'Potwierdzenie obecności do 1 Sierpnia 2026',
@@ -1860,6 +2027,10 @@ const translations = {
     'registry.description': 'Nie będziemy mieć tradycyjnej listy prezentów ślubnych. Jeśli chcesz uczcić ten dzień prezentem, będziemy ogromnie wdzięczni za wsparcie naszego miesiąca miodowego. Dziękujemy za Waszą miłość i wsparcie!',
     'registry.button': 'Wyślij prezent na miesiąc miodowy przez Venmo',
     'registry.note': 'Venmo: @Angelika-Sieruta',
+    'attractions.heading': 'Atrakcje',
+    'attractions.intro': 'Wykorzystajcie jak najlepiej czas w Poughkeepsie i Hudson Valley. Polecamy kilka lokalnych restauracji, kawiarni, browarów, winnic i pobliskich atrakcji, które warto odwiedzić podczas pobytu.',
+    'attractions.food_heading': 'Jedzenie i Napoje',
+    'attractions.things_heading': 'Co Zobaczyć',
     'countdown.only': 'Tylko',
     'countdown.days': 'dni',
     'countdown.until': 'do naszego ślubu!',
