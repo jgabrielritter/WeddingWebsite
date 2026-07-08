@@ -360,7 +360,14 @@ body {
 
 .attractions__intro {
   font-size: clamp(18px, 2.2vw, 24px);
-  margin-bottom: 36px;
+  margin-bottom: 12px;
+}
+
+.attractions__hint {
+  font-size: clamp(15px, 1.8vw, 18px);
+  letter-spacing: 0.08em;
+  margin-bottom: 0;
+  opacity: 0.82;
 }
 
 .attractions__group {
@@ -1354,6 +1361,7 @@ We won’t be having a traditional wedding registry. If you would like to celebr
 <div class="section__text attractions__intro" data-i18n="attractions.intro">
 Make the most of your time in Poughkeepsie and the Hudson Valley. Here are a few local restaurants, cafes, breweries, wineries, and nearby attractions we recommend exploring while you’re in town.
 </div>
+<p class="section__text attractions__hint" data-i18n="attractions.hint">Swipe to see more! Click for more info.</p>
 
 <div class="attractions__group" aria-labelledby="attractions-food-title">
 <h3 class="attractions__title" id="attractions-food-title" data-i18n="attractions.food_heading">Food &amp; Drinks</h3>
@@ -1998,6 +2006,7 @@ const translations = {
     'registry.note': 'Venmo: @Angelika-Sieruta',
     'attractions.heading': 'Attractions',
     'attractions.intro': 'Make the most of your time in Poughkeepsie and the Hudson Valley. Here are a few local restaurants, cafes, breweries, wineries, and nearby attractions we recommend exploring while you’re in town.',
+    'attractions.hint': 'Swipe to see more! Click for more info.',
     'attractions.food_heading': 'Food & Drinks',
     'attractions.things_heading': 'Things To Do',
     'countdown.only': 'Only',
@@ -2047,6 +2056,7 @@ const translations = {
     'registry.note': 'Venmo: @Angelika-Sieruta',
     'attractions.heading': 'Atrakcje',
     'attractions.intro': 'Wykorzystajcie jak najlepiej czas w Poughkeepsie i Hudson Valley. Polecamy kilka lokalnych restauracji, kawiarni, browarów, winnic i pobliskich atrakcji, które warto odwiedzić podczas pobytu.',
+    'attractions.hint': 'Przesuń, aby zobaczyć więcej! Kliknij, aby uzyskać więcej informacji.',
     'attractions.food_heading': 'Jedzenie i Napoje',
     'attractions.things_heading': 'Co Zobaczyć',
     'countdown.only': 'Tylko',
